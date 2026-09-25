@@ -28,14 +28,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // OBTENER ID DE LA URL
+    // CREAR SLUG AUTOMÁTICO
+    // ========================================
+
+    function createSlug(article) {
+
+        const raw =
+            `${article.date || ""}-${article.title || ""}`;
+
+        return raw
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+    }
+
+
+    // ========================================
+    // OBTENER SLUG DE LA URL
     // ========================================
 
     const params =
         new URLSearchParams(window.location.search);
 
-    const articleId =
-        params.get("id");
+    const articleSlug =
+        params.get("slug");
 
 
     // ========================================
@@ -244,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadArticle() {
 
-        if (!articleId) {
+        if (!articleSlug) {
 
             showError(
                 "NO SE HA INDICADO NINGUNA NOTICIA"
@@ -291,8 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const article =
                 data.news.find(item => {
 
-                    return String(item.id) ===
-                        String(articleId);
+                    return createSlug(item) === articleSlug;
 
                 });
 
