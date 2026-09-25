@@ -208,14 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /*
-            Racing League Tools puede entregar
-            colores ARGB como #FFFF8000.
-
-            Eliminamos el canal alfa:
-            #FFFF8000 -> #FF8000
-        */
-
         if (
             color.startsWith("#") &&
             color.length === 9
@@ -338,16 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
         driver,
         type
     ) {
-
-        /*
-            driverPoints YA incluye:
-
-            - puntos por posición
-            - punto de vuelta rápida
-
-            NO incluye el +1 de pole que
-            utiliza HyperDrive League.
-        */
 
         const base =
             toNumber(
@@ -618,14 +600,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /*
-                        Dentro de una misma ronda,
-                        Sprint antes y carrera después.
-
-                        Así la carrera principal será
-                        la referencia más reciente.
-                    */
-
                     if (
                         a.type ===
                         b.type
@@ -748,15 +722,6 @@ document.addEventListener("DOMContentLoaded", () => {
             officialDriver.driverName;
 
 
-        /*
-            Solo buscamos participaciones
-            dentro de SU división.
-
-            Si un piloto Academy corre de
-            reserva en HyperDrive, esa carrera
-            nunca llega hasta aquí.
-        */
-
         const appearances =
             getDriverAppearances(
                 division,
@@ -813,7 +778,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         // ========================================
-        // ESTADÍSTICAS DE CARRERA PRINCIPAL
+        // CARRERAS PRINCIPALES
         // ========================================
 
         mainRaces.forEach(
@@ -869,7 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // VUELTA RÁPIDA
+                // VUELTAS RÁPIDAS
 
                 if (
                     hasFastestLap(
@@ -923,7 +888,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                // POSICIONES GANADAS
+                // REMONTADAS
 
                 if (
                     Number.isFinite(
@@ -943,10 +908,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                     if (
-                        biggestComeback ===
-                            null ||
+                        biggestComeback === null ||
                         gain >
-                            biggestComeback
+                        biggestComeback
                     ) {
 
                         biggestComeback =
@@ -1043,11 +1007,6 @@ document.addEventListener("DOMContentLoaded", () => {
             stats.appearances;
 
 
-        /*
-            Recorremos desde la participación
-            más reciente hacia atrás.
-        */
-
         for (
             let index =
                 appearances.length - 1;
@@ -1074,12 +1033,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /*
-            Si aún no ha disputado ninguna
-            carrera usamos el equipo oficial
-            definido en official-drivers.json.
-        */
 
         return {
 
@@ -1142,9 +1095,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-        // ========================================
         // RESULTADO
-        // ========================================
 
         let finishScore =
             0.5;
@@ -1174,9 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // ========================================
         // CLASIFICACIÓN
-        // ========================================
 
         let qualifyingScore =
             0.5;
@@ -1207,9 +1156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // ========================================
         // REMONTADA
-        // ========================================
 
         let gainScore =
             0.5;
@@ -1226,12 +1173,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 finish;
 
 
-            /*
-                +10 posiciones = puntuación máxima.
-                -10 posiciones = puntuación mínima.
-                Sin ganar/perder = 0.5.
-            */
-
             gainScore =
                 clamp(
                     0.5 +
@@ -1246,19 +1187,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // ========================================
         // FIABILIDAD
-        // ========================================
 
         const reliabilityScore =
             isDNF(driver)
                 ? 0
                 : 1;
 
-
-        // ========================================
-        // SCORE DEL EVENTO
-        // ========================================
 
         if (
             appearance.type ===
@@ -1296,11 +1231,6 @@ document.addEventListener("DOMContentLoaded", () => {
             appearances.length === 0
         ) {
 
-            /*
-                Valor neutral para un piloto
-                que todavía no ha competido.
-            */
-
             return 50;
 
         }
@@ -1331,15 +1261,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                /*
-                    Las rondas recientes tienen
-                    más importancia.
-
-                    Cada ronda anterior conserva
-                    aproximadamente el 78% del
-                    peso de la siguiente.
-                */
-
                 const roundsAgo =
                     latestRound -
                     appearance.round;
@@ -1351,12 +1272,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         roundsAgo
                     );
 
-
-                /*
-                    Una Sprint influye en el Power
-                    Ranking, pero bastante menos
-                    que una carrera principal.
-                */
 
                 const eventWeight =
                     appearance.type ===
@@ -1402,16 +1317,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ) * 100;
 
 
-        /*
-            Al principio de temporada evitamos
-            rankings extremos por una única
-            carrera.
-
-            Tras aproximadamente cuatro carreras
-            principales, el rendimiento observado
-            tiene ya todo el peso.
-        */
-
         const confidence =
             clamp(
                 experienceWeight /
@@ -1447,7 +1352,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // FORMATO DE ESTADÍSTICAS
+    // FORMATOS
     // ========================================
 
     function formatBestResult(value) {
@@ -1485,6 +1390,55 @@ document.addEventListener("DOMContentLoaded", () => {
         return String(
             Math.round(number)
         );
+
+    }
+
+
+    function formatAveragePosition(value) {
+
+        const number =
+            Number(value);
+
+
+        if (
+            !Number.isFinite(number)
+        ) {
+
+            return "—";
+
+        }
+
+
+        return number.toFixed(1);
+
+    }
+
+
+    function formatComeback(value) {
+
+        const number =
+            Number(value);
+
+
+        if (
+            !Number.isFinite(number)
+        ) {
+
+            return "—";
+
+        }
+
+
+        if (
+            number > 0
+        ) {
+
+            return `+${number}`;
+
+        }
+
+
+        return String(number);
 
     }
 
@@ -1539,13 +1493,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "Comunidad por definir";
 
 
-        /*
-            Si image está vacío intentamos
-            automáticamente:
-
-            images/drivers/nombrepiloto.png
-        */
-
         const image =
             profile.image
                 ? profile.image
@@ -1589,9 +1536,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="driver-card-inner">
 
 
-                    <!-- ========================================
-                         CARA DELANTERA
-                    ======================================== -->
+                    <!-- CARA DELANTERA -->
 
                     <div class="driver-card-front">
 
@@ -1684,9 +1629,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-                    <!-- ========================================
-                         CARA TRASERA
-                    ======================================== -->
+                    <!-- CARA TRASERA -->
 
                     <div class="driver-card-back">
 
@@ -1837,6 +1780,36 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <strong class="driver-stat-value">
                                     ${formatBestResult(
                                         stats.bestResult
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="driver-stat">
+
+                                <span class="driver-stat-label">
+                                    POS. MEDIA
+                                </span>
+
+                                <strong class="driver-stat-value">
+                                    ${formatAveragePosition(
+                                        stats.averageFinish
+                                    )}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="driver-stat">
+
+                                <span class="driver-stat-label">
+                                    MAYOR REMONTADA
+                                </span>
+
+                                <strong class="driver-stat-value">
+                                    ${formatComeback(
+                                        stats.biggestComeback
                                     )}
                                 </strong>
 
