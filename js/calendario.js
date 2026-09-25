@@ -256,6 +256,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // EVENTOS ESPECIALES
+    // ========================================
+
+    const marketEvent = {
+
+        type:
+            "market",
+
+        label:
+            "PARÓN · MITAD DE TEMPORADA",
+
+        title:
+            "MERCADO DE PILOTOS",
+
+        date:
+            "17 — 25 OCTUBRE",
+
+        description:
+            "Parón de una semana para celebrar el mercado de pilotos de mitad de temporada. Los equipos podrán reorganizar sus alineaciones antes de la segunda mitad del campeonato."
+
+    };
+
+
+    const texasEvent = {
+
+        type:
+            "texas",
+
+        label:
+            "EVENTO ESPECIAL · 100%",
+
+        title:
+            "GP TEXAS",
+
+        date:
+            "10 DICIEMBRE",
+
+        description:
+            "Cada equipo enviará a sus dos mejores pilotos para disputar una carrera al 100% de distancia.",
+
+        note:
+            "PUNTUACIÓN EXCLUSIVA PARA SUPERCONSTRUCTORES"
+
+    };
+
+
+    // ========================================
     // SEGURIDAD
     // ========================================
 
@@ -294,12 +341,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            /*
-                Usamos HEAD para comprobar si
-                existe el archivo sin descargar
-                todo el JSON de la carrera.
-            */
-
             const response =
                 await fetch(
                     path,
@@ -316,8 +357,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             /*
-                Por si algún servidor no permite
-                peticiones HEAD, probamos con GET.
+                Si el servidor no admite HEAD,
+                probamos mediante GET.
             */
 
             if (
@@ -351,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // COMPROBAR RONDAS COMPLETADAS
+    // COMPROBAR RONDA
     // ========================================
 
     async function checkRound(round) {
@@ -391,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // ESTADOS DE TODAS LAS RONDAS
+    // ESTADOS DE LAS RONDAS
     // ========================================
 
     async function getRoundStatuses() {
@@ -410,9 +451,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-            Primera ronda que todavía no
-            tiene las dos carreras principales
-            será considerada la próxima.
+            La primera ronda que todavía
+            no tenga los dos resultados
+            será la próxima ronda.
         */
 
         const nextIndex =
@@ -486,14 +527,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // FORMATO ESPECIAL
+    // FORMATO ESPECIAL DE RONDA
     // ========================================
 
     function renderSpecial(round) {
 
         /*
-            Sprint tiene tratamiento visual
-            propio mediante .is-sprint.
+            Sprint ya tiene su propio
+            tratamiento visual.
         */
 
         if (
@@ -516,7 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // BOTÓN
+    // BOTÓN DE RONDA
     // ========================================
 
     function renderAction(status) {
@@ -729,6 +770,162 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // EVENTO ESPECIAL
+    // ========================================
+
+    function renderSpecialEvent(event) {
+
+        const isMarket =
+            event.type ===
+            "market";
+
+
+        const icon =
+            isMarket
+                ? "MKT"
+                : "100%";
+
+
+        const note =
+            event.note
+                ? `
+                    <span class="calendar-special-note">
+                        ${escapeHTML(event.note)}
+                    </span>
+                `
+                : "";
+
+
+        return `
+            <article
+                class="
+                    calendar-special-event
+                    ${escapeHTML(event.type)}
+                "
+            >
+
+                <div class="calendar-special-icon">
+                    ${escapeHTML(icon)}
+                </div>
+
+
+                <div class="calendar-special-content">
+
+                    <span class="calendar-special-label">
+                        ${escapeHTML(event.label)}
+                    </span>
+
+
+                    <h3>
+                        ${escapeHTML(event.title)}
+                    </h3>
+
+
+                    <p>
+                        ${escapeHTML(event.description)}
+                    </p>
+
+
+                    ${note}
+
+                </div>
+
+
+                <div class="calendar-special-date">
+
+                    <span>
+                        FECHA
+                    </span>
+
+
+                    <strong>
+                        ${escapeHTML(event.date)}
+                    </strong>
+
+                </div>
+
+            </article>
+        `;
+
+    }
+
+
+    // ========================================
+    // CONSTRUIR CALENDARIO COMPLETO
+    // ========================================
+
+    function buildCalendarHTML(
+        statuses
+    ) {
+
+        const blocks =
+            [];
+
+
+        calendar.forEach(
+            (
+                round,
+                index
+            ) => {
+
+                /*
+                    Añadimos la ronda normal.
+                */
+
+                blocks.push(
+                    renderRound(
+                        round,
+                        statuses[index]
+                    )
+                );
+
+
+                /*
+                    Después de Hungría,
+                    Round 6, insertamos el
+                    mercado de mitad de temporada.
+                */
+
+                if (
+                    round.round === 6
+                ) {
+
+                    blocks.push(
+                        renderSpecialEvent(
+                            marketEvent
+                        )
+                    );
+
+                }
+
+
+                /*
+                    Después de Abu Dhabi,
+                    Round 12, añadimos Texas.
+                */
+
+                if (
+                    round.round === 12
+                ) {
+
+                    blocks.push(
+                        renderSpecialEvent(
+                            texasEvent
+                        )
+                    );
+
+                }
+
+            }
+        );
+
+
+        return blocks.join("");
+
+    }
+
+
+    // ========================================
     // RENDERIZAR CALENDARIO
     // ========================================
 
@@ -748,23 +945,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             calendarList.innerHTML =
-                calendar
-                    .map(
-                        (
-                            round,
-                            index
-                        ) => {
-
-                            return renderRound(
-                                round,
-                                statuses[
-                                    index
-                                ]
-                            );
-
-                        }
-                    )
-                    .join("");
+                buildCalendarHTML(
+                    statuses
+                );
 
 
         } catch (error) {
