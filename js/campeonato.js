@@ -425,6 +425,11 @@ document.addEventListener("DOMContentLoaded", () => {
         DIVISIONS.forEach(
             division => {
 
+                officialDrivers[
+                    division
+                ].clear();
+
+
                 const list =
                     Array.isArray(
                         data?.[division]
@@ -475,19 +480,22 @@ document.addEventListener("DOMContentLoaded", () => {
         division
     ) {
 
-        const loaded =
+        const requests =
             [];
 
 
         /*
-            Las rondas son consecutivas.
+            Buscamos siempre las 12 rondas.
 
-            Cuando no existe la carrera
-            principal de una ronda, dejamos
-            de buscar las siguientes.
+            Cada ronda puede tener:
 
-            Así evitamos decenas de errores
-            404 innecesarios.
+            data/hyperdrive_r1.json
+            data/hyperdrive_r1_sprint.json
+
+            o su equivalente de Academy.
+
+            Si falta una ronda intermedia,
+            NO dejamos de buscar las siguientes.
         */
 
         for (
@@ -499,101 +507,109 @@ document.addEventListener("DOMContentLoaded", () => {
             const mainPath =
                 `data/${division}_r${round}.json`;
 
-
-            const mainData =
-                await fetchOptionalJSON(
-                    mainPath
-                );
-
-
-            if (!mainData) {
-
-                break;
-
-            }
-
-
-            if (
-                isValidRaceFile(
-                    mainData
-                )
-            ) {
-
-                loaded.push({
-
-                    division:
-                        division,
-
-                    round:
-                        round,
-
-                    type:
-                        "race",
-
-                    path:
-                        mainPath,
-
-                    data:
-                        mainData
-
-                });
-
-            }
-
-
-            /*
-                Sprint opcional.
-
-                Solo se carga si existe.
-                No es necesario crear ningún
-                archivo vacío en rondas normales.
-            */
-
             const sprintPath =
                 `data/${division}_r${round}_sprint.json`;
 
 
-            const sprintData =
-                await fetchOptionalJSON(
-                    sprintPath
-                );
+            requests.push(
+                (async () => {
+
+                    const mainData =
+                        await fetchOptionalJSON(
+                            mainPath
+                        );
+
+                    if (
+                        !mainData ||
+                        !isValidRaceFile(
+                            mainData
+                        )
+                    ) {
+
+                        return null;
+
+                    }
+
+                    return {
+
+                        division:
+                            division,
+
+                        round:
+                            round,
+
+                        type:
+                            "race",
+
+                        path:
+                            mainPath,
+
+                        data:
+                            mainData
+
+                    };
+
+                })()
+            );
 
 
-            if (
-                sprintData &&
-                isValidRaceFile(
-                    sprintData
-                )
-            ) {
+            requests.push(
+                (async () => {
 
-                loaded.push({
+                    const sprintData =
+                        await fetchOptionalJSON(
+                            sprintPath
+                        );
 
-                    division:
-                        division,
+                    if (
+                        !sprintData ||
+                        !isValidRaceFile(
+                            sprintData
+                        )
+                    ) {
 
-                    round:
-                        round,
+                        return null;
 
-                    type:
-                        "sprint",
+                    }
 
-                    path:
-                        sprintPath,
+                    return {
 
-                    data:
-                        sprintData
+                        division:
+                            division,
 
-                });
+                        round:
+                            round,
 
-            }
+                        type:
+                            "sprint",
+
+                        path:
+                            sprintPath,
+
+                        data:
+                            sprintData
+
+                    };
+
+                })()
+            );
 
         }
+
+
+        const loaded =
+            (
+                await Promise.all(
+                    requests
+                )
+            )
+                .filter(Boolean);
 
 
         /*
             Orden cronológico:
 
-            Sprint primero
+            Sprint primero.
             Carrera principal después.
         */
 
@@ -657,31 +673,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /*
             RLT ya incluye en driverPoints
-            el punto de vuelta rápida.
+            los puntos de la carrera y,
+            cuando corresponde, el punto
+            de vuelta rápida.
 
-            NO añadimos nada por vuelta rápida.
+            NO añadimos nada extra por
+            vuelta rápida.
         */
 
         const driverPoints =
             toPoints(
                 driver.driverPoints
             );
-
-
-        /*
-            Para Constructores usamos
-            teamPoints si está disponible.
-
-            Si no existe, usamos driverPoints.
-        */
-
-        const teamPoints =
-            driver.teamPoints !==
-                undefined
-                ? toPoints(
-                    driver.teamPoints
-                )
-                : driverPoints;
 
 
         /*
@@ -693,6 +696,10 @@ document.addEventListener("DOMContentLoaded", () => {
             suma +1 punto.
 
             En Sprint NUNCA se aplica.
+
+            Como trabajamos directamente
+            con los archivos Session,
+            este +1 debemos añadirlo aquí.
         */
 
         const poleBonus =
@@ -706,24 +713,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 : 0;
 
 
+        /*
+            Para Pilotos y Constructores
+            usamos exactamente la misma
+            puntuación efectiva del piloto.
+
+            NO usamos teamPoints.
+
+            Así los puntos de reservas
+            también se asignan correctamente
+            al equipo con el que corrieron.
+        */
+
+        const total =
+            driverPoints +
+            poleBonus;
+
+
         return {
 
             driverPoints:
                 driverPoints,
 
-            teamPoints:
-                teamPoints,
-
             poleBonus:
                 poleBonus,
 
             driverTotal:
-                driverPoints +
-                poleBonus,
+                total,
 
             teamTotal:
-                teamPoints +
-                poleBonus
+                total
 
         };
 
@@ -1033,10 +1052,33 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
 
 
+                        const teamInfo =
+                            driver.team ||
+                            null;
+
+
+                        /*
+                            Usamos uniqueId de RLT
+                            siempre que exista.
+
+                            Así "Red Bull", "Mercedes",
+                            etc. se identifican como
+                            la misma escudería aunque
+                            cambie ligeramente el texto
+                            del nombre.
+                        */
+
+                        const uniqueId =
+                            String(
+                                teamInfo?.uniqueId ??
+                                ""
+                            ).trim();
+
+
                         const teamKey =
-                            normalizeKey(
-                                teamName
-                            );
+                            uniqueId
+                                ? `id:${normalizeKey(uniqueId)}`
+                                : `name:${normalizeKey(teamName)}`;
 
 
                         if (
@@ -1049,6 +1091,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                 teamKey,
                                 {
 
+                                    teamKey:
+                                        teamKey,
+
                                     teamName:
                                         teamName,
 
@@ -1059,8 +1104,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                         new Set(),
 
                                     teamInfo:
-                                        driver.team ||
-                                        null
+                                        teamInfo
 
                                 }
                             );
@@ -1204,10 +1248,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 constructors.forEach(
                     team => {
 
+                        const uniqueId =
+                            String(
+                                team
+                                    ?.teamInfo
+                                    ?.uniqueId ??
+                                ""
+                            ).trim();
+
+
                         const key =
-                            normalizeKey(
-                                team.teamName
-                            );
+                            uniqueId
+                                ? `id:${normalizeKey(uniqueId)}`
+                                : `name:${normalizeKey(team.teamName)}`;
 
 
                         if (
