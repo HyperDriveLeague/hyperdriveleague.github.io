@@ -150,17 +150,19 @@ body {
     overflow: hidden;
 
     background:
-        radial-gradient(
-            circle at 80% 45%,
-            rgba(255, 213, 0, 0.12),
-            transparent 32%
-        ),
         linear-gradient(
-            115deg,
-            #08090b 0%,
-            #08090b 55%,
-            #111107 100%
-        );
+            90deg,
+            rgba(8, 9, 11, 1) 0%,
+            rgba(8, 9, 11, 0.98) 30%,
+            rgba(8, 9, 11, 0.78) 48%,
+            rgba(8, 9, 11, 0.18) 72%,
+            rgba(8, 9, 11, 0.05) 100%
+        ),
+        url("../images/hero/hero-hyperdrive.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* Línea amarilla decorativa */
