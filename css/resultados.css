@@ -343,6 +343,98 @@
 
 
 /* ========================================
+   BLOQUES DE SESIÓN
+======================================== */
+
+.results-session-block {
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+
+.results-session-block:first-of-type {
+    border-top: 0;
+}
+
+
+.results-session-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 42px;
+
+    padding: 0 24px;
+
+    background: rgba(255, 255, 255, 0.018);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+
+.results-session-label {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 24px;
+
+    padding: 0 9px;
+
+    border-radius: 4px;
+
+    background: rgba(255, 213, 0, 0.08);
+
+    border: 1px solid rgba(255, 213, 0, 0.18);
+
+    color: var(--yellow);
+
+    font-size: 0.58rem;
+    font-weight: 900;
+
+    letter-spacing: 0.11em;
+}
+
+
+.results-session-block[data-session-type="sprint"] .results-session-label {
+    background: rgba(255, 255, 255, 0.045);
+
+    border-color: rgba(255, 255, 255, 0.12);
+
+    color: rgba(255, 255, 255, 0.78);
+}
+
+
+.results-session-details {
+    padding-top: 24px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.results-session-details:first-child {
+    border-top: 0;
+}
+
+
+.results-session-details > .results-full-title {
+    padding: 0 24px;
+}
+
+
+.results-session-details[data-session-type="sprint"] {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+
+/* ========================================
+   VUELTA RÁPIDA
+======================================== */
+
+.results-fastest-driver-name {
+    color: #b56cff !important;
+}
+
+
+/* ========================================
    PODIO
 ======================================== */
 
@@ -797,6 +889,34 @@
 }
 
 
+.results-full-driver-block.has-details .results-full-row {
+    cursor: pointer;
+}
+
+
+.results-full-driver-block.has-details:hover .results-full-row,
+.results-full-driver-block.has-details:focus .results-full-row,
+.results-full-driver-block.has-details:focus-visible .results-full-row {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+.results-full-driver-block.has-details[aria-expanded="true"] .results-full-row {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 213, 0, 0.055),
+            rgba(255, 255, 255, 0.018)
+        );
+}
+
+
+.results-full-driver-block.has-details:focus,
+.results-full-driver-block.has-details:focus-visible {
+    outline: none;
+}
+
+
 .results-full-row {
     min-height: 66px;
 
@@ -1063,7 +1183,7 @@
 .results-driver-extra-grid {
     display: grid;
 
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(5, 1fr);
 
     gap: 9px;
 }
@@ -1342,6 +1462,23 @@
         grid-column: 1 / -1;
     }
 
+
+    .results-session-heading {
+        min-height: 40px;
+
+        padding: 0 18px;
+    }
+
+
+    .results-session-details {
+        padding-top: 18px;
+    }
+
+
+    .results-session-details > .results-full-title {
+        padding: 0 18px;
+    }
+
 }
 
 
@@ -1438,6 +1575,21 @@
         grid-template-columns: 1fr 1fr;
 
         gap: 7px;
+    }
+
+
+    .results-session-heading {
+        padding: 0 14px;
+    }
+
+
+    .results-session-label {
+        font-size: 0.54rem;
+    }
+
+
+    .results-session-details > .results-full-title {
+        padding: 0 14px;
     }
 
 }
