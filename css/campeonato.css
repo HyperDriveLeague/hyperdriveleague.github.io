@@ -1,1 +1,746 @@
+/* ========================================
+   HYPERDRIVE LEAGUE
+   Página Campeonato
+======================================== */
 
+
+/* ========================================
+   PÁGINA
+======================================== */
+
+.championship-page {
+    min-height: 100vh;
+    background: #08090b;
+}
+
+
+/* ========================================
+   HERO CAMPEONATO
+======================================== */
+
+.championship-hero {
+    position: relative;
+
+    min-height: 380px;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 90px 6% 70px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 82% 30%,
+            rgba(255, 213, 0, 0.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #0d0f12 0%,
+            #08090b 70%
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+
+.championship-hero::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 18%;
+
+    width: 5px;
+    height: 64%;
+
+    background: var(--yellow);
+}
+
+
+.championship-hero::after {
+    content: "08";
+
+    position: absolute;
+
+    right: 5%;
+    bottom: -65px;
+
+    color: rgba(255, 255, 255, 0.025);
+
+    font-size: clamp(12rem, 25vw, 24rem);
+    font-weight: 900;
+
+    line-height: 1;
+
+    letter-spacing: -0.08em;
+
+    pointer-events: none;
+}
+
+
+.championship-hero-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+.championship-label {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: var(--yellow);
+
+    font-size: 0.76rem;
+    font-weight: 900;
+
+    letter-spacing: 0.20em;
+}
+
+
+.championship-hero h1 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 900;
+
+    line-height: 0.85;
+    letter-spacing: -0.065em;
+}
+
+
+.championship-hero p {
+    max-width: 620px;
+
+    margin: 28px 0 0;
+
+    color: rgba(255, 255, 255, 0.56);
+
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.championship-content {
+    padding: 70px 6% 110px;
+
+    background:
+        radial-gradient(
+            circle at 15% 12%,
+            rgba(255, 213, 0, 0.035),
+            transparent 25%
+        ),
+        #08090b;
+}
+
+
+/* ========================================
+   TABS
+======================================== */
+
+.championship-tabs {
+    max-width: 1200px;
+
+    margin: 0 auto 28px;
+
+    display: flex;
+
+    gap: 8px;
+
+    padding: 5px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 11px;
+}
+
+
+.championship-tab {
+    flex: 1;
+
+    min-height: 50px;
+
+    padding: 0 20px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.48);
+
+    font-family: inherit;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+
+    letter-spacing: 0.10em;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.championship-tab:hover {
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+.championship-tab.active {
+    background: var(--yellow);
+
+    color: #08090b;
+}
+
+
+/* ========================================
+   TABLA
+======================================== */
+
+.championship-table {
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.028),
+            rgba(255, 255, 255, 0.015)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 14px;
+}
+
+
+.championship-table-header,
+.championship-row {
+    display: grid;
+
+    grid-template-columns:
+        85px
+        minmax(250px, 1.5fr)
+        minmax(190px, 1fr)
+        120px;
+
+    align-items: center;
+}
+
+
+.championship-table-header {
+    min-height: 52px;
+
+    padding: 0 25px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    color: rgba(255, 255, 255, 0.34);
+
+    font-size: 0.66rem;
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+}
+
+
+.championship-table-header span:last-child {
+    text-align: right;
+}
+
+
+/* ========================================
+   FILAS
+======================================== */
+
+.championship-row {
+    position: relative;
+
+    min-height: 82px;
+
+    padding: 0 25px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.championship-row:last-child {
+    border-bottom: 0;
+}
+
+
+.championship-row:hover {
+    background: rgba(255, 255, 255, 0.035);
+}
+
+
+/* ========================================
+   POSICIÓN
+======================================== */
+
+.championship-position {
+    color: rgba(255, 255, 255, 0.32);
+
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+
+/* ========================================
+   PILOTO
+======================================== */
+
+.championship-driver {
+    height: 82px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    overflow: hidden;
+
+    color: #ffffff;
+
+    font-size: 0.98rem;
+    font-weight: 900;
+}
+
+
+.championship-driver-photo {
+    width: 74px;
+    height: 82px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+
+.championship-driver-photo img {
+    width: 74px;
+    height: 74px;
+
+    object-fit: contain;
+
+    margin-top: 4px;
+
+    transform: scale(1.8);
+
+    transform-origin: 50% 10%;
+}
+
+
+/* ========================================
+   EQUIPO
+======================================== */
+
+.championship-team {
+    color: rgba(255, 255, 255, 0.52);
+
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   PUNTOS
+======================================== */
+
+.championship-points {
+    text-align: right;
+
+    color: #ffffff;
+
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+
+/* ========================================
+   LÍDER
+======================================== */
+
+.championship-row:first-child {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 213, 0, 0.09),
+            transparent 55%
+        );
+}
+
+
+.championship-row:first-child::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: var(--yellow);
+}
+
+
+.championship-row:first-child .championship-position {
+    color: var(--yellow);
+}
+
+
+.championship-row:first-child .championship-points {
+    color: var(--yellow);
+}
+
+
+/* ========================================
+   CONSTRUCTORES
+======================================== */
+
+.constructor-row {
+    min-height: 78px;
+}
+
+
+.constructor-team-name {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    color: #ffffff;
+
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+
+.constructor-marker {
+    width: 8px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    background: var(--yellow);
+
+    border-radius: 2px;
+}
+
+
+/* ========================================
+   ESTADO DE CARGA
+======================================== */
+
+.championship-loading {
+    padding: 65px 25px;
+
+    color: rgba(255, 255, 255, 0.40);
+
+    text-align: center;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+
+    letter-spacing: 0.11em;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 1024px) {
+
+    .championship-hero {
+        min-height: 340px;
+
+        padding:
+            80px
+            5%
+            60px;
+    }
+
+
+    .championship-content {
+        padding:
+            60px
+            5%
+            90px;
+    }
+
+
+    .championship-table-header,
+    .championship-row {
+        grid-template-columns:
+            65px
+            minmax(220px, 1.4fr)
+            minmax(150px, 1fr)
+            90px;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL
+======================================== */
+
+@media (max-width: 768px) {
+
+    .championship-hero {
+        min-height: 300px;
+
+        padding:
+            70px
+            22px
+            50px;
+    }
+
+
+    .championship-hero::after {
+        right: -20px;
+
+        bottom: -30px;
+
+        font-size: 10rem;
+    }
+
+
+    .championship-hero h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+    }
+
+
+    .championship-hero p {
+        margin-top: 20px;
+
+        font-size: 0.9rem;
+    }
+
+
+    .championship-content {
+        padding:
+            45px
+            18px
+            75px;
+    }
+
+
+    /* TABS */
+
+    .championship-tabs {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 6px;
+    }
+
+
+    .championship-tab {
+        min-height: 46px;
+
+        padding: 0 10px;
+
+        font-size: 0.66rem;
+    }
+
+
+    .championship-tab:last-child {
+        grid-column: 1 / -1;
+    }
+
+
+    /* TABLA */
+
+    .championship-table {
+        border-radius: 10px;
+    }
+
+
+    .championship-table-header,
+    .championship-row {
+        grid-template-columns:
+            44px
+            minmax(0, 1fr)
+            65px;
+    }
+
+
+    .championship-table-header {
+        min-height: 45px;
+
+        padding: 0 12px;
+    }
+
+
+    .championship-table-header span:nth-child(3) {
+        display: none;
+    }
+
+
+    .championship-table-header span:nth-child(4) {
+        text-align: right;
+    }
+
+
+    .championship-row {
+        min-height: 70px;
+
+        padding: 0 12px;
+    }
+
+
+    .championship-position {
+        font-size: 1rem;
+    }
+
+
+    .championship-driver {
+        height: 70px;
+
+        gap: 8px;
+
+        font-size: 0.78rem;
+    }
+
+
+    .championship-driver-photo {
+        width: 52px;
+        height: 70px;
+    }
+
+
+    .championship-driver-photo img {
+        width: 52px;
+        height: 60px;
+
+        transform: scale(1.7);
+
+        transform-origin: 50% 10%;
+    }
+
+
+    .championship-team {
+        display: none;
+    }
+
+
+    .championship-points {
+        font-size: 1rem;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL PEQUEÑO
+======================================== */
+
+@media (max-width: 480px) {
+
+    .championship-label {
+        font-size: 0.67rem;
+
+        letter-spacing: 0.16em;
+    }
+
+
+    .championship-hero h1 {
+        font-size: 3.1rem;
+    }
+
+
+    .championship-tabs {
+        grid-template-columns: 1fr;
+    }
+
+
+    .championship-tab:last-child {
+        grid-column: auto;
+    }
+
+
+    .championship-table-header,
+    .championship-row {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            58px;
+    }
+
+
+    .championship-table-header {
+        padding: 0 9px;
+
+        font-size: 0.58rem;
+    }
+
+
+    .championship-row {
+        padding: 0 9px;
+    }
+
+
+    .championship-driver-photo {
+        width: 45px;
+    }
+
+
+    .championship-driver-photo img {
+        width: 45px;
+    }
+
+
+    .championship-driver {
+        font-size: 0.72rem;
+    }
+
+
+    .championship-points {
+        font-size: 0.9rem;
+    }
+
+}
