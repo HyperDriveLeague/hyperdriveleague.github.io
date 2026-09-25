@@ -1,0 +1,68 @@
+media:
+  input: images/news
+  output: /images/news
+  rename: safe
+  categories:
+    - image
+
+content:
+  - name: news
+    label: Noticias
+    type: file
+    path: data/news.json
+    format: json
+
+    fields:
+      - name: news
+        label: Noticias
+        type: object
+
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+
+        fields:
+          - name: title
+            label: Título
+            type: string
+            required: true
+
+          - name: category
+            label: Categoría
+            type: select
+            required: true
+            options:
+              values:
+                - HYPERDRIVE
+                - ACADEMY
+                - CAMPEONATO
+                - MERCADO
+                - PILOTOS
+                - EQUIPOS
+                - ANUNCIO
+
+          - name: date
+            label: Fecha
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+
+          - name: summary
+            label: Resumen para la portada
+            type: text
+            required: true
+
+          - name: body
+            label: Noticia completa
+            type: rich-text
+
+          - name: image
+            label: Imagen de portada
+            type: image
+
+          - name: featured
+            label: Noticia destacada
+            type: boolean
+            default: false
