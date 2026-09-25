@@ -1,0 +1,700 @@
+/* ========================================
+   HYPERDRIVE LEAGUE
+   Página Resultados
+======================================== */
+
+
+/* ========================================
+   PÁGINA
+======================================== */
+
+.results-page {
+    min-height: 100vh;
+    background: #08090b;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.results-page-hero {
+    position: relative;
+
+    min-height: 380px;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding: 90px 6% 70px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 82% 30%,
+            rgba(255, 213, 0, 0.10),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #0d0f12 0%,
+            #08090b 70%
+        );
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+
+.results-page-hero::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 18%;
+
+    width: 5px;
+    height: 64%;
+
+    background: var(--yellow);
+}
+
+
+.results-page-hero::after {
+    content: "R";
+
+    position: absolute;
+
+    right: 5%;
+    bottom: -70px;
+
+    color: rgba(255, 255, 255, 0.025);
+
+    font-size: clamp(13rem, 27vw, 25rem);
+    font-weight: 900;
+
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+
+.results-page-hero-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+}
+
+
+.results-page-label {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: var(--yellow);
+
+    font-size: 0.76rem;
+    font-weight: 900;
+
+    letter-spacing: 0.20em;
+}
+
+
+.results-page-hero h1 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 900;
+
+    line-height: 0.85;
+    letter-spacing: -0.065em;
+}
+
+
+.results-page-hero p {
+    max-width: 620px;
+
+    margin: 28px 0 0;
+
+    color: rgba(255, 255, 255, 0.56);
+
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.results-page-content {
+    padding: 70px 6% 110px;
+
+    background:
+        radial-gradient(
+            circle at 15% 12%,
+            rgba(255, 213, 0, 0.035),
+            transparent 25%
+        ),
+        #08090b;
+}
+
+
+/* ========================================
+   TABS
+======================================== */
+
+.results-page-tabs {
+    max-width: 1200px;
+
+    margin: 0 auto 30px;
+
+    display: flex;
+
+    gap: 8px;
+
+    padding: 5px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 11px;
+}
+
+
+.results-page-tab {
+    flex: 1;
+
+    min-height: 50px;
+
+    padding: 0 20px;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.48);
+
+    font-family: inherit;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+
+    letter-spacing: 0.10em;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.results-page-tab:hover {
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
+.results-page-tab.active {
+    background: var(--yellow);
+
+    color: #08090b;
+}
+
+
+/* ========================================
+   LISTA DE RONDAS
+======================================== */
+
+.results-page-list {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    gap: 16px;
+}
+
+
+/* ========================================
+   TARJETA DE RONDA
+======================================== */
+
+.results-round-card {
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.03),
+            rgba(255, 255, 255, 0.015)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.results-round-card:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(255, 213, 0, 0.20);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.02)
+        );
+}
+
+
+/* ========================================
+   CABECERA DE RONDA
+======================================== */
+
+.results-round-header {
+    min-height: 84px;
+
+    display: grid;
+
+    grid-template-columns:
+        110px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 24px;
+
+    padding: 0 28px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+}
+
+
+.results-round-number {
+    color: var(--yellow);
+
+    font-size: 0.72rem;
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+}
+
+
+.results-round-info h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 1.45rem;
+    font-weight: 900;
+
+    letter-spacing: -0.025em;
+}
+
+
+.results-round-info span {
+    display: block;
+
+    margin-top: 7px;
+
+    color: rgba(255, 255, 255, 0.40);
+
+    font-size: 0.7rem;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+}
+
+
+.results-round-tag {
+    padding: 8px 12px;
+
+    border: 1px solid rgba(255, 213, 0, 0.25);
+    border-radius: 999px;
+
+    background: rgba(255, 213, 0, 0.06);
+
+    color: var(--yellow);
+
+    font-size: 0.63rem;
+    font-weight: 900;
+
+    letter-spacing: 0.10em;
+}
+
+
+/* ========================================
+   PODIO
+======================================== */
+
+.results-round-podium {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 1px;
+
+    background: rgba(255, 255, 255, 0.055);
+}
+
+
+.results-round-driver {
+    min-height: 92px;
+
+    display: grid;
+
+    grid-template-columns:
+        52px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 18px 22px;
+
+    background: #0b0c0f;
+}
+
+
+.results-round-position {
+    color: rgba(255, 255, 255, 0.34);
+
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+
+.results-round-driver:first-child .results-round-position {
+    color: var(--yellow);
+}
+
+
+.results-round-driver-info {
+    min-width: 0;
+}
+
+
+.results-round-driver-info strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #ffffff;
+
+    font-size: 0.93rem;
+    font-weight: 900;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.results-round-driver-info span {
+    display: block;
+
+    margin-top: 5px;
+
+    overflow: hidden;
+
+    color: rgba(255, 255, 255, 0.40);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.results-round-points {
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 0.8rem;
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   BOTÓN DETALLE
+======================================== */
+
+.results-round-footer {
+    display: flex;
+
+    justify-content: flex-end;
+
+    padding: 18px 24px;
+}
+
+
+.results-round-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 0 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 5px;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    text-decoration: none;
+
+    font-size: 0.67rem;
+    font-weight: 900;
+
+    letter-spacing: 0.09em;
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.results-round-button:hover {
+    color: #08090b;
+
+    border-color: var(--yellow);
+
+    background: var(--yellow);
+}
+
+
+/* ========================================
+   CARGANDO
+======================================== */
+
+.results-page-loading {
+    padding: 70px 20px;
+
+    color: rgba(255, 255, 255, 0.40);
+
+    text-align: center;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+
+    letter-spacing: 0.11em;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.02);
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 1024px) {
+
+    .results-page-hero {
+        min-height: 340px;
+
+        padding:
+            80px
+            5%
+            60px;
+    }
+
+
+    .results-page-content {
+        padding:
+            60px
+            5%
+            90px;
+    }
+
+
+    .results-round-podium {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL
+======================================== */
+
+@media (max-width: 768px) {
+
+    .results-page-hero {
+        min-height: 300px;
+
+        padding:
+            70px
+            22px
+            50px;
+    }
+
+
+    .results-page-hero::after {
+        right: -20px;
+
+        bottom: -30px;
+
+        font-size: 10rem;
+    }
+
+
+    .results-page-hero h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+    }
+
+
+    .results-page-hero p {
+        margin-top: 20px;
+
+        font-size: 0.9rem;
+    }
+
+
+    .results-page-content {
+        padding:
+            45px
+            18px
+            75px;
+    }
+
+
+    .results-page-tabs {
+        gap: 6px;
+    }
+
+
+    .results-page-tab {
+        min-height: 46px;
+
+        padding: 0 10px;
+
+        font-size: 0.66rem;
+    }
+
+
+    .results-round-header {
+        min-height: 0;
+
+        grid-template-columns: 1fr;
+
+        gap: 10px;
+
+        padding: 22px;
+    }
+
+
+    .results-round-tag {
+        width: fit-content;
+    }
+
+
+    .results-round-driver {
+        grid-template-columns:
+            45px
+            minmax(0, 1fr)
+            auto;
+
+        padding: 16px;
+    }
+
+
+    .results-round-footer {
+        justify-content: stretch;
+    }
+
+
+    .results-round-button {
+        width: 100%;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL PEQUEÑO
+======================================== */
+
+@media (max-width: 480px) {
+
+    .results-page-label {
+        font-size: 0.67rem;
+
+        letter-spacing: 0.16em;
+    }
+
+
+    .results-page-hero h1 {
+        font-size: 3.1rem;
+    }
+
+
+    .results-page-tabs {
+        display: grid;
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .results-round-info h2 {
+        font-size: 1.2rem;
+    }
+
+
+    .results-round-driver {
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            auto;
+
+        gap: 10px;
+    }
+
+
+    .results-round-position {
+        font-size: 1rem;
+    }
+
+
+    .results-round-driver-info strong {
+        font-size: 0.82rem;
+    }
+
+
+    .results-round-points {
+        font-size: 0.72rem;
+    }
+
+}
