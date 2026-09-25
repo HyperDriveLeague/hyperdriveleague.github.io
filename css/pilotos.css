@@ -1,0 +1,1509 @@
+/* ========================================
+   HYPERDRIVE LEAGUE
+   PILOTOS
+======================================== */
+
+
+/* ========================================
+   PÁGINA
+======================================== */
+
+.drivers-page {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(255, 213, 0, 0.055),
+            transparent 30%
+        ),
+        #080808;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.drivers-hero {
+    position: relative;
+
+    overflow: hidden;
+
+    padding:
+        110px
+        40px
+        72px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    background:
+        linear-gradient(
+            135deg,
+            #111111 0%,
+            #080808 62%,
+            #151200 100%
+        );
+}
+
+
+.drivers-hero::before {
+    content: "DRIVERS";
+
+    position: absolute;
+
+    right: -30px;
+    bottom: -38px;
+
+    color:
+        rgba(255, 255, 255, 0.018);
+
+    font-size:
+        clamp(
+            110px,
+            17vw,
+            260px
+        );
+
+    font-weight: 900;
+
+    letter-spacing: -0.07em;
+
+    line-height: 0.8;
+
+    pointer-events: none;
+}
+
+
+.drivers-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 460px;
+    height: 460px;
+
+    right: -170px;
+    top: -180px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 213, 0, 0.07);
+
+    filter: blur(10px);
+
+    pointer-events: none;
+}
+
+
+.drivers-hero-content {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    max-width: 1280px;
+
+    margin:
+        0
+        auto;
+}
+
+
+.drivers-hero-label {
+    display: inline-block;
+
+    margin-bottom: 18px;
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 12px;
+    font-weight: 900;
+
+    letter-spacing: 0.16em;
+}
+
+
+.drivers-hero h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            52px,
+            8vw,
+            100px
+        );
+
+    line-height: 0.92;
+
+    font-weight: 900;
+
+    letter-spacing: -0.055em;
+}
+
+
+.drivers-hero p {
+    max-width: 680px;
+
+    margin:
+        28px
+        0
+        0;
+
+    color:
+        rgba(255, 255, 255, 0.65);
+
+    font-size: 17px;
+
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.drivers-content {
+    width: 100%;
+    max-width: 1280px;
+
+    margin:
+        0
+        auto;
+
+    padding:
+        58px
+        40px
+        110px;
+}
+
+
+/* ========================================
+   SELECTOR DE DIVISIÓN
+======================================== */
+
+.drivers-division-selector {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 54px;
+}
+
+
+.drivers-division-button {
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+    justify-content: center;
+
+    min-height: 94px;
+
+    padding:
+        20px
+        24px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.09);
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111111,
+            #0c0c0c
+        );
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.drivers-division-button:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(255, 213, 0, 0.28);
+}
+
+
+.drivers-division-button::after {
+    content: "";
+
+    position: absolute;
+
+    right: -70px;
+    top: -70px;
+
+    width: 170px;
+    height: 170px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 213, 0, 0.055);
+
+    opacity: 0;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+
+.drivers-division-button.active {
+    border-color:
+        rgba(255, 213, 0, 0.45);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 213, 0, 0.09),
+            #12110c 35%,
+            #0c0c0c
+        );
+
+    box-shadow:
+        0
+        18px
+        48px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.drivers-division-button.active::after {
+    opacity: 1;
+}
+
+
+.drivers-division-small {
+    position: relative;
+    z-index: 2;
+
+    margin-bottom: 7px;
+
+    color:
+        rgba(255, 255, 255, 0.38);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.14em;
+}
+
+
+.drivers-division-button strong {
+    position: relative;
+    z-index: 2;
+
+    font-size:
+        clamp(
+            20px,
+            2vw,
+            28px
+        );
+
+    font-weight: 900;
+
+    letter-spacing: -0.025em;
+}
+
+
+.drivers-division-button.active strong {
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+/* ========================================
+   CABECERA DE SECCIÓN
+======================================== */
+
+.drivers-section-heading {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap: 30px;
+
+    margin-bottom: 28px;
+}
+
+
+.drivers-section-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 0.14em;
+}
+
+
+.drivers-section-heading h2 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            34px,
+            4vw,
+            54px
+        );
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -0.045em;
+}
+
+
+.drivers-heading-info {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 7px;
+
+    color:
+        rgba(255, 255, 255, 0.42);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.09em;
+}
+
+
+/* ========================================
+   INFO POWER RANKING
+======================================== */
+
+.power-ranking-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 34px;
+
+    padding:
+        17px
+        20px;
+
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.14);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 213, 0, 0.04),
+            rgba(255, 255, 255, 0.015)
+        );
+}
+
+
+.power-ranking-info-number {
+    display: flex;
+
+    flex: 0 0 48px;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.4);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 213, 0, 0.08);
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 17px;
+    font-weight: 900;
+}
+
+
+.power-ranking-info strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+}
+
+
+.power-ranking-info p {
+    margin: 0;
+
+    max-width: 850px;
+
+    color:
+        rgba(255, 255, 255, 0.48);
+
+    font-size: 12px;
+
+    line-height: 1.55;
+}
+
+
+/* ========================================
+   GRID
+======================================== */
+
+.drivers-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+.drivers-loading {
+    grid-column:
+        1 / -1;
+
+    padding:
+        80px
+        30px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 14px;
+
+    background:
+        #101010;
+
+    color:
+        rgba(255, 255, 255, 0.42);
+
+    text-align: center;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+}
+
+
+/* ========================================
+   CONTENEDOR DE TARJETA
+======================================== */
+
+.driver-card {
+    position: relative;
+
+    min-height: 455px;
+
+    perspective: 1400px;
+
+    cursor: pointer;
+}
+
+
+.driver-card-inner {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 455px;
+
+    transform-style:
+        preserve-3d;
+
+    transition:
+        transform 0.65s
+        cubic-bezier(
+            0.2,
+            0.7,
+            0.2,
+            1
+        );
+}
+
+
+.driver-card.flipped
+.driver-card-inner {
+    transform:
+        rotateY(180deg);
+}
+
+
+/* ========================================
+   CARAS
+======================================== */
+
+.driver-card-front,
+.driver-card-back {
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 18px;
+
+    backface-visibility:
+        hidden;
+
+    -webkit-backface-visibility:
+        hidden;
+
+    box-shadow:
+        0
+        24px
+        60px
+        rgba(0, 0, 0, 0.34);
+}
+
+
+/* ========================================
+   CARA DELANTERA
+======================================== */
+
+.driver-card-front {
+    display: flex;
+
+    flex-direction: column;
+
+    background:
+        linear-gradient(
+            180deg,
+            #171717 0%,
+            #101010 45%,
+            #090909 100%
+        );
+}
+
+
+.driver-card-front::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 4px;
+
+    background:
+        var(
+            --team-color,
+            #ffd500
+        );
+
+    z-index: 4;
+}
+
+
+.driver-card-front::after {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    right: -90px;
+    top: -70px;
+
+    border-radius: 50%;
+
+    background:
+        var(
+            --team-color,
+            #ffd500
+        );
+
+    opacity: 0.08;
+
+    filter: blur(5px);
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   CABECERA TARJETA
+======================================== */
+
+.driver-card-top {
+    position: absolute;
+
+    z-index: 5;
+
+    left: 18px;
+    right: 18px;
+    top: 18px;
+
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+/* POWER RANKING */
+
+.driver-power {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.driver-power-label {
+    color:
+        rgba(255, 255, 255, 0.44);
+
+    font-size: 7px;
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+}
+
+
+.driver-power-value {
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 30px;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+.driver-power-value::after {
+    content: " PR";
+
+    margin-left: 3px;
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* DORSAL */
+
+.driver-number {
+    color:
+        rgba(255, 255, 255, 0.94);
+
+    font-size: 35px;
+    font-weight: 900;
+
+    line-height: 0.9;
+
+    letter-spacing: -0.055em;
+
+    text-shadow:
+        0
+        8px
+        30px
+        rgba(0, 0, 0, 0.45);
+}
+
+
+/* ========================================
+   FOTO
+======================================== */
+
+.driver-photo-wrap {
+    position: relative;
+
+    flex: 1;
+
+    min-height: 300px;
+
+    overflow: hidden;
+}
+
+
+.driver-photo-wrap::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 48%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent,
+            rgba(9, 9, 9, 0.35),
+            #090909 96%
+        );
+
+    pointer-events: none;
+}
+
+
+.driver-photo {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    object-position:
+        center
+        top;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+.driver-card:hover
+.driver-photo {
+    transform:
+        scale(1.035);
+}
+
+
+/* ========================================
+   FOTO FALLBACK
+======================================== */
+
+.driver-photo-fallback {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(255, 255, 255, 0.07),
+            transparent 28%
+        ),
+        linear-gradient(
+            180deg,
+            #191919,
+            #0d0d0d
+        );
+
+    color:
+        rgba(255, 255, 255, 0.08);
+
+    font-size: 110px;
+    font-weight: 900;
+}
+
+
+/* ========================================
+   INFORMACIÓN DELANTERA
+======================================== */
+
+.driver-card-info {
+    position: relative;
+
+    z-index: 3;
+
+    padding:
+        0
+        20px
+        20px;
+
+    margin-top: -40px;
+}
+
+
+.driver-name {
+    margin: 0;
+
+    font-size:
+        clamp(
+            22px,
+            2vw,
+            28px
+        );
+
+    line-height: 0.95;
+
+    font-weight: 900;
+
+    letter-spacing: -0.035em;
+
+    text-transform: uppercase;
+}
+
+
+.driver-team {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 9px;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 0.07em;
+
+    text-transform: uppercase;
+}
+
+
+.driver-team::before {
+    content: "";
+
+    width: 18px;
+    height: 3px;
+
+    border-radius: 10px;
+
+    background:
+        var(
+            --team-color,
+            #ffd500
+        );
+}
+
+
+.driver-region {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 7px;
+
+    color:
+        rgba(255, 255, 255, 0.46);
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+
+.driver-region::before {
+    content: "●";
+
+    color:
+        var(
+            --team-color,
+            #ffd500
+        );
+
+    font-size: 6px;
+}
+
+
+/* ========================================
+   INDICADOR GIRAR
+======================================== */
+
+.driver-flip-hint {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+
+    color:
+        rgba(255, 255, 255, 0.34);
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+}
+
+
+.driver-flip-hint span:last-child {
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 17px;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   CARA TRASERA
+======================================== */
+
+.driver-card-back {
+    display: flex;
+
+    flex-direction: column;
+
+    padding:
+        22px;
+
+    transform:
+        rotateY(180deg);
+
+    background:
+        linear-gradient(
+            145deg,
+            #151515,
+            #0c0c0c
+        );
+}
+
+
+.driver-card-back::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 4px;
+
+    background:
+        var(
+            --team-color,
+            #ffd500
+        );
+}
+
+
+/* ========================================
+   CABECERA TRASERA
+======================================== */
+
+.driver-back-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin-bottom: 21px;
+}
+
+
+.driver-back-name {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 900;
+
+    line-height: 1;
+
+    letter-spacing: -0.03em;
+
+    text-transform: uppercase;
+}
+
+
+.driver-back-team {
+    display: block;
+
+    margin-top: 6px;
+
+    color:
+        var(
+            --team-color,
+            #ffd500
+        );
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.09em;
+
+    text-transform: uppercase;
+}
+
+
+.driver-back-number {
+    color:
+        rgba(255, 255, 255, 0.23);
+
+    font-size: 28px;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   ESTADÍSTICAS
+======================================== */
+
+.driver-stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 9px;
+
+    flex: 1;
+}
+
+
+.driver-stat {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    min-height: 59px;
+
+    padding:
+        11px
+        12px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.065);
+
+    border-radius: 8px;
+
+    background:
+        rgba(255, 255, 255, 0.022);
+}
+
+
+.driver-stat.highlight {
+    border-color:
+        rgba(255, 213, 0, 0.18);
+
+    background:
+        rgba(255, 213, 0, 0.045);
+}
+
+
+.driver-stat-label {
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.38);
+
+    font-size: 7px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+
+    text-transform: uppercase;
+}
+
+
+.driver-stat-value {
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+.driver-stat.highlight
+.driver-stat-value {
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+/* ========================================
+   VOLVER
+======================================== */
+
+.driver-back-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin-top: 16px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+}
+
+
+.driver-back-footer strong {
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 17px;
+}
+
+
+/* ========================================
+   EFECTO HOVER TARJETA
+======================================== */
+
+.driver-card:hover
+.driver-card-front,
+.driver-card:hover
+.driver-card-back {
+    border-color:
+        color-mix(
+            in srgb,
+            var(
+                --team-color,
+                #ffd500
+            )
+            40%,
+            rgba(255, 255, 255, 0.08)
+        );
+}
+
+
+/* ========================================
+   AYUDA
+======================================== */
+
+.drivers-help {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-top: 36px;
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    text-align: center;
+}
+
+
+.drivers-help-icon {
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 18px;
+    font-weight: 900;
+}
+
+
+.drivers-help p {
+    margin: 0;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.045em;
+
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media
+(max-width: 1100px) {
+
+    .drivers-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ========================================
+   TABLET PEQUEÑA
+======================================== */
+
+@media
+(max-width: 850px) {
+
+    .drivers-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .drivers-section-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .drivers-heading-info {
+        align-items: flex-start;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL
+======================================== */
+
+@media
+(max-width: 600px) {
+
+    .drivers-hero {
+        padding:
+            88px
+            20px
+            52px;
+    }
+
+
+    .drivers-hero p {
+        font-size: 14px;
+    }
+
+
+    .drivers-content {
+        padding:
+            42px
+            16px
+            80px;
+    }
+
+
+    .drivers-division-selector {
+        gap: 8px;
+
+        margin-bottom: 40px;
+    }
+
+
+    .drivers-division-button {
+        min-height: 78px;
+
+        padding:
+            16px
+            14px;
+    }
+
+
+    .drivers-division-small {
+        font-size: 7px;
+    }
+
+
+    .drivers-division-button strong {
+        font-size: 17px;
+    }
+
+
+    .power-ranking-info {
+        align-items: flex-start;
+
+        padding:
+            15px;
+    }
+
+
+    .power-ranking-info-number {
+        flex-basis: 42px;
+
+        width: 42px;
+        height: 42px;
+
+        font-size: 14px;
+    }
+
+
+    .drivers-grid {
+        grid-template-columns:
+            1fr;
+
+        gap: 18px;
+    }
+
+
+    .driver-card,
+    .driver-card-inner {
+        min-height: 520px;
+    }
+
+
+    .driver-photo-wrap {
+        min-height: 350px;
+    }
+
+
+    .driver-card-info {
+        margin-top: -54px;
+
+        padding:
+            0
+            22px
+            22px;
+    }
+
+
+    .driver-name {
+        font-size: 29px;
+    }
+
+
+    .driver-card-back {
+        padding:
+            24px;
+    }
+
+
+    .driver-stat {
+        min-height: 66px;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL PEQUEÑO
+======================================== */
+
+@media
+(max-width: 390px) {
+
+    .drivers-division-selector {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .drivers-division-button {
+        min-height: 70px;
+    }
+
+
+    .driver-card,
+    .driver-card-inner {
+        min-height: 490px;
+    }
+
+
+    .driver-photo-wrap {
+        min-height: 325px;
+    }
+
+
+    .driver-stats-grid {
+        gap: 7px;
+    }
+
+
+    .driver-card-back {
+        padding:
+            20px;
+    }
+
+}
