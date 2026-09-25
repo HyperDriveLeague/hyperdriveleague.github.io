@@ -33,6 +33,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // FOTO DEL PILOTO
+    // ========================================
+
+    function getDriverImage(driverName) {
+
+        const filename = String(driverName ?? "")
+            .trim()
+            .toLowerCase();
+
+        return `images/drivers/${encodeURIComponent(filename)}.png`;
+
+    }
+
+
+    // ========================================
     // MOSTRAR CLASIFICACIÓN
     // ========================================
 
@@ -64,6 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         standingsList.innerHTML = topDrivers.map(driver => {
 
+            const driverImage = getDriverImage(driver.driverName);
+
             return `
                 <div class="standings-row">
 
@@ -72,7 +89,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     </span>
 
                     <span class="standings-driver">
-                        ${escapeHTML(driver.driverName)}
+
+                        <span class="driver-photo-wrapper">
+
+                            <img
+                                class="driver-photo"
+                                src="${driverImage}"
+                                alt="${escapeHTML(driver.driverName)}"
+                                width="58"
+                                height="58"
+                                loading="lazy"
+                                onerror="this.style.display='none'"
+                            >
+
+                        </span>
+
+                        <span class="driver-name">
+                            ${escapeHTML(driver.driverName)}
+                        </span>
+
                     </span>
 
                     <span class="standings-team">
@@ -99,12 +134,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const response = await fetch(
-                file,
-                {
-                    cache: "no-store"
-                }
-            );
+            const response = await fetch(file, {
+                cache: "no-store"
+            });
 
 
             if (!response.ok) {
@@ -117,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             const data = await response.json();
-
 
             const drivers =
                 data?.seasonStatistics?.driverStandings;
@@ -175,9 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tab.classList.add("active");
 
-
             const division = tab.dataset.division;
-
 
             renderStandings(division);
 
