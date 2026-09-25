@@ -1,1 +1,203 @@
-/* HyperDrive League - Estilos principales */
+/* ========================================
+   HYPERDRIVE LEAGUE
+   Estilos principales
+======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --yellow: #ffd500;
+    --black: #08090b;
+    --dark: #0e1013;
+    --dark-light: #17191e;
+    --white: #ffffff;
+    --grey: #9b9da3;
+}
+
+body {
+    margin: 0;
+    background: var(--black);
+    color: var(--white);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ========================================
+   CABECERA
+======================================== */
+
+.main-header {
+    width: 100%;
+    height: 82px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 42px;
+
+    background: rgba(8, 9, 11, 0.97);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+
+/* LOGO */
+
+.logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 45px;
+}
+
+.logo img {
+    display: block;
+    width: 115px;
+    height: auto;
+}
+
+
+/* NAVEGACIÓN */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    flex: 1;
+}
+
+.main-nav a,
+.more-menu {
+    color: var(--white);
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+
+    transition: color 0.2s ease;
+}
+
+.main-nav a:hover,
+.more-menu:hover {
+    color: var(--yellow);
+}
+
+.main-nav a:first-child {
+    color: var(--yellow);
+}
+
+.more-menu {
+    cursor: pointer;
+}
+
+
+/* BOTÓN DISCORD */
+
+.discord-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+    padding: 0 21px;
+
+    background: var(--yellow);
+    color: #000000;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+
+    border-radius: 3px;
+
+    white-space: nowrap;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.discord-button:hover {
+    background: #ffe13b;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   CONTENIDO PROVISIONAL
+======================================== */
+
+.temporary-content {
+    min-height: calc(100vh - 82px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 0 7%;
+
+    background:
+        radial-gradient(
+            circle at 80% 40%,
+            rgba(255, 213, 0, 0.08),
+            transparent 35%
+        ),
+        var(--black);
+}
+
+.temporary-content h1 {
+    font-size: clamp(55px, 9vw, 130px);
+    line-height: 0.9;
+    letter-spacing: -4px;
+}
+
+.temporary-content p {
+    margin-top: 20px;
+
+    color: var(--yellow);
+
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 4px;
+
+    text-transform: uppercase;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+
+    .main-header {
+        padding: 0 25px;
+    }
+
+    .main-nav {
+        gap: 16px;
+    }
+
+    .main-nav a {
+        font-size: 11px;
+    }
+
+    .logo {
+        margin-right: 25px;
+    }
+
+    .logo img {
+        width: 100px;
+    }
+}
