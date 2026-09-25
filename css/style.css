@@ -2550,6 +2550,181 @@ body {
     line-height: 1.6;
 }
 
+/* ========================================
+   FOOTER
+======================================== */
+
+.site-footer {
+    position: relative;
+
+    padding: 72px 6% 0;
+
+    background:
+        radial-gradient(
+            circle at 88% 0%,
+            rgba(255, 213, 0, 0.045),
+            transparent 26%
+        ),
+        #07080a;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.site-footer::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 6%;
+
+    width: 88%;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(255, 213, 0, 0.95),
+        rgba(255, 213, 0, 0.10) 38%,
+        rgba(255, 213, 0, 0)
+    );
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: minmax(260px, 1.15fr) 2fr;
+    gap: 90px;
+
+    padding-bottom: 58px;
+}
+
+
+/* MARCA */
+
+.footer-brand {
+    max-width: 330px;
+}
+
+.footer-brand img {
+    display: block;
+
+    width: 150px;
+    height: auto;
+
+    margin-bottom: 23px;
+}
+
+.footer-brand p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.46);
+
+    font-size: 0.88rem;
+    line-height: 1.75;
+}
+
+
+/* ENLACES */
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(130px, 1fr));
+    gap: 45px;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer-column > span {
+    display: block;
+
+    margin-bottom: 20px;
+
+    color: var(--yellow);
+
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+}
+
+.footer-column a {
+    position: relative;
+
+    display: inline-block;
+
+    margin-bottom: 13px;
+
+    color: rgba(255, 255, 255, 0.62);
+    text-decoration: none;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.footer-column a:last-child {
+    margin-bottom: 0;
+}
+
+.footer-column a:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.footer-column a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+
+    width: 0;
+    height: 1px;
+
+    background: var(--yellow);
+
+    transition: width 0.2s ease;
+}
+
+.footer-column a:hover::after {
+    width: 100%;
+}
+
+
+/* FRANJA INFERIOR */
+
+.footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    min-height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+    color: rgba(255, 255, 255, 0.28);
+
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.footer-bottom span:last-child {
+    color: rgba(255, 213, 0, 0.62);
+}
+
+
 @media (max-width: 1200px) {
 
     .main-header {
