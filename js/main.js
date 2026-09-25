@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const standingsTabs =
         document.querySelectorAll(".standings-tab");
 
-
     const resultsList =
         document.getElementById("latest-results-list");
 
@@ -24,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const resultsTabs =
         document.querySelectorAll(".results-tab");
-
 
     const newsGrid =
         document.getElementById("news-grid");
@@ -55,6 +53,25 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
+
+    }
+
+
+    // ========================================
+    // CREAR SLUG DE NOTICIA
+    // ========================================
+
+    function createSlug(article) {
+
+        const raw =
+            `${article.date || ""}-${article.title || ""}`;
+
+        return raw
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
 
     }
 
@@ -372,8 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // IMPORTANTE:
-        // Respeta exactamente el orden establecido en Pages CMS.
+        // Respeta exactamente el orden de Pages CMS
         const latestNews = news.slice(0, 3);
 
 
@@ -385,6 +401,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const imagePath =
                 String(article.image ?? "").trim();
+
+
+            const slug =
+                createSlug(article);
+
+
+            const articleURL =
+                `noticia.html?slug=${encodeURIComponent(slug)}`;
 
 
             const imageBlock = imagePath
@@ -416,7 +440,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             return `
-                <article class="news-card${mainClass}">
+                <a
+                    class="news-card${mainClass}"
+                    href="${articleURL}"
+                    style="text-decoration: none; color: inherit;"
+                >
 
                     ${imageBlock}
 
@@ -436,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </div>
 
-                </article>
+                </a>
             `;
 
         }).join("");
