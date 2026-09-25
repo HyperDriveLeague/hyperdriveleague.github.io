@@ -372,18 +372,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const sortedNews = [...news].sort((a, b) => {
-
-            if (a.featured !== b.featured) {
-                return Number(b.featured) - Number(a.featured);
-            }
-
-            return new Date(b.date) - new Date(a.date);
-
-        });
-
-
-        const latestNews = sortedNews.slice(0, 3);
+        // IMPORTANTE:
+        // Respeta exactamente el orden establecido en Pages CMS.
+        const latestNews = news.slice(0, 3);
 
 
         newsGrid.innerHTML = latestNews.map((article, index) => {
