@@ -2333,6 +2333,223 @@ body {
     letter-spacing: -0.07em;
 }
 
+
+
+/* ========================================
+   INSCRIPCIONES / DISCORD
+======================================== */
+
+.join-section {
+    position: relative;
+    padding: 110px 6%;
+
+    background:
+        radial-gradient(
+            circle at 18% 15%,
+            rgba(255, 213, 0, 0.10),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #0a0b0d,
+            #101216 60%,
+            #0a0b0d
+        );
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+}
+
+.join-section::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 6%;
+
+    width: 88%;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        var(--yellow),
+        rgba(255, 213, 0, 0)
+    );
+}
+
+.join-container {
+    position: relative;
+    z-index: 2;
+
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 70px;
+    align-items: center;
+}
+
+
+/* BLOQUE PRINCIPAL */
+
+.join-main {
+    max-width: 650px;
+}
+
+.join-label {
+    display: block;
+    margin-bottom: 12px;
+
+    color: var(--yellow);
+
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.join-main h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(3.2rem, 7vw, 6.2rem);
+    font-weight: 900;
+
+    line-height: 0.88;
+    letter-spacing: -0.065em;
+}
+
+.join-main h2 span {
+    color: var(--yellow);
+}
+
+.join-main > p {
+    max-width: 590px;
+    margin: 28px 0 0;
+
+    color: rgba(255, 255, 255, 0.56);
+
+    font-size: 0.98rem;
+    line-height: 1.8;
+}
+
+.join-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+    margin-top: 32px;
+    padding: 0 27px;
+
+    background: var(--yellow);
+    color: #090a0c;
+
+    border-radius: 4px;
+
+    text-decoration: none;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.join-button:hover {
+    transform: translateY(-2px);
+    background: #ffe13b;
+    box-shadow: 0 14px 34px rgba(255, 213, 0, 0.14);
+}
+
+
+/* PASOS */
+
+.join-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.join-step {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    align-items: center;
+    gap: 20px;
+
+    min-height: 120px;
+    padding: 22px 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.045),
+            rgba(255, 255, 255, 0.015)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+
+    transition:
+        transform 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease;
+}
+
+.join-step:hover {
+    transform: translateX(5px);
+    border-color: rgba(255, 213, 0, 0.26);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 213, 0, 0.055),
+            rgba(255, 255, 255, 0.018)
+        );
+}
+
+.join-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 58px;
+    height: 58px;
+
+    background: rgba(255, 213, 0, 0.08);
+    color: var(--yellow);
+
+    border: 1px solid rgba(255, 213, 0, 0.20);
+    border-radius: 12px;
+
+    font-size: 1.05rem;
+    font-weight: 900;
+}
+
+.join-step h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+}
+
+.join-step p {
+    margin: 8px 0 0;
+
+    color: rgba(255, 255, 255, 0.48);
+
+    font-size: 0.80rem;
+    line-height: 1.6;
+}
+
 @media (max-width: 1200px) {
 
     .main-header {
