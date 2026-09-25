@@ -1,20 +1,20 @@
 {
   "news": [
     {
-      "id": "noticia-1",
-      "title": "Próximamente",
-      "category": "HYPERDRIVE",
+      "id": "ronda-4-silverstone",
+      "title": "Silverstone recibe la Ronda 4 de la Season 8",
+      "category": "CAMPEONATO",
       "date": "2026-09-25",
-      "summary": "Las últimas noticias, anuncios y novedades de HyperDrive aparecerán aquí.",
-      "image": "",
+      "summary": "HyperDrive llega a Silverstone para la cuarta ronda de la temporada. Academy competirá el miércoles 30 de septiembre y HyperDrive el jueves 1 de octubre, con formato Sprint.",
+      "image": "images/news/silverstone.jpg",
       "featured": true
     },
     {
       "id": "noticia-2",
       "title": "Próximamente",
-      "category": "CAMPEONATO",
-      "date": "2026-09-25",
-      "summary": "Información sobre carreras, pilotos, equipos y mercado.",
+      "category": "HYPERDRIVE",
+      "date": "2026-09-24",
+      "summary": "Las últimas noticias, anuncios y novedades de HyperDrive aparecerán aquí.",
       "image": "",
       "featured": false
     },
@@ -22,7 +22,7 @@
       "id": "noticia-3",
       "title": "Próximamente",
       "category": "ACADEMY",
-      "date": "2026-09-25",
+      "date": "2026-09-23",
       "summary": "Toda la actualidad de la división Academy.",
       "image": "",
       "featured": false
