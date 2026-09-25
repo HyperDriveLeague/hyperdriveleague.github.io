@@ -5,6 +5,19 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
+
+    // ========================================
+    // CONFIGURACIÓN
+    // ========================================
+
+    const TOTAL_ROUNDS = 12;
+
+    const DIVISIONS = [
+        "hyperdrive",
+        "academy"
+    ];
+
+
     // ========================================
     // ELEMENTOS
     // ========================================
@@ -23,22 +36,43 @@ document.addEventListener("DOMContentLoaded", () => {
     // DATOS
     // ========================================
 
-    const championshipData = {
+    const raceFiles = {
 
-        hyperdrive: {
-            drivers: [],
-            teams: []
-        },
+        hyperdrive: [],
 
-        academy: {
-            drivers: [],
-            teams: []
-        }
+        academy: []
 
     };
 
 
-    let activeChampionship = "hyperdrive";
+    const officialDrivers = {
+
+        hyperdrive: new Map(),
+
+        academy: new Map()
+
+    };
+
+
+    const championshipData = {
+
+        hyperdrive: {
+            drivers: [],
+            constructors: []
+        },
+
+        academy: {
+            drivers: [],
+            constructors: []
+        },
+
+        superconstructors: []
+
+    };
+
+
+    let activeChampionship =
+        "hyperdrive";
 
 
     // ========================================
@@ -58,7 +92,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // FOTO DEL PILOTO
+    // NORMALIZAR NOMBRES
+    // ========================================
+
+    function normalizeKey(value) {
+
+        return String(value ?? "")
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, "");
+
+    }
+
+
+    // ========================================
+    // FOTO PILOTO
     // ========================================
 
     function getDriverImage(driverName) {
@@ -74,15 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // POSICIÓN
+    // PUNTOS
     // ========================================
 
-    function formatPosition(position) {
+    function toPoints(value) {
 
-        const number = Number(position);
+        const number =
+            Number(value);
 
-        if (!number || number < 1) {
-            return "—";
+        if (!Number.isFinite(number)) {
+            return 0;
         }
 
         return number;
@@ -90,301 +141,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // ========================================
-    // CABECERA PILOTOS
-    // ========================================
+    function formatPoints(value) {
 
-    function setDriverHeader() {
+        const number =
+            Number(value);
 
-        if (!championshipTableHeader) {
-            return;
+        if (!Number.isFinite(number)) {
+            return "0";
         }
 
-        championshipTableHeader.innerHTML = `
-            <span>POS</span>
-            <span>PILOTO</span>
-            <span>EQUIPO</span>
-            <span>PUNTOS</span>
-        `;
 
-    }
-
-
-    // ========================================
-    // CABECERA CONSTRUCTORES
-    // ========================================
-
-    function setConstructorsHeader() {
-
-        if (!championshipTableHeader) {
-            return;
+        if (Number.isInteger(number)) {
+            return String(number);
         }
 
-        championshipTableHeader.innerHTML = `
-            <span>POS</span>
-            <span>ESCUDERÍA</span>
-            <span>PILOTOS</span>
-            <span>PUNTOS</span>
-        `;
 
-    }
-
-
-    // ========================================
-    // ORDENAR PILOTOS
-    // ========================================
-
-    function sortDrivers(drivers) {
-
-        return [...drivers].sort((a, b) => {
-
-            const positionA =
-                Number(a.position ?? 0);
-
-            const positionB =
-                Number(b.position ?? 0);
-
-
-            if (positionA === 0 && positionB === 0) {
-
-                return String(a.driverName)
-                    .localeCompare(
-                        String(b.driverName),
-                        "es"
-                    );
-
+        return new Intl.NumberFormat(
+            "es-ES",
+            {
+                maximumFractionDigits: 2
             }
-
-
-            if (positionA === 0) {
-                return 1;
-            }
-
-
-            if (positionB === 0) {
-                return -1;
-            }
-
-
-            return positionA - positionB;
-
-        });
-
-    }
-
-
-    // ========================================
-    // MOSTRAR PILOTOS
-    // ========================================
-
-    function renderDrivers(division) {
-
-        if (!championshipList) {
-            return;
-        }
-
-
-        setDriverHeader();
-
-
-        const drivers =
-            championshipData[division]?.drivers ?? [];
-
-
-        if (!Array.isArray(drivers) || drivers.length === 0) {
-
-            championshipList.innerHTML = `
-                <div class="championship-loading">
-                    NO HAY DATOS DISPONIBLES
-                </div>
-            `;
-
-            return;
-        }
-
-
-        const sortedDrivers =
-            sortDrivers(drivers);
-
-
-        championshipList.innerHTML =
-            sortedDrivers.map(driver => {
-
-                const driverImage =
-                    getDriverImage(
-                        driver.driverName
-                    );
-
-
-                return `
-                    <div class="championship-row">
-
-                        <span class="championship-position">
-                            ${escapeHTML(
-                                formatPosition(
-                                    driver.position
-                                )
-                            )}
-                        </span>
-
-
-                        <div class="championship-driver">
-
-                            <div class="championship-driver-photo">
-
-                                <img
-                                    src="${driverImage}"
-                                    alt="${escapeHTML(driver.driverName)}"
-                                    loading="lazy"
-                                    onerror="this.style.display='none'"
-                                >
-
-                            </div>
-
-
-                            <span>
-                                ${escapeHTML(driver.driverName)}
-                            </span>
-
-                        </div>
-
-
-                        <span class="championship-team">
-                            ${escapeHTML(
-                                driver.teamName || "SIN EQUIPO"
-                            )}
-                        </span>
-
-
-                        <span class="championship-points">
-                            ${escapeHTML(driver.points || "0")}
-                        </span>
-
-                    </div>
-                `;
-
-            }).join("");
-
-    }
-
-
-    // ========================================
-    // CONSTRUIR CLASIFICACIÓN CONSTRUCTORES
-    // ========================================
-
-    function buildConstructorsStandings() {
-
-        const teams = new Map();
-
-
-        const divisions = [
-            "hyperdrive",
-            "academy"
-        ];
-
-
-        divisions.forEach(division => {
-
-            const divisionTeams =
-                championshipData[division]?.teams ?? [];
-
-
-            divisionTeams.forEach(team => {
-
-                const teamName =
-                    String(team.teamName ?? "")
-                        .trim();
-
-
-                if (!teamName) {
-                    return;
-                }
-
-
-                const key =
-                    teamName.toLowerCase();
-
-
-                if (!teams.has(key)) {
-
-                    teams.set(key, {
-
-                        teamName: teamName,
-
-                        points: 0,
-
-                        driverNames: new Set(),
-
-                        teamInfo:
-                            team.teamInfo ?? null
-
-                    });
-
-                }
-
-
-                const combinedTeam =
-                    teams.get(key);
-
-
-                combinedTeam.points +=
-                    Number(team.points ?? 0);
-
-
-                const drivers =
-                    Array.isArray(team.driverNames)
-                        ? team.driverNames
-                        : [];
-
-
-                drivers.forEach(driverName => {
-
-                    if (driverName) {
-
-                        combinedTeam.driverNames.add(
-                            driverName
-                        );
-
-                    }
-
-                });
-
-            });
-
-        });
-
-
-        return Array.from(
-            teams.values()
-        )
-            .sort((a, b) => {
-
-                if (b.points !== a.points) {
-                    return b.points - a.points;
-                }
-
-                return a.teamName.localeCompare(
-                    b.teamName,
-                    "es"
-                );
-
-            })
-            .map((team, index) => {
-
-                return {
-
-                    ...team,
-
-                    position: index + 1,
-
-                    driverNames:
-                        Array.from(
-                            team.driverNames
-                        )
-
-                };
-
-            });
+        ).format(number);
 
     }
 
@@ -393,10 +170,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // COLOR ESCUDERÍA
     // ========================================
 
-    function getTeamColor(team) {
+    function getTeamColor(teamInfo) {
 
         const color =
-            team?.teamInfo?.primaryColor;
+            teamInfo?.primaryColor;
 
 
         if (!color) {
@@ -405,10 +182,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-            Racing League Tools puede devolver
-            colores ARGB:
+            Racing League Tools puede usar:
 
             #FFFF8000
+
+            AARRGGBB
 
             CSS necesita:
 
@@ -441,10 +219,1268 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // CABECERA PILOTOS
+    // ========================================
+
+    function setDriverHeader() {
+
+        if (!championshipTableHeader) {
+            return;
+        }
+
+
+        championshipTableHeader.innerHTML = `
+            <span>POS</span>
+            <span>PILOTO</span>
+            <span>EQUIPO</span>
+            <span>PUNTOS</span>
+        `;
+
+    }
+
+
+    // ========================================
+    // CABECERA CONSTRUCTORES
+    // ========================================
+
+    function setConstructorsHeader() {
+
+        if (!championshipTableHeader) {
+            return;
+        }
+
+
+        championshipTableHeader.innerHTML = `
+            <span>POS</span>
+            <span>ESCUDERÍA</span>
+            <span>PILOTOS</span>
+            <span>PUNTOS</span>
+        `;
+
+    }
+
+
+    // ========================================
+    // CABECERA SUPERCONSTRUCTORES
+    // ========================================
+
+    function setSuperconstructorsHeader() {
+
+        if (!championshipTableHeader) {
+            return;
+        }
+
+
+        championshipTableHeader.innerHTML = `
+            <span>POS</span>
+            <span>ESCUDERÍA</span>
+            <span>HYPERDRIVE · ACADEMY</span>
+            <span>PUNTOS</span>
+        `;
+
+    }
+
+
+    // ========================================
+    // ARCHIVO JSON OPCIONAL
+    // ========================================
+
+    async function fetchOptionalJSON(path) {
+
+        try {
+
+            const response =
+                await fetch(
+                    path,
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (response.status === 404) {
+                return null;
+            }
+
+
+            if (!response.ok) {
+
+                console.warn(
+                    `No se pudo cargar ${path}. Código ${response.status}`
+                );
+
+                return null;
+
+            }
+
+
+            return await response.json();
+
+
+        } catch (error) {
+
+            console.warn(
+                `No se pudo cargar ${path}`,
+                error
+            );
+
+            return null;
+
+        }
+
+    }
+
+
+    // ========================================
+    // PILOTOS OFICIALES
+    // ========================================
+
+    function parseOfficialDriver(
+        division,
+        driver
+    ) {
+
+        let driverName = "";
+
+        let teamName = "";
+
+
+        if (typeof driver === "string") {
+
+            driverName =
+                driver.trim();
+
+        } else if (
+            driver &&
+            typeof driver === "object"
+        ) {
+
+            driverName =
+                String(
+                    driver.driverName ??
+                    driver.name ??
+                    ""
+                ).trim();
+
+
+            teamName =
+                String(
+                    driver.teamName ??
+                    driver.team ??
+                    ""
+                ).trim();
+
+        }
+
+
+        if (!driverName) {
+            return;
+        }
+
+
+        const key =
+            normalizeKey(driverName);
+
+
+        officialDrivers[
+            division
+        ].set(
+            key,
+            {
+                driverName:
+                    driverName,
+
+                teamName:
+                    teamName
+            }
+        );
+
+    }
+
+
+    async function loadOfficialDrivers() {
+
+        const response =
+            await fetch(
+                "data/official-drivers.json",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "No se pudo cargar data/official-drivers.json"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        DIVISIONS.forEach(
+            division => {
+
+                const list =
+                    Array.isArray(
+                        data?.[division]
+                    )
+                        ? data[division]
+                        : [];
+
+
+                list.forEach(
+                    driver => {
+
+                        parseOfficialDriver(
+                            division,
+                            driver
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    // ========================================
+    // VALIDAR SESSION
+    // ========================================
+
+    function isValidRaceFile(data) {
+
+        return Boolean(
+            data &&
+            data.session &&
+            Array.isArray(
+                data.session.drivers
+            )
+        );
+
+    }
+
+
+    // ========================================
+    // CARGAR CARRERAS
+    // ========================================
+
+    async function loadDivisionRaceFiles(
+        division
+    ) {
+
+        const loaded =
+            [];
+
+
+        /*
+            Las rondas son consecutivas.
+
+            Cuando no existe la carrera
+            principal de una ronda, dejamos
+            de buscar las siguientes.
+
+            Así evitamos decenas de errores
+            404 innecesarios.
+        */
+
+        for (
+            let round = 1;
+            round <= TOTAL_ROUNDS;
+            round++
+        ) {
+
+            const mainPath =
+                `data/${division}_r${round}.json`;
+
+
+            const mainData =
+                await fetchOptionalJSON(
+                    mainPath
+                );
+
+
+            if (!mainData) {
+
+                break;
+
+            }
+
+
+            if (
+                isValidRaceFile(
+                    mainData
+                )
+            ) {
+
+                loaded.push({
+
+                    division:
+                        division,
+
+                    round:
+                        round,
+
+                    type:
+                        "race",
+
+                    path:
+                        mainPath,
+
+                    data:
+                        mainData
+
+                });
+
+            }
+
+
+            /*
+                Sprint opcional.
+
+                Solo se carga si existe.
+                No es necesario crear ningún
+                archivo vacío en rondas normales.
+            */
+
+            const sprintPath =
+                `data/${division}_r${round}_sprint.json`;
+
+
+            const sprintData =
+                await fetchOptionalJSON(
+                    sprintPath
+                );
+
+
+            if (
+                sprintData &&
+                isValidRaceFile(
+                    sprintData
+                )
+            ) {
+
+                loaded.push({
+
+                    division:
+                        division,
+
+                    round:
+                        round,
+
+                    type:
+                        "sprint",
+
+                    path:
+                        sprintPath,
+
+                    data:
+                        sprintData
+
+                });
+
+            }
+
+        }
+
+
+        /*
+            Orden cronológico:
+
+            Sprint primero
+            Carrera principal después.
+        */
+
+        loaded.sort(
+            (a, b) => {
+
+                if (
+                    a.round !==
+                    b.round
+                ) {
+
+                    return (
+                        a.round -
+                        b.round
+                    );
+
+                }
+
+
+                if (
+                    a.type ===
+                    b.type
+                ) {
+
+                    return 0;
+
+                }
+
+
+                return (
+                    a.type ===
+                    "sprint"
+                        ? -1
+                        : 1
+                );
+
+            }
+        );
+
+
+        raceFiles[
+            division
+        ] = loaded;
+
+    }
+
+
+    // ========================================
+    // INFORMACIÓN DE UN PILOTO
+    // ========================================
+
+    function getRaceDriverInfo(
+        sessionFile,
+        driver
+    ) {
+
+        const isMainRace =
+            sessionFile.type ===
+            "race";
+
+
+        /*
+            RLT ya incluye en driverPoints
+            el punto de vuelta rápida.
+
+            NO añadimos nada por vuelta rápida.
+        */
+
+        const driverPoints =
+            toPoints(
+                driver.driverPoints
+            );
+
+
+        /*
+            Para Constructores usamos
+            teamPoints si está disponible.
+
+            Si no existe, usamos driverPoints.
+        */
+
+        const teamPoints =
+            driver.teamPoints !==
+                undefined
+                ? toPoints(
+                    driver.teamPoints
+                )
+                : driverPoints;
+
+
+        /*
+            POLE:
+
+            Solo en carrera principal.
+
+            gridPosition === 1
+            suma +1 punto.
+
+            En Sprint NUNCA se aplica.
+        */
+
+        const poleBonus =
+            (
+                isMainRace &&
+                Number(
+                    driver.gridPosition
+                ) === 1
+            )
+                ? 1
+                : 0;
+
+
+        return {
+
+            driverPoints:
+                driverPoints,
+
+            teamPoints:
+                teamPoints,
+
+            poleBonus:
+                poleBonus,
+
+            driverTotal:
+                driverPoints +
+                poleBonus,
+
+            teamTotal:
+                teamPoints +
+                poleBonus
+
+        };
+
+    }
+
+
+    // ========================================
+    // CREAR MUNDIAL DE PILOTOS
+    // ========================================
+
+    function buildDriverStandings(
+        division
+    ) {
+
+        const drivers =
+            new Map();
+
+
+        /*
+            Primero añadimos todos los
+            pilotos oficiales.
+
+            Así incluso un piloto con 0 puntos
+            puede aparecer en el campeonato.
+        */
+
+        officialDrivers[
+            division
+        ].forEach(
+            (officialDriver, key) => {
+
+                drivers.set(
+                    key,
+                    {
+
+                        driverName:
+                            officialDriver
+                                .driverName,
+
+                        teamName:
+                            officialDriver
+                                .teamName ||
+                            "SIN EQUIPO",
+
+                        points:
+                            0,
+
+                        lastRound:
+                            0,
+
+                        lastSessionOrder:
+                            0
+
+                    }
+                );
+
+            }
+        );
+
+
+        const sessions =
+            raceFiles[
+                division
+            ];
+
+
+        sessions.forEach(
+            sessionFile => {
+
+                const sessionDrivers =
+                    sessionFile
+                        ?.data
+                        ?.session
+                        ?.drivers;
+
+
+                if (
+                    !Array.isArray(
+                        sessionDrivers
+                    )
+                ) {
+                    return;
+                }
+
+
+                sessionDrivers.forEach(
+                    driver => {
+
+                        const driverName =
+                            String(
+                                driver.driverName ??
+                                ""
+                            ).trim();
+
+
+                        if (!driverName) {
+                            return;
+                        }
+
+
+                        const key =
+                            normalizeKey(
+                                driverName
+                            );
+
+
+                        /*
+                            RESERVAS:
+
+                            Si el piloto no está en
+                            official-drivers.json
+                            para esta división,
+                            NO suma al Mundial
+                            de Pilotos.
+                        */
+
+                        if (
+                            !officialDrivers[
+                                division
+                            ].has(key)
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const championshipDriver =
+                            drivers.get(key);
+
+
+                        if (!championshipDriver) {
+                            return;
+                        }
+
+
+                        const points =
+                            getRaceDriverInfo(
+                                sessionFile,
+                                driver
+                            );
+
+
+                        championshipDriver.points +=
+                            points.driverTotal;
+
+
+                        /*
+                            El equipo mostrado será
+                            el de su participación
+                            más reciente.
+
+                            Esto permite cambios
+                            de equipo durante la
+                            temporada sin editar
+                            el código.
+                        */
+
+                        const teamName =
+                            String(
+                                driver?.team?.name ??
+                                ""
+                            ).trim();
+
+
+                        const sessionOrder =
+                            sessionFile.type ===
+                                "race"
+                                ? 2
+                                : 1;
+
+
+                        if (
+                            teamName &&
+                            (
+                                sessionFile.round >
+                                    championshipDriver
+                                        .lastRound ||
+                                (
+                                    sessionFile.round ===
+                                        championshipDriver
+                                            .lastRound &&
+                                    sessionOrder >=
+                                        championshipDriver
+                                            .lastSessionOrder
+                                )
+                            )
+                        ) {
+
+                            championshipDriver.teamName =
+                                teamName;
+
+
+                            championshipDriver.lastRound =
+                                sessionFile.round;
+
+
+                            championshipDriver.lastSessionOrder =
+                                sessionOrder;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        return Array.from(
+            drivers.values()
+        )
+            .sort(
+                (a, b) => {
+
+                    if (
+                        b.points !==
+                        a.points
+                    ) {
+
+                        return (
+                            b.points -
+                            a.points
+                        );
+
+                    }
+
+
+                    return String(
+                        a.driverName
+                    ).localeCompare(
+                        String(
+                            b.driverName
+                        ),
+                        "es"
+                    );
+
+                }
+            )
+            .map(
+                (driver, index) => {
+
+                    return {
+
+                        ...driver,
+
+                        position:
+                            index + 1
+
+                    };
+
+                }
+            );
+
+    }
+
+
+    // ========================================
+    // CONSTRUCTORES DE UNA DIVISIÓN
+    // ========================================
+
+    function buildConstructorsStandings(
+        division
+    ) {
+
+        const teams =
+            new Map();
+
+
+        const sessions =
+            raceFiles[
+                division
+            ];
+
+
+        sessions.forEach(
+            sessionFile => {
+
+                const sessionDrivers =
+                    sessionFile
+                        ?.data
+                        ?.session
+                        ?.drivers;
+
+
+                if (
+                    !Array.isArray(
+                        sessionDrivers
+                    )
+                ) {
+                    return;
+                }
+
+
+                sessionDrivers.forEach(
+                    driver => {
+
+                        const teamName =
+                            String(
+                                driver?.team?.name ??
+                                ""
+                            ).trim();
+
+
+                        if (!teamName) {
+                            return;
+                        }
+
+
+                        const teamKey =
+                            normalizeKey(
+                                teamName
+                            );
+
+
+                        if (
+                            !teams.has(
+                                teamKey
+                            )
+                        ) {
+
+                            teams.set(
+                                teamKey,
+                                {
+
+                                    teamName:
+                                        teamName,
+
+                                    points:
+                                        0,
+
+                                    driverNames:
+                                        new Set(),
+
+                                    teamInfo:
+                                        driver.team ||
+                                        null
+
+                                }
+                            );
+
+                        }
+
+
+                        const team =
+                            teams.get(
+                                teamKey
+                            );
+
+
+                        const points =
+                            getRaceDriverInfo(
+                                sessionFile,
+                                driver
+                            );
+
+
+                        /*
+                            IMPORTANTE:
+
+                            Aquí suman TODOS.
+
+                            Titulares + reservas.
+
+                            Un reserva no aparece
+                            en Pilotos, pero sus
+                            puntos pertenecen a
+                            la escudería con la
+                            que disputó esa sesión.
+                        */
+
+                        team.points +=
+                            points.teamTotal;
+
+
+                        const driverName =
+                            String(
+                                driver.driverName ??
+                                ""
+                            ).trim();
+
+
+                        if (driverName) {
+
+                            team.driverNames.add(
+                                driverName
+                            );
+
+                        }
+
+
+                        if (driver.team) {
+
+                            team.teamInfo =
+                                driver.team;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        return Array.from(
+            teams.values()
+        )
+            .sort(
+                (a, b) => {
+
+                    if (
+                        b.points !==
+                        a.points
+                    ) {
+
+                        return (
+                            b.points -
+                            a.points
+                        );
+
+                    }
+
+
+                    return String(
+                        a.teamName
+                    ).localeCompare(
+                        String(
+                            b.teamName
+                        ),
+                        "es"
+                    );
+
+                }
+            )
+            .map(
+                (team, index) => {
+
+                    return {
+
+                        ...team,
+
+                        position:
+                            index + 1,
+
+                        driverNames:
+                            Array.from(
+                                team.driverNames
+                            )
+
+                    };
+
+                }
+            );
+
+    }
+
+
+    // ========================================
+    // SUPERCONSTRUCTORES
+    // ========================================
+
+    function buildSuperconstructors() {
+
+        const combined =
+            new Map();
+
+
+        DIVISIONS.forEach(
+            division => {
+
+                const constructors =
+                    championshipData[
+                        division
+                    ].constructors;
+
+
+                constructors.forEach(
+                    team => {
+
+                        const key =
+                            normalizeKey(
+                                team.teamName
+                            );
+
+
+                        if (
+                            !combined.has(
+                                key
+                            )
+                        ) {
+
+                            combined.set(
+                                key,
+                                {
+
+                                    teamName:
+                                        team.teamName,
+
+                                    points:
+                                        0,
+
+                                    hyperdrivePoints:
+                                        0,
+
+                                    academyPoints:
+                                        0,
+
+                                    teamInfo:
+                                        team.teamInfo ||
+                                        null
+
+                                }
+                            );
+
+                        }
+
+
+                        const combinedTeam =
+                            combined.get(
+                                key
+                            );
+
+
+                        combinedTeam.points +=
+                            team.points;
+
+
+                        if (
+                            division ===
+                            "hyperdrive"
+                        ) {
+
+                            combinedTeam
+                                .hyperdrivePoints +=
+                                team.points;
+
+                        }
+
+
+                        if (
+                            division ===
+                            "academy"
+                        ) {
+
+                            combinedTeam
+                                .academyPoints +=
+                                team.points;
+
+                        }
+
+
+                        if (
+                            team.teamInfo
+                        ) {
+
+                            combinedTeam.teamInfo =
+                                team.teamInfo;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        return Array.from(
+            combined.values()
+        )
+            .sort(
+                (a, b) => {
+
+                    if (
+                        b.points !==
+                        a.points
+                    ) {
+
+                        return (
+                            b.points -
+                            a.points
+                        );
+
+                    }
+
+
+                    return String(
+                        a.teamName
+                    ).localeCompare(
+                        String(
+                            b.teamName
+                        ),
+                        "es"
+                    );
+
+                }
+            )
+            .map(
+                (team, index) => {
+
+                    return {
+
+                        ...team,
+
+                        position:
+                            index + 1
+
+                    };
+
+                }
+            );
+
+    }
+
+
+    // ========================================
+    // CALCULAR TODOS LOS CAMPEONATOS
+    // ========================================
+
+    function calculateChampionships() {
+
+        DIVISIONS.forEach(
+            division => {
+
+                championshipData[
+                    division
+                ].drivers =
+                    buildDriverStandings(
+                        division
+                    );
+
+
+                championshipData[
+                    division
+                ].constructors =
+                    buildConstructorsStandings(
+                        division
+                    );
+
+            }
+        );
+
+
+        championshipData
+            .superconstructors =
+                buildSuperconstructors();
+
+    }
+
+
+    // ========================================
+    // MOSTRAR PILOTOS
+    // ========================================
+
+    function renderDrivers(
+        division
+    ) {
+
+        if (!championshipList) {
+            return;
+        }
+
+
+        setDriverHeader();
+
+
+        const drivers =
+            championshipData[
+                division
+            ].drivers;
+
+
+        if (
+            !Array.isArray(
+                drivers
+            ) ||
+            drivers.length === 0
+        ) {
+
+            championshipList.innerHTML = `
+                <div class="championship-loading">
+                    NO HAY DATOS DISPONIBLES
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        championshipList.innerHTML =
+            drivers
+                .map(
+                    driver => {
+
+                        const driverImage =
+                            getDriverImage(
+                                driver.driverName
+                            );
+
+
+                        return `
+                            <div class="championship-row">
+
+                                <span class="championship-position">
+                                    ${escapeHTML(driver.position)}
+                                </span>
+
+
+                                <div class="championship-driver">
+
+                                    <div class="championship-driver-photo">
+
+                                        <img
+                                            src="${driverImage}"
+                                            alt="${escapeHTML(driver.driverName)}"
+                                            loading="lazy"
+                                            onerror="this.style.display='none'"
+                                        >
+
+                                    </div>
+
+
+                                    <span>
+                                        ${escapeHTML(driver.driverName)}
+                                    </span>
+
+                                </div>
+
+
+                                <span class="championship-team">
+                                    ${escapeHTML(driver.teamName || "SIN EQUIPO")}
+                                </span>
+
+
+                                <span class="championship-points">
+                                    ${escapeHTML(formatPoints(driver.points))}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    // ========================================
     // MOSTRAR CONSTRUCTORES
     // ========================================
 
-    function renderConstructors() {
+    function renderConstructors(
+        division
+    ) {
 
         if (!championshipList) {
             return;
@@ -455,10 +1491,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const constructors =
-            buildConstructorsStandings();
+            championshipData[
+                division
+            ].constructors;
 
 
-        if (constructors.length === 0) {
+        if (
+            !Array.isArray(
+                constructors
+            ) ||
+            constructors.length === 0
+        ) {
 
             championshipList.innerHTML = `
                 <div class="championship-loading">
@@ -467,61 +1510,170 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             return;
+
         }
 
 
         championshipList.innerHTML =
-            constructors.map(team => {
+            constructors
+                .map(
+                    team => {
 
-                const teamColor =
-                    getTeamColor(team);
-
-
-                const driversText =
-                    team.driverNames.length > 0
-                        ? team.driverNames.join(" · ")
-                        : "—";
+                        const teamColor =
+                            getTeamColor(
+                                team.teamInfo
+                            );
 
 
-                return `
-                    <div class="championship-row constructor-row">
-
-                        <span class="championship-position">
-                            ${escapeHTML(team.position)}
-                        </span>
-
-
-                        <div class="constructor-team-name">
-
-                            <span
-                                class="constructor-marker"
-                                style="
-                                    background:
-                                    ${escapeHTML(teamColor)};
-                                "
-                            ></span>
+                        const driversText =
+                            team.driverNames.length
+                                ? team.driverNames
+                                    .join(" · ")
+                                : "—";
 
 
-                            <span>
-                                ${escapeHTML(team.teamName)}
-                            </span>
+                        return `
+                            <div class="championship-row constructor-row">
 
-                        </div>
-
-
-                        <span class="championship-team">
-                            ${escapeHTML(driversText)}
-                        </span>
+                                <span class="championship-position">
+                                    ${escapeHTML(team.position)}
+                                </span>
 
 
-                        <span class="championship-points">
-                            ${escapeHTML(team.points)}
-                        </span>
+                                <div class="constructor-team-name">
 
-                    </div>
-                `;
+                                    <span
+                                        class="constructor-marker"
+                                        style="
+                                            background:
+                                            ${escapeHTML(teamColor)};
+                                        "
+                                    ></span>
 
-            }).join("");
+
+                                    <span>
+                                        ${escapeHTML(team.teamName)}
+                                    </span>
+
+                                </div>
+
+
+                                <span class="championship-team">
+                                    ${escapeHTML(driversText)}
+                                </span>
+
+
+                                <span class="championship-points">
+                                    ${escapeHTML(formatPoints(team.points))}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    // ========================================
+    // MOSTRAR SUPERCONSTRUCTORES
+    // ========================================
+
+    function renderSuperconstructors() {
+
+        if (!championshipList) {
+            return;
+        }
+
+
+        setSuperconstructorsHeader();
+
+
+        const teams =
+            championshipData
+                .superconstructors;
+
+
+        if (
+            !Array.isArray(
+                teams
+            ) ||
+            teams.length === 0
+        ) {
+
+            championshipList.innerHTML = `
+                <div class="championship-loading">
+                    NO HAY DATOS DE SUPERCONSTRUCTORES
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        championshipList.innerHTML =
+            teams
+                .map(
+                    team => {
+
+                        const teamColor =
+                            getTeamColor(
+                                team.teamInfo
+                            );
+
+
+                        const breakdown =
+                            `HYP ${formatPoints(team.hyperdrivePoints)} · ACA ${formatPoints(team.academyPoints)}`;
+
+
+                        return `
+                            <div class="
+                                championship-row
+                                constructor-row
+                                superconstructor-row
+                            ">
+
+                                <span class="championship-position">
+                                    ${escapeHTML(team.position)}
+                                </span>
+
+
+                                <div class="constructor-team-name">
+
+                                    <span
+                                        class="constructor-marker"
+                                        style="
+                                            background:
+                                            ${escapeHTML(teamColor)};
+                                        "
+                                    ></span>
+
+
+                                    <span>
+                                        ${escapeHTML(team.teamName)}
+                                    </span>
+
+                                </div>
+
+
+                                <span class="championship-team">
+                                    ${escapeHTML(breakdown)}
+                                </span>
+
+
+                                <span class="championship-points">
+                                    ${escapeHTML(formatPoints(team.points))}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
 
     }
 
@@ -530,103 +1682,185 @@ document.addEventListener("DOMContentLoaded", () => {
     // MOSTRAR CAMPEONATO
     // ========================================
 
-    function renderChampionship(type) {
+    function renderChampionship(
+        type
+    ) {
 
-        activeChampionship = type;
+        activeChampionship =
+            type;
 
 
-        if (type === "constructors") {
+        if (
+            type ===
+            "hyperdrive"
+        ) {
 
-            renderConstructors();
+            renderDrivers(
+                "hyperdrive"
+            );
 
             return;
+
         }
 
 
-        renderDrivers(type);
+        if (
+            type ===
+            "academy"
+        ) {
+
+            renderDrivers(
+                "academy"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            type ===
+            "constructors-hyperdrive"
+        ) {
+
+            renderConstructors(
+                "hyperdrive"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            type ===
+            "constructors-academy"
+        ) {
+
+            renderConstructors(
+                "academy"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            type ===
+            "superconstructors"
+        ) {
+
+            renderSuperconstructors();
+
+        }
 
     }
 
 
     // ========================================
-    // CARGAR ARCHIVOS
+    // BOTONES
     // ========================================
 
-    async function loadChampionshipFile(
-        division,
-        file
-    ) {
+    championshipTabs.forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                () => {
+
+                    championshipTabs.forEach(
+                        button => {
+
+                            button.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    tab.classList.add(
+                        "active"
+                    );
+
+
+                    renderChampionship(
+                        tab.dataset
+                            .championship
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    // ========================================
+    // INICIALIZACIÓN
+    // ========================================
+
+    async function initChampionship() {
+
+        if (championshipList) {
+
+            championshipList.innerHTML = `
+                <div class="championship-loading">
+                    CARGANDO CAMPEONATO...
+                </div>
+            `;
+
+        }
+
 
         try {
 
-            const response =
-                await fetch(
-                    file,
-                    {
-                        cache: "no-store"
-                    }
-                );
+            /*
+                Cargamos primero la lista fija
+                de pilotos oficiales.
+
+                Esta lista es la que permite
+                distinguir titulares de reservas.
+            */
+
+            await loadOfficialDrivers();
 
 
-            if (!response.ok) {
+            /*
+                Después buscamos automáticamente
+                las carreras de ambas divisiones.
+            */
 
-                throw new Error(
-                    `No se pudo cargar ${file}. Código: ${response.status}`
-                );
+            await Promise.all([
 
-            }
+                loadDivisionRaceFiles(
+                    "hyperdrive"
+                ),
 
+                loadDivisionRaceFiles(
+                    "academy"
+                )
 
-            const data =
-                await response.json();
-
-
-            const drivers =
-                data?.seasonStatistics?.driverStandings;
-
-
-            const teams =
-                data?.seasonStatistics?.teamStandings;
+            ]);
 
 
-            if (!Array.isArray(drivers)) {
+            /*
+                Calculamos:
 
-                throw new Error(
-                    `${file} no contiene driverStandings`
-                );
+                - Pilotos HyperDrive
+                - Pilotos Academy
+                - Constructores HyperDrive
+                - Constructores Academy
+                - Superconstructores
+            */
 
-            }
-
-
-            championshipData[division].drivers =
-                drivers;
-
-
-            championshipData[division].teams =
-                Array.isArray(teams)
-                    ? teams
-                    : [];
+            calculateChampionships();
 
 
-            if (
-                activeChampionship === division
-            ) {
-
-                renderChampionship(
-                    division
-                );
-
-            }
-
-
-            if (
-                activeChampionship ===
-                "constructors"
-            ) {
-
-                renderConstructors();
-
-            }
+            renderChampionship(
+                activeChampionship
+            );
 
 
         } catch (error) {
@@ -634,10 +1868,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(error);
 
 
-            if (
-                championshipList &&
-                activeChampionship === division
-            ) {
+            if (championshipList) {
 
                 championshipList.innerHTML = `
                     <div class="championship-loading">
@@ -652,55 +1883,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // ========================================
-    // BOTONES
-    // ========================================
+    initChampionship();
 
-    championshipTabs.forEach(tab => {
-
-        tab.addEventListener(
-            "click",
-            () => {
-
-                championshipTabs.forEach(
-                    button => {
-
-                        button.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                tab.classList.add(
-                    "active"
-                );
-
-
-                renderChampionship(
-                    tab.dataset.championship
-                );
-
-            }
-        );
-
-    });
-
-
-    // ========================================
-    // CARGA INICIAL
-    // ========================================
-
-    loadChampionshipFile(
-        "hyperdrive",
-        "data/hyperdrive-standings.json"
-    );
-
-
-    loadChampionshipFile(
-        "academy",
-        "data/academy-standings.json"
-    );
 
 });
