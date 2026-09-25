@@ -1,6 +1,15 @@
 {
   "news": [
     {
+      "title": "Prueba de publicación desde Pages CMS",
+      "category": "ANUNCIO",
+      "date": "2026-09-25",
+      "summary": "Esta noticia se ha publicado directamente desde el panel de administración de HyperDrive.",
+      "body": "`Prueba del nuevo sistema de noticias.`",
+      "image": "/images/news/audi.png",
+      "featured": false
+    },
+    {
       "title": "Silverstone recibe la Ronda 4 de la Season 8",
       "category": "CAMPEONATO",
       "date": "2026-09-25",
@@ -20,15 +29,6 @@
       "category": "ACADEMY",
       "date": "2026-09-23",
       "summary": "Toda la actualidad de la división Academy.",
-      "featured": false
-    },
-    {
-      "title": "Prueba de publicación desde Pages CMS",
-      "category": "ANUNCIO",
-      "date": "2026-09-25",
-      "summary": "Esta noticia se ha publicado directamente desde el panel de administración de HyperDrive.",
-      "body": "`Prueba del nuevo sistema de noticias.`",
-      "image": "/images/news/audi.png",
       "featured": false
     }
   ]
