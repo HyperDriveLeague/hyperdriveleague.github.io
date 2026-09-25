@@ -289,6 +289,18 @@ document.addEventListener("DOMContentLoaded", () => {
             `R${latestRound} · GP ${String(latestEventName).toUpperCase()}`;
 
 
+        if (podium.length === 0) {
+
+            resultsList.innerHTML = `
+                <div class="results-loading">
+                    NO HAY RESULTADOS DISPONIBLES
+                </div>
+            `;
+
+            return;
+        }
+
+
         resultsList.innerHTML = podium.map(result => {
 
             const driverImage =
@@ -380,14 +392,42 @@ document.addEventListener("DOMContentLoaded", () => {
                 index === 0 ? " news-card-main" : "";
 
 
-            return `
-                <article class="news-card${mainClass}">
+            const imagePath =
+                String(article.image ?? "").trim();
 
+
+            const imageBlock = imagePath
+                ? `
+                    <div
+                        class="news-image-placeholder"
+                        style="
+                            background-image:
+                                linear-gradient(
+                                    180deg,
+                                    rgba(0, 0, 0, 0.05),
+                                    rgba(0, 0, 0, 0.45)
+                                ),
+                                url('${escapeHTML(imagePath)}');
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        "
+                    >
+                    </div>
+                `
+                : `
                     <div class="news-image-placeholder">
                         <span>
                             ${index === 0 ? "NOTICIA DESTACADA" : "NOTICIA"}
                         </span>
                     </div>
+                `;
+
+
+            return `
+                <article class="news-card${mainClass}">
+
+                    ${imageBlock}
 
                     <div class="news-content">
 
@@ -412,6 +452,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+
+    // ========================================
+    // CARGAR NOTICIAS
+    // ========================================
 
     async function loadNews() {
 
@@ -470,7 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // CARGAR RACING LEAGUE TOOLS
+    // CARGAR DATOS DE RACING LEAGUE TOOLS
     // ========================================
 
     async function loadStandingsFile(division, file) {
@@ -523,6 +567,34 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
 
             console.error(error);
+
+
+            if (
+                activeDivision === division &&
+                standingsList
+            ) {
+
+                standingsList.innerHTML = `
+                    <div class="standings-loading">
+                        ERROR AL CARGAR LA CLASIFICACIÓN
+                    </div>
+                `;
+
+            }
+
+
+            if (
+                activeResultsDivision === division &&
+                resultsList
+            ) {
+
+                resultsList.innerHTML = `
+                    <div class="results-loading">
+                        ERROR AL CARGAR LOS RESULTADOS
+                    </div>
+                `;
+
+            }
 
         }
 
