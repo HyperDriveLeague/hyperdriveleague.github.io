@@ -602,7 +602,265 @@ body {
 /* ========================================
    RESPONSIVE
 ======================================== */
+/* ========================================
+   CLASIFICACIÓN
+======================================== */
 
+.standings-section {
+    padding: 90px 6%;
+    background:
+        radial-gradient(
+            circle at 85% 10%,
+            rgba(255, 213, 0, 0.06),
+            transparent 28%
+        ),
+        #08090b;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.standings-heading {
+    max-width: 1200px;
+    margin: 0 auto 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.standings-heading > div:first-child > span {
+    display: block;
+    margin-bottom: 8px;
+
+    color: var(--yellow);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.standings-heading h2 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+
+/* PESTAÑAS */
+
+.standings-tabs {
+    display: flex;
+    padding: 5px;
+
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.standings-tab {
+    min-width: 145px;
+    padding: 12px 20px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+    color: rgba(255, 255, 255, 0.55);
+
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.standings-tab:hover {
+    color: #ffffff;
+}
+
+.standings-tab.active {
+    background: var(--yellow);
+    color: #090a0c;
+}
+
+
+/* TABLA */
+
+.standings-table {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+}
+
+.standings-header,
+.standings-row {
+    display: grid;
+    grid-template-columns: 90px minmax(220px, 1.6fr) minmax(180px, 1fr) 100px;
+    align-items: center;
+}
+
+.standings-header {
+    min-height: 50px;
+    padding: 0 24px;
+
+    background: rgba(255, 255, 255, 0.035);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.standings-header span:last-child {
+    text-align: right;
+}
+
+
+/* FILAS */
+
+.standings-row {
+    position: relative;
+
+    min-height: 72px;
+    padding: 0 24px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.standings-row:last-child {
+    border-bottom: 0;
+}
+
+.standings-row:hover {
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.standings-position {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 1.1rem;
+    font-weight: 900;
+}
+
+.standings-driver {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.standings-team {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.standings-points {
+    text-align: right;
+
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 900;
+}
+
+
+/* LÍDER */
+
+.standings-row:first-child {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 213, 0, 0.08),
+            transparent 55%
+        );
+}
+
+.standings-row:first-child::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: var(--yellow);
+}
+
+.standings-row:first-child .standings-position {
+    color: var(--yellow);
+}
+
+.standings-row:first-child .standings-points {
+    color: var(--yellow);
+}
+
+
+/* CARGA */
+
+.standings-loading {
+    padding: 45px 24px;
+
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-align: center;
+}
+
+
+/* BOTÓN INFERIOR */
+
+.standings-footer {
+    max-width: 1200px;
+    margin: 28px auto 0;
+
+    display: flex;
+    justify-content: flex-end;
+}
+
+.standings-full-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.standings-full-button:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.28);
+}
 @media (max-width: 1200px) {
 
     .main-header {
