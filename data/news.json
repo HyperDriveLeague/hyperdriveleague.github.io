@@ -1,0 +1,31 @@
+{
+  "news": [
+    {
+      "id": "noticia-1",
+      "title": "Próximamente",
+      "category": "HYPERDRIVE",
+      "date": "2026-09-25",
+      "summary": "Las últimas noticias, anuncios y novedades de HyperDrive aparecerán aquí.",
+      "image": "",
+      "featured": true
+    },
+    {
+      "id": "noticia-2",
+      "title": "Próximamente",
+      "category": "CAMPEONATO",
+      "date": "2026-09-25",
+      "summary": "Información sobre carreras, pilotos, equipos y mercado.",
+      "image": "",
+      "featured": false
+    },
+    {
+      "id": "noticia-3",
+      "title": "Próximamente",
+      "category": "ACADEMY",
+      "date": "2026-09-25",
+      "summary": "Toda la actualidad de la división Academy.",
+      "image": "",
+      "featured": false
+    }
+  ]
+}
