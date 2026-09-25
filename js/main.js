@@ -27,6 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const newsGrid =
         document.getElementById("news-grid");
 
+    const mobileMenuToggle =
+        document.getElementById("mobile-menu-toggle");
+
+    const mobileMenu =
+        document.getElementById("mobile-menu");
+
+    const mobileMenuLinks =
+        document.querySelectorAll(
+            ".mobile-menu a"
+        );
+
 
     // ========================================
     // DATOS
@@ -39,6 +50,137 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let activeDivision = "hyperdrive";
     let activeResultsDivision = "hyperdrive";
+
+
+    // ========================================
+    // MENÚ MÓVIL
+    // ========================================
+
+    function openMobileMenu() {
+
+        if (!mobileMenuToggle || !mobileMenu) {
+            return;
+        }
+
+        mobileMenu.classList.add("open");
+        mobileMenuToggle.classList.add("open");
+
+        mobileMenuToggle.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        mobileMenuToggle.setAttribute(
+            "aria-label",
+            "Cerrar menú"
+        );
+
+    }
+
+
+    function closeMobileMenu() {
+
+        if (!mobileMenuToggle || !mobileMenu) {
+            return;
+        }
+
+        mobileMenu.classList.remove("open");
+        mobileMenuToggle.classList.remove("open");
+
+        mobileMenuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+        mobileMenuToggle.setAttribute(
+            "aria-label",
+            "Abrir menú"
+        );
+
+    }
+
+
+    function toggleMobileMenu() {
+
+        if (!mobileMenuToggle || !mobileMenu) {
+            return;
+        }
+
+        const isOpen =
+            mobileMenu.classList.contains("open");
+
+        if (isOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+
+    }
+
+
+    if (mobileMenuToggle && mobileMenu) {
+
+        mobileMenuToggle.addEventListener(
+            "click",
+            toggleMobileMenu
+        );
+
+
+        mobileMenuLinks.forEach(link => {
+
+            link.addEventListener("click", () => {
+
+                closeMobileMenu();
+
+            });
+
+        });
+
+
+        document.addEventListener("keydown", event => {
+
+            if (event.key === "Escape") {
+
+                closeMobileMenu();
+
+            }
+
+        });
+
+
+        document.addEventListener("click", event => {
+
+            const clickedToggle =
+                mobileMenuToggle.contains(
+                    event.target
+                );
+
+            const clickedMenu =
+                mobileMenu.contains(
+                    event.target
+                );
+
+
+            if (!clickedToggle && !clickedMenu) {
+
+                closeMobileMenu();
+
+            }
+
+        });
+
+
+        window.addEventListener("resize", () => {
+
+            if (window.innerWidth > 1024) {
+
+                closeMobileMenu();
+
+            }
+
+        });
+
+    }
 
 
     // ========================================
