@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".results-tab");
 
 
+    const newsGrid =
+        document.getElementById("news-grid");
+
+
     // ========================================
     // DATOS
     // ========================================
@@ -177,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // Buscar la ronda más reciente presente en los datos
         let latestRound = 0;
         let latestEventName = "";
 
@@ -223,7 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        // Construir clasificación de la última carrera
         const raceResults = [];
 
 
@@ -287,18 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `R${latestRound} · GP ${String(latestEventName).toUpperCase()}`;
 
 
-        if (podium.length === 0) {
-
-            resultsList.innerHTML = `
-                <div class="results-loading">
-                    NO HAY RESULTADOS DISPONIBLES
-                </div>
-            `;
-
-            return;
-        }
-
-
         resultsList.innerHTML = podium.map(result => {
 
             const driverImage =
@@ -348,7 +338,139 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // CARGAR JSON DE RACING LEAGUE TOOLS
+    // NOTICIAS
+    // ========================================
+
+    function renderNews(news) {
+
+        if (!newsGrid) {
+            return;
+        }
+
+
+        if (!Array.isArray(news) || news.length === 0) {
+
+            newsGrid.innerHTML = `
+                <div class="news-loading">
+                    NO HAY NOTICIAS PUBLICADAS
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const sortedNews = [...news].sort((a, b) => {
+
+            if (a.featured !== b.featured) {
+                return Number(b.featured) - Number(a.featured);
+            }
+
+            return new Date(b.date) - new Date(a.date);
+
+        });
+
+
+        const latestNews = sortedNews.slice(0, 3);
+
+
+        newsGrid.innerHTML = latestNews.map((article, index) => {
+
+            const mainClass =
+                index === 0 ? " news-card-main" : "";
+
+
+            return `
+                <article class="news-card${mainClass}">
+
+                    <div class="news-image-placeholder">
+                        <span>
+                            ${index === 0 ? "NOTICIA DESTACADA" : "NOTICIA"}
+                        </span>
+                    </div>
+
+                    <div class="news-content">
+
+                        <span class="news-category">
+                            ${escapeHTML(article.category)}
+                        </span>
+
+                        <h3>
+                            ${escapeHTML(article.title)}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(article.summary)}
+                        </p>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
+
+    }
+
+
+    async function loadNews() {
+
+        try {
+
+            const response = await fetch(
+                "data/news.json",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `No se pudo cargar news.json. Código: ${response.status}`
+                );
+
+            }
+
+
+            const data = await response.json();
+
+
+            if (!Array.isArray(data.news)) {
+
+                throw new Error(
+                    "news.json no contiene el array news"
+                );
+
+            }
+
+
+            renderNews(data.news);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            if (newsGrid) {
+
+                newsGrid.innerHTML = `
+                    <div class="news-loading">
+                        ERROR AL CARGAR LAS NOTICIAS
+                    </div>
+                `;
+
+            }
+
+        }
+
+    }
+
+
+    // ========================================
+    // CARGAR RACING LEAGUE TOOLS
     // ========================================
 
     async function loadStandingsFile(division, file) {
@@ -402,41 +524,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             console.error(error);
 
-
-            if (
-                activeDivision === division &&
-                standingsList
-            ) {
-
-                standingsList.innerHTML = `
-                    <div class="standings-loading">
-                        ERROR AL CARGAR LA CLASIFICACIÓN
-                    </div>
-                `;
-
-            }
-
-
-            if (
-                activeResultsDivision === division &&
-                resultsList
-            ) {
-
-                resultsList.innerHTML = `
-                    <div class="results-loading">
-                        ERROR AL CARGAR LOS RESULTADOS
-                    </div>
-                `;
-
-            }
-
         }
 
     }
 
 
     // ========================================
-    // PESTAÑAS DE CLASIFICACIÓN
+    // PESTAÑAS CLASIFICACIÓN
     // ========================================
 
     standingsTabs.forEach(tab => {
@@ -461,7 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // PESTAÑAS DE RESULTADOS
+    // PESTAÑAS RESULTADOS
     // ========================================
 
     resultsTabs.forEach(tab => {
@@ -486,7 +580,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
-    // CARGAR LAS DOS DIVISIONES
+    // CARGA INICIAL
     // ========================================
 
     loadStandingsFile(
@@ -499,5 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "academy",
         "data/academy-standings.json"
     );
+
+
+    loadNews();
 
 });
