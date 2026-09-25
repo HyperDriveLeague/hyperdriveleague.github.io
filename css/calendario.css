@@ -10,6 +10,7 @@
 
 .calendar-page {
     min-height: 100vh;
+
     background:
         radial-gradient(
             circle at 80% 0%,
@@ -17,6 +18,7 @@
             transparent 32%
         ),
         #080808;
+
     color: #ffffff;
 }
 
@@ -804,10 +806,6 @@
 }
 
 
-/* ========================================
-   SIN ENLACE
-======================================== */
-
 .calendar-round-button.disabled {
     cursor: default;
 
@@ -860,6 +858,273 @@
 
 
 /* ========================================
+   EVENTOS ESPECIALES
+======================================== */
+
+.calendar-special-event {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        120px
+        1fr
+        minmax(260px, 0.65fr);
+
+    min-height: 140px;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.calendar-special-event:hover {
+    transform:
+        translateY(-2px);
+}
+
+
+/* ========================================
+   ICONO EVENTO
+======================================== */
+
+.calendar-special-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    font-size: 30px;
+    font-weight: 900;
+}
+
+
+/* ========================================
+   CONTENIDO EVENTO
+======================================== */
+
+.calendar-special-content {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding:
+        26px
+        30px;
+}
+
+
+.calendar-special-label {
+    display: inline-flex;
+
+    width: max-content;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+}
+
+
+.calendar-special-content h3 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            23px,
+            2.6vw,
+            34px
+        );
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -0.035em;
+}
+
+
+.calendar-special-content p {
+    max-width: 680px;
+
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.57);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   FECHA EVENTO
+======================================== */
+
+.calendar-special-date {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding:
+        24px
+        28px;
+
+    border-left:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.calendar-special-date span {
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+
+    color:
+        rgba(255, 255, 255, 0.42);
+}
+
+
+.calendar-special-date strong {
+    font-size: 16px;
+    font-weight: 900;
+}
+
+
+/* ========================================
+   MERCADO DE PILOTOS
+======================================== */
+
+.calendar-special-event.market {
+    border:
+        1px solid
+        rgba(85, 165, 255, 0.28);
+
+    border-left:
+        3px solid
+        #55a5ff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(85, 165, 255, 0.11),
+            #111318 38%,
+            #0b0c0f
+        );
+}
+
+
+.calendar-special-event.market
+.calendar-special-icon {
+    color: #55a5ff;
+
+    background:
+        rgba(85, 165, 255, 0.055);
+}
+
+
+.calendar-special-event.market
+.calendar-special-label {
+    color: #79baff;
+}
+
+
+/* ========================================
+   TEXAS 100%
+======================================== */
+
+.calendar-special-event.texas {
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.32);
+
+    border-left:
+        3px solid
+        var(--yellow, #ffd500);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 213, 0, 0.10),
+            #15130c 38%,
+            #0c0c0a
+        );
+
+    box-shadow:
+        0
+        20px
+        55px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.calendar-special-event.texas
+.calendar-special-icon {
+    color:
+        var(--yellow, #ffd500);
+
+    background:
+        rgba(255, 213, 0, 0.055);
+}
+
+
+.calendar-special-event.texas
+.calendar-special-label {
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+/* ========================================
+   TEXTO ADICIONAL TEXAS
+======================================== */
+
+.calendar-special-note {
+    display: inline-flex;
+
+    width: max-content;
+
+    margin-top: 2px;
+
+    padding:
+        5px
+        8px;
+
+    border-radius: 5px;
+
+    background:
+        rgba(255, 255, 255, 0.055);
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* ========================================
    TABLET
 ======================================== */
 
@@ -893,6 +1158,14 @@
 
     .calendar-round-button {
         width: 100%;
+    }
+
+
+    .calendar-special-event {
+        grid-template-columns:
+            95px
+            1fr
+            230px;
     }
 
 }
@@ -1054,6 +1327,49 @@
             14px;
     }
 
+
+    /* EVENTOS ESPECIALES */
+
+    .calendar-special-event {
+        display: grid;
+
+        grid-template-columns:
+            70px
+            1fr;
+    }
+
+
+    .calendar-special-icon {
+        grid-row:
+            1;
+
+        font-size: 23px;
+    }
+
+
+    .calendar-special-content {
+        grid-column: 2;
+
+        padding:
+            20px;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .calendar-special-date {
+        grid-column:
+            1 / -1;
+
+        padding:
+            17px
+            20px;
+
+        border-left: 0;
+    }
+
 }
 
 
@@ -1092,6 +1408,19 @@
     .calendar-round.is-sprint
     .calendar-race-info::after {
         left: 18px;
+    }
+
+
+    .calendar-special-event {
+        grid-template-columns:
+            60px
+            1fr;
+    }
+
+
+    .calendar-special-content {
+        padding:
+            18px;
     }
 
 }
