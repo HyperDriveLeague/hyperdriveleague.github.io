@@ -8,10 +8,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const standingsList = document.getElementById("standings-list");
     const standingsTabs = document.querySelectorAll(".standings-tab");
 
-    let hyperdriveStandings = [];
+    const standingsData = {
+        hyperdrive: [],
+        academy: []
+    };
+
+    let activeDivision = "hyperdrive";
 
 
-    // Evita que nombres o textos del JSON puedan interpretarse como HTML
+    // ========================================
+    // SEGURIDAD DE TEXTO
+    // ========================================
+
     function escapeHTML(value) {
 
         return String(value ?? "")
@@ -24,20 +32,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Dibuja la clasificación en pantalla
+    // ========================================
+    // MOSTRAR CLASIFICACIÓN
+    // ========================================
+
     function renderStandings(division) {
 
         if (!standingsList) {
             return;
         }
 
+        activeDivision = division;
 
-        // Academy la conectaremos después con su propio JSON
-        if (division === "academy") {
+        const drivers = standingsData[division];
+
+
+        if (!Array.isArray(drivers) || drivers.length === 0) {
 
             standingsList.innerHTML = `
                 <div class="standings-loading">
-                    CLASIFICACIÓN ACADEMY PENDIENTE DE CONECTAR
+                    CARGANDO CLASIFICACIÓN...
                 </div>
             `;
 
@@ -45,19 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const topDrivers = hyperdriveStandings.slice(0, 5);
-
-
-        if (topDrivers.length === 0) {
-
-            standingsList.innerHTML = `
-                <div class="standings-loading">
-                    NO HAY DATOS DE CLASIFICACIÓN
-                </div>
-            `;
-
-            return;
-        }
+        const topDrivers = drivers.slice(0, 5);
 
 
         standingsList.innerHTML = topDrivers.map(driver => {
@@ -89,13 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Carga el JSON exportado desde Racing League Tools
-    async function loadHyperDriveStandings() {
+    // ========================================
+    // CARGAR JSON DE RACING LEAGUE TOOLS
+    // ========================================
+
+    async function loadStandingsFile(division, file) {
 
         try {
 
             const response = await fetch(
-                "data/hyperdrive-standings.json",
+                file,
                 {
                     cache: "no-store"
                 }
@@ -103,35 +108,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (!response.ok) {
+
                 throw new Error(
-                    `Error al cargar clasificación: ${response.status}`
+                    `No se pudo cargar ${file}. Código: ${response.status}`
                 );
+
             }
 
 
             const data = await response.json();
+
 
             const drivers =
                 data?.seasonStatistics?.driverStandings;
 
 
             if (!Array.isArray(drivers)) {
+
                 throw new Error(
-                    "El archivo JSON no contiene driverStandings."
+                    `${file} no contiene seasonStatistics.driverStandings`
                 );
+
             }
 
 
-            hyperdriveStandings = drivers;
+            standingsData[division] = drivers;
 
-            renderStandings("hyperdrive");
+
+            if (activeDivision === division) {
+                renderStandings(division);
+            }
 
 
         } catch (error) {
 
             console.error(error);
 
-            if (standingsList) {
+
+            if (activeDivision === division && standingsList) {
 
                 standingsList.innerHTML = `
                     <div class="standings-loading">
@@ -146,7 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // Cambiar entre HyperDrive y Academy
+    // ========================================
+    // PESTAÑAS HYPERDRIVE / ACADEMY
+    // ========================================
+
     standingsTabs.forEach(tab => {
 
         tab.addEventListener("click", () => {
@@ -155,9 +172,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 button.classList.remove("active");
             });
 
+
             tab.classList.add("active");
 
+
             const division = tab.dataset.division;
+
 
             renderStandings(division);
 
@@ -166,6 +186,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    loadHyperDriveStandings();
+    // ========================================
+    // CARGAR LAS DOS DIVISIONES
+    // ========================================
+
+    loadStandingsFile(
+        "hyperdrive",
+        "data/hyperdrive-standings.json"
+    );
+
+    loadStandingsFile(
+        "academy",
+        "data/academy-standings.json"
+    );
 
 });
