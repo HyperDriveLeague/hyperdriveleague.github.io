@@ -308,7 +308,7 @@
 
 
 /* ========================================
-   CABECERA DE SECCIÓN
+   CABECERA
 ======================================== */
 
 .drivers-section-heading {
@@ -479,8 +479,7 @@
 
     border-radius: 14px;
 
-    background:
-        #101010;
+    background: #101010;
 
     color:
         rgba(255, 255, 255, 0.42);
@@ -522,12 +521,6 @@
     transform-style: preserve-3d;
 
     -webkit-transform-style: preserve-3d;
-
-    transform: rotateY(0deg);
-
-    -webkit-transform: rotateY(0deg);
-
-    will-change: transform;
 
     transition:
         transform 0.65s
@@ -571,38 +564,11 @@
 
     -webkit-backface-visibility: hidden;
 
-    transform-style: preserve-3d;
-
-    -webkit-transform-style: preserve-3d;
-
     box-shadow:
         0 24px 60px
         rgba(0, 0, 0, 0.34);
-
-    isolation: isolate;
 }
 
-
-/*
-   Safari / iOS puede crear capas independientes
-   para imágenes, textos y degradados.
-
-   Ocultamos también el reverso de todos los hijos
-   para impedir que la cara frontal aparezca
-   reflejada al girar la tarjeta.
-*/
-
-.driver-card-front *,
-.driver-card-back * {
-    backface-visibility: hidden;
-
-    -webkit-backface-visibility: hidden;
-}
-
-
-/* ========================================
-   CARA DELANTERA
-======================================== */
 
 .driver-card-front {
     display: flex;
@@ -610,12 +576,10 @@
     flex-direction: column;
 
     transform:
-        rotateY(0deg)
-        translateZ(1px);
+        rotateY(0deg);
 
     -webkit-transform:
-        rotateY(0deg)
-        translateZ(1px);
+        rotateY(0deg);
 
     background:
         linear-gradient(
@@ -627,7 +591,34 @@
 }
 
 
-.driver-card-front::before {
+.driver-card-back {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 20px;
+
+    transform:
+        rotateY(180deg);
+
+    -webkit-transform:
+        rotateY(180deg);
+
+    background:
+        linear-gradient(
+            145deg,
+            #151515,
+            #0c0c0c
+        );
+}
+
+
+/* ========================================
+   ACENTO EQUIPO
+======================================== */
+
+.driver-card-front::before,
+.driver-card-back::before {
     content: "";
 
     position: absolute;
@@ -714,15 +705,11 @@
     border-radius: 9px;
 
     background:
-        rgba(5, 5, 5, 0.74);
+        rgba(5, 5, 5, 0.78);
 
     box-shadow:
         0 8px 26px
         rgba(0, 0, 0, 0.35);
-
-    backdrop-filter: blur(7px);
-
-    -webkit-backdrop-filter: blur(7px);
 }
 
 
@@ -742,10 +729,6 @@
     letter-spacing: 0.11em;
 
     white-space: nowrap;
-
-    text-shadow:
-        0 1px 3px
-        rgba(0, 0, 0, 0.8);
 }
 
 
@@ -757,10 +740,6 @@
     font-weight: 900;
 
     line-height: 0.95;
-
-    text-shadow:
-        0 3px 14px
-        rgba(0, 0, 0, 0.6);
 }
 
 
@@ -774,8 +753,6 @@
 
     font-size: 7px;
     font-weight: 900;
-
-    letter-spacing: 0.05em;
 }
 
 
@@ -784,8 +761,6 @@
 ======================================== */
 
 .driver-number {
-    padding: 3px 1px;
-
     color: #ffffff;
 
     font-size: 35px;
@@ -865,10 +840,6 @@
 }
 
 
-/* ========================================
-   FOTO FALLBACK
-======================================== */
-
 .driver-photo-fallback {
     position: absolute;
 
@@ -880,11 +851,6 @@
     justify-content: center;
 
     background:
-        radial-gradient(
-            circle at 50% 35%,
-            rgba(255, 255, 255, 0.07),
-            transparent 28%
-        ),
         linear-gradient(
             180deg,
             #191919,
@@ -930,10 +896,6 @@
     letter-spacing: -0.035em;
 
     text-transform: uppercase;
-
-    text-shadow:
-        0 3px 18px
-        rgba(0, 0, 0, 0.9);
 }
 
 
@@ -984,8 +946,6 @@
         rgba(255, 255, 255, 0.5);
 
     font-size: 10px;
-
-    line-height: 1.4;
 }
 
 
@@ -1000,7 +960,7 @@
 
 
 /* ========================================
-   INDICADOR GIRAR
+   INDICADOR
 ======================================== */
 
 .driver-flip-hint {
@@ -1008,8 +968,6 @@
 
     align-items: center;
     justify-content: space-between;
-
-    gap: 12px;
 
     margin-top: 18px;
 
@@ -1033,52 +991,6 @@
         var(--yellow, #ffd500);
 
     font-size: 17px;
-
-    line-height: 1;
-}
-
-
-/* ========================================
-   CARA TRASERA
-======================================== */
-
-.driver-card-back {
-    display: flex;
-
-    flex-direction: column;
-
-    padding: 20px;
-
-    transform:
-        rotateY(180deg)
-        translateZ(1px);
-
-    -webkit-transform:
-        rotateY(180deg)
-        translateZ(1px);
-
-    background:
-        linear-gradient(
-            145deg,
-            #151515,
-            #0c0c0c
-        );
-}
-
-
-.driver-card-back::before {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    right: 0;
-    top: 0;
-
-    height: 4px;
-
-    background:
-        var(--team-color, #ffd500);
 }
 
 
@@ -1107,8 +1019,6 @@
 
     line-height: 1;
 
-    letter-spacing: -0.03em;
-
     text-transform: uppercase;
 }
 
@@ -1136,8 +1046,6 @@
 
     font-size: 27px;
     font-weight: 900;
-
-    line-height: 1;
 }
 
 
@@ -1186,11 +1094,7 @@
         rgba(255, 213, 0, 0.22);
 
     background:
-        linear-gradient(
-            135deg,
-            rgba(255, 213, 0, 0.075),
-            rgba(255, 213, 0, 0.025)
-        );
+        rgba(255, 213, 0, 0.055);
 }
 
 
@@ -1206,8 +1110,6 @@
     line-height: 1.25;
 
     letter-spacing: 0.085em;
-
-    text-transform: uppercase;
 }
 
 
@@ -1216,8 +1118,6 @@
 
     font-size: 19px;
     font-weight: 900;
-
-    line-height: 1;
 }
 
 
@@ -1237,8 +1137,6 @@
 
     align-items: center;
     justify-content: space-between;
-
-    gap: 14px;
 
     margin-top: 12px;
 
@@ -1262,19 +1160,6 @@
         var(--yellow, #ffd500);
 
     font-size: 17px;
-}
-
-
-/* ========================================
-   HOVER
-======================================== */
-
-.driver-card:hover
-.driver-card-front,
-.driver-card:hover
-.driver-card-back {
-    border-color:
-        rgba(255, 255, 255, 0.17);
 }
 
 
@@ -1304,7 +1189,6 @@
         var(--yellow, #ffd500);
 
     font-size: 18px;
-    font-weight: 900;
 }
 
 
@@ -1313,8 +1197,6 @@
 
     font-size: 10px;
     font-weight: 800;
-
-    letter-spacing: 0.045em;
 
     line-height: 1.5;
 }
@@ -1334,10 +1216,6 @@
 
 }
 
-
-/* ========================================
-   TABLET PEQUEÑA
-======================================== */
 
 @media
 (max-width: 850px) {
@@ -1364,6 +1242,7 @@
 
 /* ========================================
    MÓVIL
+   SIN GIRO 3D PARA EVITAR BUG DE SAFARI
 ======================================== */
 
 @media
@@ -1406,33 +1285,6 @@
     }
 
 
-    .drivers-division-small {
-        font-size: 7px;
-    }
-
-
-    .drivers-division-button strong {
-        font-size: 17px;
-    }
-
-
-    .power-ranking-info {
-        align-items: flex-start;
-
-        padding: 15px;
-    }
-
-
-    .power-ranking-info-number {
-        flex-basis: 42px;
-
-        width: 42px;
-        height: 42px;
-
-        font-size: 14px;
-    }
-
-
     .drivers-grid {
         grid-template-columns: 1fr;
 
@@ -1440,9 +1292,100 @@
     }
 
 
-    .driver-card,
+    .driver-card {
+        min-height: 530px;
+
+        perspective: none;
+
+        -webkit-perspective: none;
+    }
+
+
     .driver-card-inner {
         min-height: 530px;
+
+        transform: none !important;
+
+        -webkit-transform: none !important;
+
+        transform-style: flat;
+
+        -webkit-transform-style: flat;
+    }
+
+
+    /*
+       En móvil NO giramos las caras.
+
+       Simplemente ocultamos una y
+       mostramos la otra.
+    */
+
+    .driver-card-front,
+    .driver-card-back {
+        transform: none !important;
+
+        -webkit-transform: none !important;
+
+        backface-visibility: visible;
+
+        -webkit-backface-visibility: visible;
+
+        transition:
+            opacity 0.22s ease,
+            visibility 0.22s ease;
+
+        will-change: opacity;
+    }
+
+
+    .driver-card-front {
+        opacity: 1;
+
+        visibility: visible;
+
+        pointer-events: auto;
+
+        z-index: 2;
+    }
+
+
+    .driver-card-back {
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+
+        z-index: 1;
+    }
+
+
+    /*
+       TARJETA ABIERTA
+    */
+
+    .driver-card.flipped
+    .driver-card-front {
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+
+        z-index: 1;
+    }
+
+
+    .driver-card.flipped
+    .driver-card-back {
+        opacity: 1;
+
+        visibility: visible;
+
+        pointer-events: auto;
+
+        z-index: 2;
     }
 
 
@@ -1504,11 +1447,6 @@
     }
 
 
-    .drivers-division-button {
-        min-height: 70px;
-    }
-
-
     .driver-card,
     .driver-card-inner {
         min-height: 510px;
@@ -1536,20 +1474,6 @@
         padding:
             8px
             9px;
-    }
-
-
-    .driver-power {
-        min-width: 84px;
-
-        padding:
-            7px
-            9px;
-    }
-
-
-    .driver-power-value {
-        font-size: 28px;
     }
 
 }
