@@ -901,6 +901,375 @@ body {
     position: relative;
     z-index: 2;
 }
+/* ========================================
+   ÚLTIMOS RESULTADOS
+======================================== */
+
+.results-section {
+    padding: 90px 6%;
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(255, 213, 0, 0.05),
+            transparent 28%
+        ),
+        #0b0c0f;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.results-heading {
+    max-width: 1200px;
+    margin: 0 auto 38px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 30px;
+}
+
+
+.results-heading > div:first-child > span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--yellow);
+
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+
+.results-heading h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+}
+
+
+#latest-results-event {
+    margin: 12px 0 0;
+
+    color: rgba(255, 255, 255, 0.5);
+
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+
+/* PESTAÑAS */
+
+.results-tabs {
+    display: flex;
+
+    padding: 5px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+
+.results-tab {
+    min-width: 145px;
+
+    padding: 12px 20px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.results-tab:hover {
+    color: #ffffff;
+}
+
+
+.results-tab.active {
+    background: var(--yellow);
+    color: #090a0c;
+}
+
+
+/* CONTENEDOR DEL PODIO */
+
+#latest-results-list {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+
+/* TARJETA */
+
+.result-card {
+    position: relative;
+
+    min-height: 310px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.015)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.result-card:hover {
+    transform: translateY(-4px);
+
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+
+/* POSICIÓN */
+
+.result-position {
+    position: absolute;
+
+    top: 18px;
+    left: 20px;
+
+    z-index: 4;
+
+    color: rgba(255, 255, 255, 0.35);
+
+    font-size: 2rem;
+    font-weight: 900;
+
+    letter-spacing: -0.05em;
+}
+
+
+/* FOTO */
+
+.result-driver-image {
+    height: 205px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center bottom,
+            rgba(255, 255, 255, 0.08),
+            transparent 65%
+        );
+}
+
+
+.result-driver-image img {
+    height: 260px;
+    width: auto;
+
+    object-fit: contain;
+
+    transform: scale(1.1);
+    transform-origin: center top;
+
+    margin-top: 5px;
+}
+
+
+/* INFORMACIÓN */
+
+.result-driver-info {
+    position: relative;
+
+    z-index: 2;
+
+    padding: 18px 20px 5px;
+}
+
+
+.result-driver-info strong {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 1.1rem;
+    font-weight: 900;
+
+    line-height: 1.1;
+}
+
+
+.result-driver-info span {
+    display: block;
+
+    margin-top: 5px;
+
+    color: rgba(255, 255, 255, 0.5);
+
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+
+/* PUNTOS */
+
+.result-points {
+    margin-top: auto;
+
+    padding: 12px 20px 18px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 0.8rem;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* GANADOR */
+
+.result-card:first-child {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 213, 0, 0.10),
+            rgba(255, 213, 0, 0.025)
+        );
+
+    border-color: rgba(255, 213, 0, 0.28);
+}
+
+
+.result-card:first-child::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 4px;
+
+    background: var(--yellow);
+}
+
+
+.result-card:first-child .result-position {
+    color: var(--yellow);
+}
+
+
+.result-card:first-child .result-points {
+    color: var(--yellow);
+}
+
+
+/* BOTÓN INFERIOR */
+
+.results-footer {
+    max-width: 1200px;
+
+    margin: 28px auto 0;
+
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.results-full-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 13px 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 0.74rem;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.results-full-button:hover {
+    background: rgba(255, 255, 255, 0.06);
+
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+
+/* CARGA */
+
+.results-loading {
+    grid-column: 1 / -1;
+
+    padding: 50px 24px;
+
+    color: rgba(255, 255, 255, 0.45);
+
+    text-align: center;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+
+    letter-spacing: 0.1em;
+}
 @media (max-width: 1200px) {
 
     .main-header {
