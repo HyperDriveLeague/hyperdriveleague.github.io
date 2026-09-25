@@ -135,45 +135,208 @@ body {
 
 
 /* ========================================
-   CONTENIDO PROVISIONAL
+   HERO PRINCIPAL
 ======================================== */
 
-.temporary-content {
+.hero {
     min-height: calc(100vh - 82px);
+    position: relative;
 
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
 
-    padding: 0 7%;
+    padding: 90px 7% 110px;
+
+    overflow: hidden;
 
     background:
         radial-gradient(
-            circle at 80% 40%,
-            rgba(255, 213, 0, 0.08),
-            transparent 35%
+            circle at 80% 45%,
+            rgba(255, 213, 0, 0.12),
+            transparent 32%
         ),
-        var(--black);
+        linear-gradient(
+            115deg,
+            #08090b 0%,
+            #08090b 55%,
+            #111107 100%
+        );
 }
 
-.temporary-content h1 {
-    font-size: clamp(55px, 9vw, 130px);
+/* Línea amarilla decorativa */
+
+.hero::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 22%;
+
+    width: 5px;
+    height: 56%;
+
+    background: var(--yellow);
+}
+
+
+/* CONTENIDO */
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 950px;
+}
+
+.hero-season {
+    display: inline-block;
+
+    margin-bottom: 25px;
+
+    color: var(--yellow);
+
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 4px;
+}
+
+.hero h1 {
+    margin: 0;
+
+    color: var(--white);
+
+    font-size: clamp(55px, 6vw, 105px);
+    font-weight: 900;
+
     line-height: 0.9;
     letter-spacing: -4px;
 }
 
-.temporary-content p {
-    margin-top: 20px;
+.hero h1 span {
+    color: var(--yellow);
+}
+
+.hero-description {
+    max-width: 660px;
+
+    margin-top: 32px;
+
+    color: #b7b9be;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* BOTONES */
+
+.hero-buttons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 38px;
+}
+
+.hero-primary,
+.hero-secondary {
+    min-height: 50px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 26px;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+
+    border-radius: 3px;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.hero-primary {
+    background: var(--yellow);
+    color: #000;
+}
+
+.hero-primary:hover {
+    background: #ffe13b;
+    transform: translateY(-2px);
+}
+
+.hero-secondary {
+    color: var(--white);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.hero-secondary:hover {
+    border-color: var(--yellow);
+    color: var(--yellow);
+    transform: translateY(-2px);
+}
+
+
+/* PRÓXIMA CARRERA */
+
+.hero-next-race {
+    position: absolute;
+
+    right: 7%;
+    bottom: 45px;
+
+    z-index: 2;
+
+    min-width: 260px;
+
+    padding: 19px 22px;
+
+    border-left: 3px solid var(--yellow);
+
+    background: rgba(14, 16, 19, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+.next-label {
+    display: block;
+
+    margin-bottom: 7px;
 
     color: var(--yellow);
 
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 4px;
-
-    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
+.hero-next-race strong {
+    display: block;
+
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.next-info {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--grey);
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 
 /* ========================================
    RESPONSIVE
