@@ -1,0 +1,1097 @@
+/* ========================================
+   HYPERDRIVE LEAGUE
+   CALENDARIO
+======================================== */
+
+
+/* ========================================
+   PÁGINA
+======================================== */
+
+.calendar-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(255, 213, 0, 0.06),
+            transparent 32%
+        ),
+        #080808;
+    color: #ffffff;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.calendar-hero {
+    position: relative;
+    overflow: hidden;
+
+    padding:
+        110px
+        40px
+        72px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    background:
+        linear-gradient(
+            135deg,
+            #111111 0%,
+            #080808 60%,
+            #151200 100%
+        );
+}
+
+
+.calendar-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    right: -180px;
+    top: -220px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 213, 0, 0.07);
+
+    filter:
+        blur(10px);
+
+    pointer-events: none;
+}
+
+
+.calendar-hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 1280px;
+
+    margin:
+        0
+        auto;
+}
+
+
+.calendar-label {
+    display: inline-block;
+
+    margin-bottom: 20px;
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+}
+
+
+.calendar-hero h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            48px,
+            7vw,
+            92px
+        );
+
+    line-height: 0.95;
+
+    font-weight: 900;
+
+    letter-spacing: -0.05em;
+}
+
+
+.calendar-hero p {
+    max-width: 720px;
+
+    margin:
+        28px
+        0
+        0;
+
+    color:
+        rgba(255, 255, 255, 0.68);
+
+    font-size: 17px;
+    line-height: 1.75;
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.calendar-content {
+    width: 100%;
+    max-width: 1280px;
+
+    margin:
+        0
+        auto;
+
+    padding:
+        72px
+        40px
+        110px;
+}
+
+
+/* ========================================
+   CABECERA
+======================================== */
+
+.calendar-heading {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap: 40px;
+
+    margin-bottom: 34px;
+}
+
+
+.calendar-heading-label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+}
+
+
+.calendar-heading h2 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            32px,
+            4vw,
+            52px
+        );
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -0.04em;
+}
+
+
+.calendar-heading > p {
+    max-width: 430px;
+
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 14px;
+    line-height: 1.65;
+
+    text-align: right;
+}
+
+
+/* ========================================
+   LEYENDA
+======================================== */
+
+.calendar-legend {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap:
+        12px
+        24px;
+
+    margin-bottom: 34px;
+
+    padding:
+        16px
+        20px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.025);
+}
+
+
+.calendar-legend-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+
+.calendar-legend-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+}
+
+
+.calendar-legend-dot.completed {
+    background: #54d27a;
+
+    box-shadow:
+        0
+        0
+        10px
+        rgba(84, 210, 122, 0.45);
+}
+
+
+.calendar-legend-dot.next {
+    background:
+        var(--yellow, #ffd500);
+
+    box-shadow:
+        0
+        0
+        10px
+        rgba(255, 213, 0, 0.45);
+}
+
+
+.calendar-legend-dot.pending {
+    background:
+        rgba(255, 255, 255, 0.32);
+}
+
+
+.calendar-sprint-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        4px
+        7px;
+
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.45);
+
+    border-radius: 4px;
+
+    background:
+        rgba(255, 213, 0, 0.08);
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* ========================================
+   LISTA
+======================================== */
+
+.calendar-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.calendar-loading {
+    padding: 60px 30px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 14px;
+
+    background: #101010;
+
+    color:
+        rgba(255, 255, 255, 0.5);
+
+    text-align: center;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.1em;
+}
+
+
+/* ========================================
+   TARJETA DE RONDA
+======================================== */
+
+.calendar-round {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        120px
+        minmax(230px, 1.3fr)
+        minmax(260px, 1fr)
+        minmax(260px, 1fr)
+        auto;
+
+    align-items: stretch;
+
+    min-height: 150px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #121212,
+            #0d0d0d
+        );
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.calendar-round:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(255, 255, 255, 0.16);
+}
+
+
+/* ========================================
+   ESTADOS
+======================================== */
+
+.calendar-round.completed {
+    border-left:
+        3px solid
+        #54d27a;
+}
+
+
+.calendar-round.next {
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.35);
+
+    border-left:
+        3px solid
+        var(--yellow, #ffd500);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 213, 0, 0.06),
+            #111111 35%,
+            #0c0c0c
+        );
+
+    box-shadow:
+        0
+        18px
+        55px
+        rgba(0, 0, 0, 0.28);
+}
+
+
+.calendar-round.pending {
+    opacity: 0.82;
+}
+
+
+/* ========================================
+   NÚMERO DE RONDA
+======================================== */
+
+.calendar-round-number {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.calendar-round-number span {
+    margin-bottom: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.35);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+}
+
+
+.calendar-round-number strong {
+    font-size: 40px;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+.calendar-round.next
+.calendar-round-number strong {
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+/* ========================================
+   INFORMACIÓN DEL GP
+======================================== */
+
+.calendar-race-info {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding:
+        24px
+        30px;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.calendar-race-topline {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+}
+
+
+.calendar-race-country {
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+
+.calendar-race-info h3 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            23px,
+            2.4vw,
+            34px
+        );
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -0.035em;
+}
+
+
+.calendar-race-info p {
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.42);
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+
+/* ========================================
+   ESTADO DE RONDA
+======================================== */
+
+.calendar-status {
+    display: inline-flex;
+
+    width: max-content;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.1em;
+}
+
+
+.calendar-status::before {
+    content: "";
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.32);
+}
+
+
+.calendar-round.completed
+.calendar-status {
+    color: #54d27a;
+}
+
+
+.calendar-round.completed
+.calendar-status::before {
+    background: #54d27a;
+}
+
+
+.calendar-round.next
+.calendar-status {
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+.calendar-round.next
+.calendar-status::before {
+    background:
+        var(--yellow, #ffd500);
+}
+
+
+/* ========================================
+   DIVISIONES
+======================================== */
+
+.calendar-division {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding:
+        24px
+        26px;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.calendar-division-label {
+    color:
+        rgba(255, 255, 255, 0.42);
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+}
+
+
+.calendar-division strong {
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+.calendar-division-date {
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+
+.calendar-division-time {
+    display: inline-flex;
+
+    width: max-content;
+
+    padding:
+        5px
+        8px;
+
+    border-radius: 5px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    color:
+        rgba(255, 255, 255, 0.82);
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* ========================================
+   ACCIÓN
+======================================== */
+
+.calendar-round-action {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 135px;
+
+    padding: 22px;
+}
+
+
+.calendar-round-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding:
+        0
+        15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    border-radius: 7px;
+
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    text-decoration: none;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.calendar-round-button:hover {
+    border-color:
+        var(--yellow, #ffd500);
+
+    background:
+        var(--yellow, #ffd500);
+
+    color: #080808;
+}
+
+
+.calendar-round.next
+.calendar-round-button {
+    border-color:
+        rgba(255, 213, 0, 0.38);
+
+    color:
+        var(--yellow, #ffd500);
+}
+
+
+.calendar-round.next
+.calendar-round-button:hover {
+    background:
+        var(--yellow, #ffd500);
+
+    color: #080808;
+}
+
+
+/* ========================================
+   SIN ENLACE
+======================================== */
+
+.calendar-round-button.disabled {
+    cursor: default;
+
+    pointer-events: none;
+
+    opacity: 0.38;
+}
+
+
+/* ========================================
+   RONDA SPRINT
+======================================== */
+
+.calendar-round.is-sprint
+.calendar-race-info {
+    position: relative;
+}
+
+
+.calendar-round.is-sprint
+.calendar-race-info::after {
+    content: "SPRINT";
+
+    position: absolute;
+
+    right: 18px;
+    top: 18px;
+
+    padding:
+        5px
+        7px;
+
+    border:
+        1px solid
+        rgba(255, 213, 0, 0.35);
+
+    border-radius: 4px;
+
+    background:
+        rgba(255, 213, 0, 0.07);
+
+    color:
+        var(--yellow, #ffd500);
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media
+(max-width: 1100px) {
+
+    .calendar-round {
+        grid-template-columns:
+            95px
+            1.25fr
+            1fr
+            1fr;
+    }
+
+
+    .calendar-round-action {
+        grid-column:
+            1 / -1;
+
+        min-height: 62px;
+
+        padding:
+            10px
+            20px;
+
+        border-top:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .calendar-round-button {
+        width: 100%;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL
+======================================== */
+
+@media
+(max-width: 760px) {
+
+    .calendar-hero {
+        padding:
+            86px
+            20px
+            52px;
+    }
+
+
+    .calendar-hero p {
+        font-size: 14px;
+    }
+
+
+    .calendar-content {
+        padding:
+            48px
+            16px
+            80px;
+    }
+
+
+    .calendar-heading {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 16px;
+
+        margin-bottom: 26px;
+    }
+
+
+    .calendar-heading > p {
+        max-width: none;
+
+        text-align: left;
+    }
+
+
+    .calendar-legend {
+        gap:
+            12px
+            18px;
+
+        padding:
+            14px
+            15px;
+    }
+
+
+    .calendar-round {
+        display: grid;
+
+        grid-template-columns:
+            76px
+            1fr;
+
+        min-height: auto;
+    }
+
+
+    .calendar-round-number {
+        grid-row:
+            1 / 2;
+
+        padding:
+            20px
+            12px;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .calendar-round-number strong {
+        font-size: 30px;
+    }
+
+
+    .calendar-race-info {
+        grid-column: 2;
+
+        padding:
+            20px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .calendar-race-info h3 {
+        padding-right: 0;
+
+        font-size: 25px;
+    }
+
+
+    .calendar-round.is-sprint
+    .calendar-race-info {
+        padding-top: 48px;
+    }
+
+
+    .calendar-round.is-sprint
+    .calendar-race-info::after {
+        left: 20px;
+        right: auto;
+
+        top: 18px;
+    }
+
+
+    .calendar-division {
+        grid-column:
+            1 / -1;
+
+        min-height: 100px;
+
+        padding:
+            18px
+            20px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.07);
+    }
+
+
+    .calendar-division strong {
+        font-size: 14px;
+    }
+
+
+    .calendar-round-action {
+        grid-column:
+            1 / -1;
+
+        min-height: auto;
+
+        padding:
+            14px;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL PEQUEÑO
+======================================== */
+
+@media
+(max-width: 420px) {
+
+    .calendar-hero h1 {
+        font-size: 45px;
+    }
+
+
+    .calendar-legend {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .calendar-round {
+        grid-template-columns:
+            66px
+            1fr;
+    }
+
+
+    .calendar-race-info {
+        padding:
+            18px;
+    }
+
+
+    .calendar-round.is-sprint
+    .calendar-race-info::after {
+        left: 18px;
+    }
+
+}
