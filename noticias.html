@@ -2,26 +2,47 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Noticias | HyperDrive League</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
+    <title>
+        Noticias | HyperDrive League
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- HEADER -->
+
+    <!-- ========================================
+         HEADER
+    ======================================== -->
 
     <header class="main-header">
 
-        <a href="index.html" class="logo">
+        <a
+            href="index.html"
+            class="logo"
+        >
+
             <img
                 src="images/logo/hyperdrive-logo.png"
                 alt="HyperDrive League"
             >
+
         </a>
+
 
         <nav class="main-nav">
 
@@ -33,7 +54,7 @@
                 NOTICIAS
             </a>
 
-            <a href="#">
+            <a href="campeonato.html">
                 CAMPEONATO
             </a>
 
@@ -57,11 +78,17 @@
                 EQUIPOS
             </a>
 
+
             <div class="more-menu">
-                <span>MÁS ▾</span>
+
+                <span>
+                    MÁS ▾
+                </span>
+
             </div>
 
         </nav>
+
 
         <a
             href="https://discord.gg/SvKXMBRDgu"
@@ -72,14 +99,127 @@
             ÚNETE AL DISCORD
         </a>
 
+
+        <!-- BOTÓN MENÚ MÓVIL -->
+
+        <button
+            class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            type="button"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+
+        <!-- MENÚ MÓVIL -->
+
+        <div
+            class="mobile-menu"
+            id="mobile-menu"
+        >
+
+            <nav class="mobile-menu-nav">
+
+                <a href="index.html">
+                    INICIO
+                </a>
+
+                <a href="noticias.html">
+                    NOTICIAS
+                </a>
+
+                <a href="campeonato.html">
+                    CAMPEONATO
+                </a>
+
+                <a href="#">
+                    RACE HUB
+                </a>
+
+                <a href="#">
+                    RESULTADOS
+                </a>
+
+                <a href="#">
+                    CALENDARIO
+                </a>
+
+                <a href="#">
+                    PILOTOS
+                </a>
+
+                <a href="#">
+                    EQUIPOS
+                </a>
+
+                <a href="#">
+                    HALL OF FAME
+                </a>
+
+                <a href="#">
+                    HISTORIA
+                </a>
+
+                <a href="#">
+                    REGLAMENTO
+                </a>
+
+                <a href="#">
+                    INSCRIPCIONES
+                </a>
+
+            </nav>
+
+
+            <div class="mobile-menu-social">
+
+                <a
+                    href="https://discord.gg/SvKXMBRDgu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    DISCORD
+                </a>
+
+                <a
+                    href="https://www.twitch.tv/hyperdriveleague"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    TWITCH
+                </a>
+
+                <a
+                    href="https://www.instagram.com/hyperdriveleague/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    INSTAGRAM
+                </a>
+
+            </div>
+
+        </div>
+
     </header>
 
 
-    <!-- CONTENIDO -->
+
+    <!-- ========================================
+         CONTENIDO
+    ======================================== -->
 
     <main>
 
         <section class="news-page">
+
 
             <div class="news-page-heading">
 
@@ -99,6 +239,7 @@
             </div>
 
 
+
             <div
                 class="news-page-grid"
                 id="news-page-grid"
@@ -110,11 +251,18 @@
 
             </div>
 
+
         </section>
 
     </main>
 
 
+
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
+
+    <script src="js/main.js"></script>
     <script src="js/news.js"></script>
 
 </body>
