@@ -13,46 +13,49 @@
     <title>
         Noticia | HyperDrive League
     </title>
-<link
-    rel="icon"
-    type="image/jpeg"
-    href="images/logo/favicon.jpg"
->
+
     <link
-    rel="apple-touch-icon"
-    sizes="180x180"
-    href="images/logo/apple-touch-icon.png"
->
+        rel="icon"
+        type="image/jpeg"
+        href="images/logo/favicon.jpg"
+    >
 
-<link
-    rel="manifest"
-    href="manifest.webmanifest"
->
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="images/logo/apple-touch-icon.png"
+    >
 
-<meta
-    name="theme-color"
-    content="#080808"
->
+    <link
+        rel="manifest"
+        href="manifest.webmanifest"
+    >
 
-<meta
-    name="mobile-web-app-capable"
-    content="yes"
->
+    <meta
+        name="theme-color"
+        content="#080808"
+    >
 
-<meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
->
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
 
-<meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="black"
->
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
 
-<meta
-    name="apple-mobile-web-app-title"
-    content="HyperDrive"
->
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="HyperDrive"
+    >
+
     <link
         rel="stylesheet"
         href="css/style.css"
@@ -64,190 +67,7 @@
 <body>
 
 
-    <!-- ========================================
-         HEADER
-    ======================================== -->
-
-    <header class="main-header">
-
-        <a
-            href="index.html"
-            class="logo"
-        >
-
-            <img
-                src="images/logo/hyperdrive-logo.png"
-                alt="HyperDrive League"
-            >
-
-        </a>
-
-
-        <nav class="main-nav">
-
-            <a href="index.html">
-                INICIO
-            </a>
-
-            <a href="noticias.html">
-                NOTICIAS
-            </a>
-
-            <a href="campeonato.html">
-                CAMPEONATO
-            </a>
-
-            <a href="#">
-                RACE HUB
-            </a>
-
-            <a href="#">
-                RESULTADOS
-            </a>
-
-            <a href="calendario.html">
-                CALENDARIO
-            </a>
-
-            <a href="#">
-                PILOTOS
-            </a>
-
-            <a href="#">
-                EQUIPOS
-            </a>
-
-
-            <div class="more-menu">
-
-                <span>
-                    MÁS ▾
-                </span>
-
-            </div>
-
-        </nav>
-
-
-        <a
-            href="https://discord.gg/SvKXMBRDgu"
-            class="discord-button"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            ÚNETE AL DISCORD
-        </a>
-
-
-        <!-- BOTÓN MENÚ MÓVIL -->
-
-        <button
-            class="mobile-menu-toggle"
-            id="mobile-menu-toggle"
-            type="button"
-            aria-label="Abrir menú"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-        >
-
-            <span></span>
-            <span></span>
-            <span></span>
-
-        </button>
-
-
-        <!-- MENÚ MÓVIL -->
-
-        <div
-            class="mobile-menu"
-            id="mobile-menu"
-        >
-
-            <nav class="mobile-menu-nav">
-
-                <a href="index.html">
-                    INICIO
-                </a>
-
-                <a href="noticias.html">
-                    NOTICIAS
-                </a>
-
-                <a href="campeonato.html">
-                    CAMPEONATO
-                </a>
-
-                <a href="#">
-                    RACE HUB
-                </a>
-
-                <a href="#">
-                    RESULTADOS
-                </a>
-
-                <a href="calendario.html">
-                    CALENDARIO
-                </a>
-
-                <a href="#">
-                    PILOTOS
-                </a>
-
-                <a href="#">
-                    EQUIPOS
-                </a>
-
-                <a href="#">
-                    HALL OF FAME
-                </a>
-
-                <a href="#">
-                    HISTORIA
-                </a>
-
-                <a href="#">
-                    REGLAMENTO
-                </a>
-
-                <a href="#">
-                    INSCRIPCIONES
-                </a>
-
-            </nav>
-
-
-            <div class="mobile-menu-social">
-
-                <a
-                    href="https://discord.gg/SvKXMBRDgu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    DISCORD
-                </a>
-
-                <a
-                    href="https://www.twitch.tv/hyperdriveleague"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    TWITCH
-                </a>
-
-                <a
-                    href="https://www.instagram.com/hyperdriveleague/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    INSTAGRAM
-                </a>
-
-            </div>
-
-        </div>
-
-    </header>
+    <div id="site-header"></div>
 
 
 
@@ -322,10 +142,15 @@
 
 
 
+    <div id="site-footer"></div>
+
+
+
     <!-- ========================================
          JAVASCRIPT
     ======================================== -->
 
+    <script src="js/layout.js"></script>
     <script src="js/main.js"></script>
     <script src="js/article.js"></script>
 
