@@ -2724,6 +2724,9 @@ body {
     color: rgba(255, 213, 0, 0.62);
 }
 
+/* ========================================
+   RESPONSIVE - TABLET Y MÓVIL
+======================================== */
 
 @media (max-width: 1200px) {
 
@@ -2746,4 +2749,857 @@ body {
     .logo img {
         width: 100px;
     }
+
+    .hero,
+    .next-race-section,
+    .standings-section,
+    .results-section,
+    .news-section,
+    .about-section,
+    .live-section,
+    .join-section {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .next-race-grid {
+        grid-template-columns: 1.35fr 1fr 1fr;
+    }
+
+    .footer-container {
+        gap: 55px;
+    }
 }
+
+
+@media (max-width: 1024px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Cabecera provisional hasta crear el menú móvil */
+
+    .main-header {
+        height: 74px;
+        padding: 0 22px;
+        justify-content: space-between;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .logo {
+        margin-right: 0;
+    }
+
+    .logo img {
+        width: 105px;
+    }
+
+    .discord-button {
+        min-height: 40px;
+        padding: 0 16px;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .hero {
+        min-height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 95px;
+        padding-bottom: 78px;
+        background-position: 62% center;
+    }
+
+    .hero::before {
+        top: 15%;
+        height: 62%;
+    }
+
+    .hero-content {
+        max-width: 760px;
+    }
+
+    .hero h1 {
+        font-size: clamp(50px, 8vw, 78px);
+        letter-spacing: -3px;
+    }
+
+    .hero-description {
+        max-width: 600px;
+    }
+
+    .hero-next-race {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        max-width: 430px;
+        margin-top: 55px;
+    }
+
+    /* Próxima carrera */
+
+    .next-race-section {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+
+    .next-race-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .race-main-info {
+        grid-column: 1 / -1;
+        min-height: 210px;
+    }
+
+    .division-card {
+        min-height: 200px;
+    }
+
+    /* Clasificación */
+
+    .standings-section,
+    .results-section,
+    .news-section {
+        padding-top: 78px;
+        padding-bottom: 78px;
+    }
+
+    .standings-header,
+    .standings-row {
+        grid-template-columns: 75px minmax(200px, 1.5fr) minmax(150px, 1fr) 80px;
+    }
+
+    /* Resultados */
+
+    #latest-results-list {
+        gap: 14px;
+    }
+
+    .result-card {
+        min-height: 290px;
+    }
+
+    .result-driver-image {
+        height: 185px;
+    }
+
+    .result-driver-image img {
+        height: 235px;
+    }
+
+    /* Noticias */
+
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .news-card-main {
+        grid-column: 1 / -1;
+    }
+
+    /* Sobre HyperDrive */
+
+    .about-section {
+        padding-top: 85px;
+        padding-bottom: 85px;
+    }
+
+    .about-grid {
+        gap: 14px;
+    }
+
+    .about-card {
+        min-height: 255px;
+        padding: 24px;
+    }
+
+    /* Twitch */
+
+    .live-section {
+        padding-top: 88px;
+        padding-bottom: 88px;
+    }
+
+    .live-container {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+
+    .live-content {
+        max-width: 760px;
+    }
+
+    .live-visual {
+        min-height: 380px;
+    }
+
+    .live-screen {
+        max-width: 520px;
+    }
+
+    /* Inscripciones */
+
+    .join-section {
+        padding-top: 88px;
+        padding-bottom: 88px;
+    }
+
+    .join-container {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+
+    .join-main {
+        max-width: 760px;
+    }
+
+    .join-steps {
+        max-width: 760px;
+    }
+
+    /* Footer */
+
+    .site-footer {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .site-footer::before {
+        left: 5%;
+        width: 90%;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 44px;
+    }
+
+    .footer-brand {
+        max-width: 470px;
+    }
+
+    .footer-links {
+        gap: 30px;
+    }
+
+    /* Páginas de noticias */
+
+    .news-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    /* Cabecera */
+
+    .main-header {
+        height: 68px;
+        padding: 0 18px;
+    }
+
+    .logo img {
+        width: 96px;
+    }
+
+    .discord-button {
+        min-height: 38px;
+        padding: 0 13px;
+        font-size: 9px;
+        letter-spacing: 0.35px;
+    }
+
+    /* Hero */
+
+    .hero {
+        padding: 72px 6% 60px;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(8, 9, 11, 0.98) 0%,
+                rgba(8, 9, 11, 0.92) 50%,
+                rgba(8, 9, 11, 0.55) 100%
+            ),
+            url("../images/hero/hero-hyperdrive.png");
+        background-size: cover;
+        background-position: 67% center;
+    }
+
+    .hero::before {
+        width: 3px;
+    }
+
+    .hero-season {
+        margin-bottom: 18px;
+        font-size: 11px;
+        letter-spacing: 2.8px;
+    }
+
+    .hero h1 {
+        font-size: clamp(42px, 12vw, 64px);
+        line-height: 0.92;
+        letter-spacing: -2.4px;
+    }
+
+    .hero-description {
+        margin-top: 24px;
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .hero-buttons {
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .hero-next-race {
+        max-width: 100%;
+        margin-top: 42px;
+    }
+
+    /* Títulos de sección */
+
+    .next-race-heading h2,
+    .standings-heading h2,
+    .results-heading h2,
+    .news-heading h2 {
+        letter-spacing: -1.5px;
+    }
+
+    /* Próxima carrera */
+
+    .next-race-section,
+    .standings-section,
+    .results-section,
+    .news-section,
+    .about-section,
+    .live-section,
+    .join-section {
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+    .next-race-section {
+        padding-top: 68px;
+        padding-bottom: 68px;
+    }
+
+    .next-race-heading {
+        margin-bottom: 30px;
+    }
+
+    .next-race-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .race-main-info {
+        grid-column: auto;
+        min-height: 190px;
+        padding: 28px;
+    }
+
+    .race-round {
+        padding-right: 22px;
+        margin-right: 22px;
+    }
+
+    .race-round strong {
+        font-size: 58px;
+    }
+
+    .division-card {
+        min-height: 170px;
+        padding: 27px;
+    }
+
+    .division-label {
+        margin-bottom: 15px;
+    }
+
+    .division-time {
+        margin-top: 14px;
+        font-size: 34px;
+    }
+
+    .next-race-actions {
+        flex-wrap: wrap;
+    }
+
+    /* Clasificación */
+
+    .standings-heading,
+    .results-heading,
+    .news-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .standings-tabs,
+    .results-tabs {
+        width: 100%;
+    }
+
+    .standings-tab,
+    .results-tab {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .standings-table {
+        border-radius: 10px;
+    }
+
+    .standings-header,
+    .standings-row {
+        grid-template-columns: 58px minmax(0, 1fr) 72px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .standings-header span:nth-child(3),
+    .standings-row .standings-team {
+        display: none;
+    }
+
+    .standings-row {
+        min-height: 66px;
+    }
+
+    .standings-driver {
+        height: 66px;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .driver-photo-wrapper {
+        width: 56px;
+        height: 66px;
+    }
+
+    .driver-photo {
+        width: 58px;
+        height: 58px;
+    }
+
+    .driver-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .standings-footer,
+    .results-footer {
+        justify-content: stretch;
+    }
+
+    .standings-full-button,
+    .results-full-button,
+    .news-all-button {
+        width: 100%;
+    }
+
+    /* Resultados */
+
+    #latest-results-list {
+        grid-template-columns: 1fr;
+    }
+
+    .result-card {
+        min-height: 305px;
+    }
+
+    .result-driver-image {
+        height: 205px;
+    }
+
+    .result-driver-image img {
+        height: 265px;
+    }
+
+    /* Noticias */
+
+    .news-grid,
+    .news-page-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-card-main {
+        grid-column: auto;
+    }
+
+    .news-card-main .news-image-placeholder,
+    .news-image-placeholder {
+        min-height: 210px;
+    }
+
+    .news-page-card {
+        min-height: 0;
+    }
+
+    /* Sobre HyperDrive */
+
+    .about-section {
+        padding-top: 72px;
+        padding-bottom: 72px;
+    }
+
+    .about-intro {
+        margin-bottom: 38px;
+    }
+
+    .about-intro h2 {
+        font-size: clamp(3rem, 14vw, 5rem);
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-card {
+        min-height: 0;
+    }
+
+    .about-number {
+        margin-bottom: 32px;
+    }
+
+    /* Twitch */
+
+    .live-section {
+        padding-top: 72px;
+        padding-bottom: 72px;
+    }
+
+    .live-content h2 {
+        font-size: clamp(3rem, 13vw, 5rem);
+    }
+
+    .live-schedule {
+        grid-template-columns: 1fr;
+    }
+
+    .live-visual {
+        min-height: 330px;
+        padding: 24px;
+    }
+
+    .live-screen {
+        min-height: 245px;
+        padding: 24px;
+    }
+
+    .live-screen strong {
+        font-size: clamp(3rem, 14vw, 4.5rem);
+    }
+
+    /* Inscripciones */
+
+    .join-section {
+        padding-top: 72px;
+        padding-bottom: 72px;
+    }
+
+    .join-main h2 {
+        font-size: clamp(3rem, 14vw, 5.2rem);
+    }
+
+    .join-step {
+        grid-template-columns: 62px 1fr;
+        gap: 16px;
+        min-height: 108px;
+        padding: 18px;
+    }
+
+    .join-step-number {
+        width: 52px;
+        height: 52px;
+    }
+
+    /* Footer */
+
+    .site-footer {
+        padding: 58px 6% 0;
+    }
+
+    .site-footer::before {
+        left: 6%;
+        width: 88%;
+    }
+
+    .footer-container {
+        padding-bottom: 45px;
+    }
+
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 38px 28px;
+    }
+
+    .footer-column:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .footer-bottom {
+        min-height: 76px;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    /* Noticia individual */
+
+    .article-page,
+    .news-page {
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+    .article-page {
+        padding-top: 58px;
+        padding-bottom: 78px;
+    }
+
+    .article-container h1 {
+        font-size: clamp(2.6rem, 11vw, 4.2rem);
+    }
+
+    .article-image {
+        margin-top: 32px;
+    }
+
+    .article-body {
+        margin-top: 36px;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    /* Cabecera */
+
+    .main-header {
+        padding: 0 14px;
+    }
+
+    .logo img {
+        width: 88px;
+    }
+
+    .discord-button {
+        padding: 0 11px;
+        font-size: 8.5px;
+    }
+
+    /* Hero */
+
+    .hero {
+        padding-top: 58px;
+        padding-bottom: 52px;
+    }
+
+    .hero h1 {
+        font-size: clamp(38px, 12.5vw, 54px);
+        letter-spacing: -2px;
+    }
+
+    .hero-description {
+        font-size: 14px;
+    }
+
+    .hero-buttons {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-primary,
+    .hero-secondary {
+        width: 100%;
+    }
+
+    .hero-next-race {
+        min-width: 0;
+        padding: 16px 18px;
+    }
+
+    /* Próxima carrera */
+
+    .next-race-heading h2 {
+        font-size: clamp(34px, 10.5vw, 48px);
+    }
+
+    .next-race-heading p {
+        line-height: 1.5;
+    }
+
+    .race-main-info {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 22px;
+    }
+
+    .race-round {
+        width: 100%;
+        padding-right: 0;
+        padding-bottom: 18px;
+        margin-right: 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .race-round strong {
+        font-size: 50px;
+    }
+
+    .race-name h3 {
+        font-size: 34px;
+    }
+
+    .next-race-actions {
+        flex-direction: column;
+    }
+
+    .racehub-button,
+    .twitch-button {
+        width: 100%;
+    }
+
+    /* Clasificación */
+
+    .standings-header,
+    .standings-row {
+        grid-template-columns: 48px minmax(0, 1fr) 58px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .standings-header {
+        font-size: 0.58rem;
+    }
+
+    .standings-position {
+        font-size: 0.95rem;
+    }
+
+    .standings-driver {
+        font-size: 0.86rem;
+    }
+
+    .driver-photo-wrapper {
+        width: 46px;
+    }
+
+    .driver-photo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .standings-points {
+        font-size: 0.98rem;
+    }
+
+    .standings-tab,
+    .results-tab {
+        padding: 11px 8px;
+        font-size: 0.67rem;
+    }
+
+    /* Noticias */
+
+    .news-content,
+    .news-page-card-content {
+        padding: 18px;
+    }
+
+    .news-page-card-image {
+        height: 195px;
+    }
+
+    /* Sobre HyperDrive */
+
+    .about-intro h2,
+    .live-content h2,
+    .join-main h2 {
+        letter-spacing: -0.045em;
+    }
+
+    /* Twitch */
+
+    .live-button,
+    .join-button {
+        width: 100%;
+    }
+
+    .live-visual {
+        min-height: 280px;
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .live-status {
+        top: 14px;
+        right: 14px;
+    }
+
+    .live-screen {
+        min-height: 215px;
+        padding: 20px;
+    }
+
+    /* Inscripciones */
+
+    .join-step {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .join-step:hover {
+        transform: none;
+    }
+
+    /* Footer */
+
+    .footer-brand img {
+        width: 130px;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .footer-column:last-child {
+        grid-column: auto;
+    }
+
+    .footer-column > span {
+        margin-bottom: 15px;
+    }
+
+    /* Noticia individual */
+
+    .article-back {
+        margin-bottom: 28px;
+    }
+
+    .article-container h1 {
+        font-size: clamp(2.35rem, 12vw, 3.5rem);
+    }
+
+    .article-body,
+    .article-body p:first-child {
+        font-size: 0.98rem;
+        line-height: 1.75;
+    }
+}
+
