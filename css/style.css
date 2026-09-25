@@ -2033,6 +2033,306 @@ body {
 
     background: var(--yellow);
 }
+/* ========================================
+   RETRANSMISIONES / TWITCH
+======================================== */
+
+.live-section {
+    position: relative;
+    padding: 105px 6%;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 82% 35%,
+            rgba(145, 70, 255, 0.16),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 12% 10%,
+            rgba(255, 213, 0, 0.045),
+            transparent 30%
+        ),
+        #08090b;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.live-section::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            115deg,
+            transparent 0%,
+            transparent 67%,
+            rgba(145, 70, 255, 0.035) 67%,
+            rgba(145, 70, 255, 0.035) 68%,
+            transparent 68%
+        );
+}
+
+.live-container {
+    position: relative;
+    z-index: 2;
+
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 70px;
+    align-items: center;
+}
+
+
+/* CONTENIDO */
+
+.live-content {
+    max-width: 650px;
+}
+
+.live-label {
+    display: block;
+
+    margin-bottom: 13px;
+
+    color: var(--yellow);
+
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+}
+
+.live-content h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(3rem, 6vw, 5.7rem);
+    font-weight: 900;
+
+    line-height: 0.91;
+    letter-spacing: -0.06em;
+}
+
+.live-content h2 span {
+    color: #a970ff;
+}
+
+.live-content > p {
+    max-width: 610px;
+
+    margin: 27px 0 0;
+
+    color: rgba(255, 255, 255, 0.55);
+
+    font-size: 0.96rem;
+    line-height: 1.8;
+}
+
+
+/* HORARIOS */
+
+.live-schedule {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    max-width: 610px;
+
+    margin-top: 35px;
+}
+
+.live-schedule-item {
+    padding: 18px 20px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.live-schedule-item span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: rgba(255, 255, 255, 0.42);
+
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.live-schedule-item strong {
+    color: #ffffff;
+
+    font-size: 0.86rem;
+    font-weight: 900;
+}
+
+
+/* BOTÓN TWITCH */
+
+.live-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 50px;
+    margin-top: 26px;
+    padding: 0 25px;
+
+    background: #9146ff;
+    color: #ffffff;
+
+    border-radius: 4px;
+
+    text-decoration: none;
+
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.live-button:hover {
+    transform: translateY(-2px);
+    background: #a970ff;
+    box-shadow: 0 12px 30px rgba(145, 70, 255, 0.20);
+}
+
+
+/* VISUAL DERECHO */
+
+.live-visual {
+    position: relative;
+
+    min-height: 450px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(145, 70, 255, 0.13),
+            rgba(255, 255, 255, 0.018) 52%,
+            rgba(255, 213, 0, 0.025)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+.live-visual::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.018) 0,
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px,
+            transparent 18px
+        );
+}
+
+.live-status {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+
+    z-index: 3;
+
+    padding: 8px 11px;
+
+    background: rgba(145, 70, 255, 0.14);
+    color: #b88cff;
+
+    border: 1px solid rgba(169, 112, 255, 0.25);
+    border-radius: 999px;
+
+    font-size: 0.64rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+}
+
+.live-screen {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 430px;
+    min-height: 280px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    padding: 30px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(8, 9, 11, 0.10),
+            rgba(8, 9, 11, 0.88)
+        ),
+        radial-gradient(
+            circle at 72% 25%,
+            rgba(145, 70, 255, 0.38),
+            transparent 38%
+        ),
+        #111318;
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.38),
+        0 0 0 1px rgba(145, 70, 255, 0.04);
+}
+
+.live-screen span {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #a970ff;
+
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+}
+
+.live-screen strong {
+    color: #ffffff;
+
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 900;
+
+    line-height: 0.82;
+    letter-spacing: -0.07em;
+}
+
 @media (max-width: 1200px) {
 
     .main-header {
