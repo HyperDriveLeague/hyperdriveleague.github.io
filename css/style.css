@@ -861,6 +861,46 @@ body {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.28);
 }
+/* ========================================
+   FOTOS DE PILOTOS EN CLASIFICACIÓN
+======================================== */
+
+.standings-driver {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 72px;
+    overflow: hidden;
+}
+
+.driver-photo-wrapper {
+    width: 68px;
+    height: 72px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.driver-photo {
+    width: 68px;
+    height: 68px;
+
+    object-fit: contain;
+
+    transform: scale(1.85);
+    transform-origin: 50% 10%;
+
+    margin-top: 3px;
+}
+
+.driver-name {
+    position: relative;
+    z-index: 2;
+}
 @media (max-width: 1200px) {
 
     .main-header {
