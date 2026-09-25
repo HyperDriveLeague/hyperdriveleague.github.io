@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Pilotos | HyperDrive League
+    </title>
+
+
+    <!-- ========================================
+         ICONOS / APP
+    ======================================== -->
+
+    <link
+        rel="icon"
+        type="image/jpeg"
+        href="images/logo/favicon.jpg"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="images/logo/apple-touch-icon.png"
+    >
+
+    <link
+        rel="manifest"
+        href="manifest.webmanifest"
+    >
+
+    <meta
+        name="theme-color"
+        content="#080808"
+    >
+
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="HyperDrive"
+    >
+
+
+    <!-- ========================================
+         CSS
+    ======================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/pilotos.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================================
+         HEADER
+    ======================================== -->
+
+    <header class="main-header">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+
+            <img
+                src="images/logo/hyperdrive-logo.png"
+                alt="HyperDrive League"
+            >
+
+        </a>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                INICIO
+            </a>
+
+            <a href="noticias.html">
+                NOTICIAS
+            </a>
+
+            <a href="campeonato.html">
+                CAMPEONATO
+            </a>
+
+            <a href="#">
+                RACE HUB
+            </a>
+
+            <a href="resultados.html">
+                RESULTADOS
+            </a>
+
+            <a href="calendario.html">
+                CALENDARIO
+            </a>
+
+            <a href="pilotos.html">
+                PILOTOS
+            </a>
+
+            <a href="#">
+                EQUIPOS
+            </a>
+
+
+            <div class="more-menu">
+
+                <span>
+                    MÁS ▾
+                </span>
+
+            </div>
+
+        </nav>
+
+
+        <a
+            href="https://discord.gg/SvKXMBRDgu"
+            class="discord-button"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            ÚNETE AL DISCORD
+        </a>
+
+
+        <!-- BOTÓN MENÚ MÓVIL -->
+
+        <button
+            class="mobile-menu-toggle"
+            id="mobile-menu-toggle"
+            type="button"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+
+        <!-- MENÚ MÓVIL -->
+
+        <div
+            class="mobile-menu"
+            id="mobile-menu"
+        >
+
+            <nav class="mobile-menu-nav">
+
+                <a href="index.html">
+                    INICIO
+                </a>
+
+                <a href="noticias.html">
+                    NOTICIAS
+                </a>
+
+                <a href="campeonato.html">
+                    CAMPEONATO
+                </a>
+
+                <a href="#">
+                    RACE HUB
+                </a>
+
+                <a href="resultados.html">
+                    RESULTADOS
+                </a>
+
+                <a href="calendario.html">
+                    CALENDARIO
+                </a>
+
+                <a href="pilotos.html">
+                    PILOTOS
+                </a>
+
+                <a href="#">
+                    EQUIPOS
+                </a>
+
+                <a href="#">
+                    HALL OF FAME
+                </a>
+
+                <a href="#">
+                    HISTORIA
+                </a>
+
+                <a href="#">
+                    REGLAMENTO
+                </a>
+
+                <a href="#">
+                    INSCRIPCIONES
+                </a>
+
+            </nav>
+
+
+            <div class="mobile-menu-social">
+
+                <a
+                    href="https://discord.gg/SvKXMBRDgu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    DISCORD
+                </a>
+
+                <a
+                    href="https://www.twitch.tv/hyperdriveleague"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    TWITCH
+                </a>
+
+                <a
+                    href="https://www.instagram.com/hyperdriveleague/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    INSTAGRAM
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ========================================
+         PILOTOS
+    ======================================== -->
+
+    <main class="drivers-page">
+
+
+        <!-- ========================================
+             HERO
+        ======================================== -->
+
+        <section class="drivers-hero">
+
+            <div class="drivers-hero-content">
+
+                <span class="drivers-hero-label">
+                    HYPERDRIVE LEAGUE · SEASON 8
+                </span>
+
+                <h1>
+                    PILOTOS
+                </h1>
+
+                <p>
+                    Conoce a los protagonistas de HyperDrive League.
+                    Descubre quiénes son y consulta su rendimiento
+                    durante la Temporada 8.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================
+             CONTENIDO
+        ======================================== -->
+
+        <section class="drivers-content">
+
+
+            <!-- ========================================
+                 SELECTOR DE DIVISIÓN
+            ======================================== -->
+
+            <div class="drivers-division-selector">
+
+                <button
+                    class="drivers-division-button active"
+                    data-drivers-division="hyperdrive"
+                    type="button"
+                >
+
+                    <span class="drivers-division-small">
+                        DIVISIÓN
+                    </span>
+
+                    <strong>
+                        HYPERDRIVE
+                    </strong>
+
+                </button>
+
+
+                <button
+                    class="drivers-division-button"
+                    data-drivers-division="academy"
+                    type="button"
+                >
+
+                    <span class="drivers-division-small">
+                        DIVISIÓN
+                    </span>
+
+                    <strong>
+                        ACADEMY
+                    </strong>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 CABECERA
+            ======================================== -->
+
+            <div class="drivers-section-heading">
+
+                <div>
+
+                    <span class="drivers-section-label">
+                        PARRILLA OFICIAL
+                    </span>
+
+                    <h2 id="drivers-division-title">
+                        HYPERDRIVE
+                    </h2>
+
+                </div>
+
+
+                <div class="drivers-heading-info">
+
+                    <span id="drivers-count">
+                        CARGANDO PILOTOS...
+                    </span>
+
+                    <span>
+                        SEASON 8 · 2026
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 EXPLICACIÓN POWER RANKING
+            ======================================== -->
+
+            <div class="power-ranking-info">
+
+                <div class="power-ranking-info-number">
+                    PR
+                </div>
+
+                <div>
+
+                    <strong>
+                        POWER RANKING
+                    </strong>
+
+                    <p>
+                        Valor dinámico de rendimiento entre 0 y 100.
+                        Evoluciona durante la temporada según los resultados
+                        obtenidos por cada piloto dentro de su propia división.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 GRID DE PILOTOS
+            ======================================== -->
+
+            <div
+                class="drivers-grid"
+                id="drivers-grid"
+            >
+
+                <div class="drivers-loading">
+                    CARGANDO PARRILLA...
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 AYUDA
+            ======================================== -->
+
+            <div class="drivers-help">
+
+                <span class="drivers-help-icon">
+                    ↻
+                </span>
+
+                <p>
+                    Pulsa sobre cualquier piloto para girar su tarjeta
+                    y consultar sus estadísticas de la temporada.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ========================================
+         FOOTER
+    ======================================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-container">
+
+
+            <div class="footer-brand">
+
+                <img
+                    src="images/logo/hyperdrive-logo.png"
+                    alt="HyperDrive League"
+                >
+
+                <p>
+                    Competición, estrategia y comunidad.
+                    Simracing construido para ir más allá de la pista.
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+
+                <div class="footer-column">
+
+                    <span>
+                        COMPETICIÓN
+                    </span>
+
+                    <a href="campeonato.html">
+                        Campeonato
+                    </a>
+
+                    <a href="#">
+                        Race Hub
+                    </a>
+
+                    <a href="resultados.html">
+                        Resultados
+                    </a>
+
+                    <a href="calendario.html">
+                        Calendario
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <span>
+                        HYPERDRIVE
+                    </span>
+
+                    <a href="noticias.html">
+                        Noticias
+                    </a>
+
+                    <a href="pilotos.html">
+                        Pilotos
+                    </a>
+
+                    <a href="#">
+                        Equipos
+                    </a>
+
+                    <a href="#">
+                        Hall of Fame
+                    </a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <span>
+                        COMUNIDAD
+                    </span>
+
+                    <a
+                        href="https://discord.gg/SvKXMBRDgu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Discord
+                    </a>
+
+                    <a
+                        href="https://www.twitch.tv/hyperdriveleague"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Twitch
+                    </a>
+
+                    <a
+                        href="https://www.instagram.com/hyperdriveleague/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Instagram
+                    </a>
+
+                    <a href="#">
+                        Inscripciones
+                    </a>
+
+                    <a href="#">
+                        Reglamento
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 HYPERDRIVE LEAGUE
+            </span>
+
+            <span>
+                SEASON 8
+            </span>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
+
+    <script src="js/main.js"></script>
+    <script src="js/pilotos.js"></script>
+
+
+</body>
+
+</html>
