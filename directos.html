@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Directos | HyperDrive League
+    </title>
+
+
+    <!-- ========================================
+         ICONOS / APP
+    ======================================== -->
+
+    <link
+        rel="icon"
+        type="image/jpeg"
+        href="images/logo/favicon.jpg"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="images/logo/apple-touch-icon.png"
+    >
+
+    <link
+        rel="manifest"
+        href="manifest.webmanifest"
+    >
+
+    <meta
+        name="theme-color"
+        content="#080808"
+    >
+
+    <meta
+        name="mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes"
+    >
+
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black"
+    >
+
+    <meta
+        name="apple-mobile-web-app-title"
+        content="HyperDrive"
+    >
+
+
+    <!-- ========================================
+         CSS
+    ======================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/directos.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <div id="site-header"></div>
+
+
+
+    <!-- ========================================
+         DIRECTOS
+    ======================================== -->
+
+    <main class="videos-page">
+
+
+        <!-- ========================================
+             HERO
+        ======================================== -->
+
+        <section class="videos-hero">
+
+            <div class="videos-hero-content">
+
+                <span class="videos-hero-label">
+                    HYPERDRIVE LEAGUE · YOUTUBE
+                </span>
+
+                <h1>
+                    DIRECTOS
+                </h1>
+
+                <p>
+                    Revive las últimas carreras y retransmisiones
+                    de HyperDrive League desde nuestro canal oficial
+                    de YouTube.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================
+             VIDEOS
+        ======================================== -->
+
+        <section class="videos-content">
+
+
+            <div class="videos-heading">
+
+                <div>
+
+                    <span class="videos-heading-label">
+                        ÚLTIMOS VÍDEOS
+                    </span>
+
+                    <h2>
+                        REVIVE LA ACCIÓN
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="https://www.youtube.com/@HyperDriveLeague"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="videos-youtube-button"
+                >
+                    VER CANAL DE YOUTUBE
+                </a>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 GRID GENERADO POR JAVASCRIPT
+            ======================================== -->
+
+            <div
+                class="videos-grid"
+                id="videos-grid"
+            >
+
+                <div class="videos-loading">
+                    CARGANDO VÍDEOS...
+                </div>
+
+            </div>
+
+
+
+            <!-- ========================================
+                 CARGAR MÁS
+            ======================================== -->
+
+            <div class="videos-more-container">
+
+                <button
+                    class="videos-more-button"
+                    id="videos-more-button"
+                    type="button"
+                    hidden
+                >
+                    + MÁS
+                </button>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+                class="videos-error"
+                id="videos-error"
+                hidden
+            >
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <div id="site-footer"></div>
+
+
+
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
+
+    <script src="js/layout.js"></script>
+    <script src="js/main.js"></script>
+
+    <script src="js/youtube-config.js"></script>
+    <script src="js/directos.js"></script>
+
+
+</body>
+
+</html>
