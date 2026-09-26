@@ -41,7 +41,8 @@
 
     const isMorePage =
         currentPage === "hall-of-fame.html" ||
-        currentPage === "quienes-somos.html";
+        currentPage === "quienes-somos.html" ||
+        currentPage === "reglamento.html";
 
 
     // ========================================
@@ -212,18 +213,18 @@
                         </a>
 
 
-                        <span
+                        <a
+                            href="reglamento.html"
+                            class="${activeClass("reglamento.html")}"
                             style="
                                 display: block;
                                 padding: 14px 15px;
                                 border-radius: 5px;
                                 white-space: nowrap;
-                                opacity: 0.35;
-                                cursor: default;
                             "
                         >
                             REGLAMENTO
-                        </span>
+                        </a>
 
 
                         <span
@@ -361,7 +362,10 @@
                         QUIÉNES SOMOS
                     </a>
 
-                    <a href="#">
+                    <a
+                        href="reglamento.html"
+                        class="${activeClass("reglamento.html")}"
+                    >
                         REGLAMENTO
                     </a>
 
@@ -530,7 +534,7 @@
                             Inscripciones
                         </a>
 
-                        <a href="#">
+                        <a href="reglamento.html">
                             Reglamento
                         </a>
 
