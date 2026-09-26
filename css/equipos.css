@@ -1,0 +1,1107 @@
+/* ========================================
+   HYPERDRIVE LEAGUE
+   EQUIPOS
+======================================== */
+
+
+/* ========================================
+   PÁGINA
+======================================== */
+
+.teams-page {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255, 214, 0, 0.05),
+            transparent 32%
+        ),
+        #080808;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.teams-hero {
+    min-height: 390px;
+
+    display: flex;
+    align-items: flex-end;
+
+    padding:
+        150px
+        6vw
+        70px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 214, 0, 0.07),
+            transparent 42%
+        );
+}
+
+
+.teams-hero-content {
+    width: 100%;
+    max-width: 900px;
+}
+
+
+.teams-hero-label {
+    display: block;
+
+    margin-bottom: 18px;
+
+    font-size: 0.76rem;
+    font-weight: 800;
+
+    letter-spacing: 0.18em;
+
+    color: #ffd600;
+}
+
+
+.teams-hero h1 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            3.2rem,
+            8vw,
+            7rem
+        );
+
+    line-height: 0.9;
+
+    letter-spacing: -0.055em;
+
+    color: #ffffff;
+}
+
+
+.teams-hero p {
+    max-width: 720px;
+
+    margin:
+        28px
+        0
+        0;
+
+    font-size: 1.05rem;
+    line-height: 1.65;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.64
+        );
+}
+
+
+/* ========================================
+   CONTENIDO
+======================================== */
+
+.teams-content {
+    width:
+        min(
+            1500px,
+            calc(100% - 12vw)
+        );
+
+    margin: 0 auto;
+
+    padding:
+        80px
+        0
+        120px;
+}
+
+
+/* ========================================
+   CABECERA
+======================================== */
+
+.teams-heading {
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 45px;
+}
+
+
+.teams-heading-label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+
+    color: #ffd600;
+}
+
+
+.teams-heading h2 {
+    margin: 0;
+
+    font-size:
+        clamp(
+            2rem,
+            4vw,
+            3.8rem
+        );
+
+    line-height: 1;
+
+    letter-spacing: -0.04em;
+
+    color: #ffffff;
+}
+
+
+.teams-heading-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 0.67rem;
+    font-weight: 800;
+
+    letter-spacing: 0.11em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+}
+
+
+/* ========================================
+   GRID DE EQUIPOS
+======================================== */
+
+.teams-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 32px;
+}
+
+
+/* ========================================
+   TARJETA DE EQUIPO
+======================================== */
+
+.team-card {
+    --team-color: #ffd600;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.09
+        );
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.012)
+        ),
+        #0e0e0e;
+
+    box-shadow:
+        0
+        22px
+        55px
+        rgba(
+            0,
+            0,
+            0,
+            0.24
+        );
+}
+
+
+.team-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background:
+        var(--team-color);
+}
+
+
+/* ========================================
+   CABECERA DEL EQUIPO
+======================================== */
+
+.team-card-header {
+    position: relative;
+
+    min-height: 170px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding:
+        32px
+        34px;
+
+    overflow: hidden;
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+}
+
+
+.team-card-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 270px;
+    height: 270px;
+
+    right: -100px;
+    top: -120px;
+
+    border-radius: 50%;
+
+    background:
+        var(--team-color);
+
+    opacity: 0.06;
+
+    filter: blur(10px);
+
+    pointer-events: none;
+}
+
+
+.team-card-title {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.team-card-label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-size: 0.64rem;
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+
+    color:
+        var(--team-color);
+}
+
+
+.team-card-name {
+    margin: 0;
+
+    font-size:
+        clamp(
+            1.9rem,
+            3vw,
+            3rem
+        );
+
+    line-height: 0.95;
+
+    letter-spacing: -0.045em;
+
+    text-transform: uppercase;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
+   LOGO DEL EQUIPO
+======================================== */
+
+.team-card-logo {
+    position: relative;
+
+    z-index: 2;
+
+    width: 150px;
+    height: 105px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.team-card-logo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+
+/* ========================================
+   TEAM PRINCIPAL
+======================================== */
+
+.team-principal {
+    display: grid;
+
+    grid-template-columns:
+        150px
+        minmax(0, 1fr);
+
+    align-items: stretch;
+
+    min-height: 190px;
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.015
+        );
+}
+
+
+.team-principal-photo {
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.025),
+            rgba(255, 255, 255, 0)
+        );
+}
+
+
+.team-principal-photo::after {
+    content: "";
+
+    position: absolute;
+
+    inset: auto 0 0;
+
+    height: 45%;
+
+    background:
+        linear-gradient(
+            to top,
+            #111111,
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+
+.team-principal-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center top;
+}
+
+
+.team-principal-info {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: center;
+
+    padding:
+        26px
+        28px;
+}
+
+
+.team-principal-role {
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-size: 0.65rem;
+    font-weight: 900;
+
+    letter-spacing: 0.15em;
+
+    color:
+        var(--team-color);
+}
+
+
+.team-principal-name {
+    margin: 0;
+
+    font-size: 1.65rem;
+    font-weight: 900;
+
+    line-height: 1;
+
+    letter-spacing: -0.035em;
+
+    text-transform: uppercase;
+
+    color: #ffffff;
+}
+
+
+.team-principal-subtitle {
+    margin-top: 10px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+}
+
+
+/* ========================================
+   DIVISIONES
+======================================== */
+
+.team-lineups {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+}
+
+
+.team-division {
+    padding:
+        25px
+        25px
+        28px;
+}
+
+
+.team-division:first-child {
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+}
+
+
+.team-division-heading {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.team-division-label {
+    font-size: 0.69rem;
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+
+    color: #ffffff;
+}
+
+
+.team-division-count {
+    font-size: 0.62rem;
+    font-weight: 800;
+
+    letter-spacing: 0.1em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.32
+        );
+}
+
+
+/* ========================================
+   PILOTOS
+======================================== */
+
+.team-drivers {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 11px;
+}
+
+
+.team-driver {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    border-radius: 6px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.022
+        );
+}
+
+
+.team-driver-photo {
+    position: relative;
+
+    height: 145px;
+
+    overflow: hidden;
+
+    background:
+        #0a0a0a;
+}
+
+
+.team-driver-photo::after {
+    content: "";
+
+    position: absolute;
+
+    inset: auto 0 0;
+
+    height: 50%;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(9, 9, 9, 1),
+            transparent
+        );
+
+    pointer-events: none;
+}
+
+
+.team-driver-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center top;
+
+    transition:
+        transform
+        0.25s ease;
+}
+
+
+.team-driver:hover
+.team-driver-photo img {
+    transform:
+        scale(1.035);
+}
+
+
+.team-driver-info {
+    padding:
+        11px
+        12px
+        13px;
+}
+
+
+.team-driver-number {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 0.62rem;
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+
+    color:
+        var(--team-color);
+}
+
+
+.team-driver-name {
+    margin: 0;
+
+    overflow: hidden;
+
+    font-size: 0.84rem;
+    font-weight: 850;
+
+    line-height: 1.15;
+
+    text-transform: uppercase;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
+   ASIENTO DISPONIBLE
+======================================== */
+
+.team-driver.empty {
+    min-height: 201px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-style: dashed;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.01
+        );
+}
+
+
+.team-driver-empty-content {
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 20px;
+
+    text-align: center;
+}
+
+
+.team-driver-empty-icon {
+    font-size: 1.35rem;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.24
+        );
+}
+
+
+.team-driver-empty-label {
+    font-size: 0.62rem;
+    font-weight: 900;
+
+    letter-spacing: 0.11em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.35
+        );
+}
+
+
+/* ========================================
+   CARGANDO
+======================================== */
+
+.teams-loading {
+    grid-column: 1 / -1;
+
+    padding:
+        90px
+        20px;
+
+    text-align: center;
+
+    font-size: 0.74rem;
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.46
+        );
+}
+
+
+/* ========================================
+   ERROR
+======================================== */
+
+.teams-error {
+    grid-column: 1 / -1;
+
+    padding:
+        35px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            90,
+            90,
+            0.25
+        );
+
+    border-radius: 6px;
+
+    text-align: center;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.68
+        );
+}
+
+
+/* ========================================
+   PANTALLA MEDIANA
+======================================== */
+
+@media (max-width: 1150px) {
+
+    .teams-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .team-driver-photo {
+        height: 180px;
+    }
+
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 800px) {
+
+    .teams-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .team-card-header {
+        padding:
+            28px
+            25px;
+    }
+
+
+    .team-card-logo {
+        width: 125px;
+        height: 90px;
+    }
+
+
+    .team-principal {
+        grid-template-columns:
+            135px
+            minmax(0, 1fr);
+    }
+
+
+    .team-driver-photo {
+        height: 155px;
+    }
+
+}
+
+
+/* ========================================
+   MÓVIL
+======================================== */
+
+@media (max-width: 600px) {
+
+    .teams-hero {
+        min-height: 315px;
+
+        padding:
+            125px
+            22px
+            50px;
+    }
+
+
+    .teams-hero p {
+        font-size: 0.96rem;
+    }
+
+
+    .teams-content {
+        width:
+            calc(
+                100% - 30px
+            );
+
+        padding:
+            55px
+            0
+            85px;
+    }
+
+
+    .teams-heading-info {
+        flex-wrap: wrap;
+    }
+
+
+    .team-card-header {
+        min-height: 135px;
+
+        gap: 18px;
+
+        padding:
+            24px
+            20px;
+    }
+
+
+    .team-card-logo {
+        width: 95px;
+        height: 72px;
+    }
+
+
+    .team-card-name {
+        font-size: 1.8rem;
+    }
+
+
+    /* TEAM PRINCIPAL */
+
+    .team-principal {
+        grid-template-columns:
+            115px
+            minmax(0, 1fr);
+
+        min-height: 160px;
+    }
+
+
+    .team-principal-info {
+        padding:
+            20px
+            18px;
+    }
+
+
+    .team-principal-name {
+        font-size: 1.35rem;
+    }
+
+
+    /* DIVISIONES UNA DEBAJO DE OTRA */
+
+    .team-lineups {
+        grid-template-columns: 1fr;
+    }
+
+
+    .team-division {
+        padding:
+            22px
+            18px
+            25px;
+    }
+
+
+    .team-division:first-child {
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.07
+            );
+    }
+
+
+    /* PILOTOS SIGUEN 2 POR FILA */
+
+    .team-drivers {
+        gap: 10px;
+    }
+
+
+    .team-driver-photo {
+        height: 175px;
+    }
+
+
+    .team-driver.empty {
+        min-height: 231px;
+    }
+
+}
+
+
+/* ========================================
+   MÓVILES PEQUEÑOS
+======================================== */
+
+@media (max-width: 390px) {
+
+    .team-card-header {
+        align-items: flex-start;
+    }
+
+
+    .team-card-logo {
+        width: 78px;
+        height: 62px;
+    }
+
+
+    .team-principal {
+        grid-template-columns:
+            105px
+            minmax(0, 1fr);
+    }
+
+
+    .team-driver-photo {
+        height: 150px;
+    }
+
+}
