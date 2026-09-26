@@ -100,8 +100,11 @@
                     CAMPEONATO
                 </a>
 
-                <a href="#">
-                    RACE HUB
+                <a
+                    href="directos.html"
+                    class="${activeClass("directos.html")}"
+                >
+                    DIRECTOS
                 </a>
 
                 <a
@@ -207,8 +210,11 @@
                         CAMPEONATO
                     </a>
 
-                    <a href="#">
-                        RACE HUB
+                    <a
+                        href="directos.html"
+                        class="${activeClass("directos.html")}"
+                    >
+                        DIRECTOS
                     </a>
 
                     <a
@@ -339,8 +345,8 @@
                             Campeonato
                         </a>
 
-                        <a href="#">
-                            Race Hub
+                        <a href="directos.html">
+                            Directos
                         </a>
 
                         <a href="resultados.html">
