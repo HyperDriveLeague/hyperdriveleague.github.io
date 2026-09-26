@@ -556,6 +556,15 @@
             2,
             minmax(0, 1fr)
         );
+
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
 }
 
 
@@ -826,6 +835,246 @@
 
 
 /* ========================================
+   RENDIMIENTO / ESTADÍSTICAS
+======================================== */
+
+.team-performance {
+    display: grid;
+
+    grid-template-columns:
+        1.1fr
+        2fr
+        1.1fr;
+
+    min-height: 150px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.018),
+            rgba(255, 255, 255, 0.005)
+        );
+}
+
+
+/* ========================================
+   SUPERCONSTRUCTORES
+======================================== */
+
+.team-superconstructor {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 14px;
+
+    padding:
+        25px
+        24px;
+
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+}
+
+
+.team-performance-label {
+    display: block;
+
+    font-size: 0.59rem;
+    font-weight: 900;
+
+    letter-spacing: 0.13em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.42
+        );
+}
+
+
+.team-superconstructor-data {
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 10px;
+}
+
+
+.team-superconstructor-data strong {
+    font-size: 2.05rem;
+    font-weight: 950;
+
+    line-height: 1;
+
+    letter-spacing: -0.05em;
+
+    color:
+        var(--team-color);
+}
+
+
+.team-superconstructor-data span {
+    font-size: 0.78rem;
+    font-weight: 900;
+
+    letter-spacing: 0.04em;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
+   VICTORIAS / PODIOS / POLES / VR
+======================================== */
+
+.team-performance-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+}
+
+
+.team-performance-stat {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding:
+        18px
+        20px;
+}
+
+
+.team-performance-stat:nth-child(1),
+.team-performance-stat:nth-child(2) {
+    border-bottom:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.team-performance-stat:nth-child(odd) {
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+}
+
+
+.team-performance-stat strong {
+    font-size: 1.45rem;
+    font-weight: 950;
+
+    line-height: 1;
+
+    color: #ffffff;
+}
+
+
+.team-performance-stat span {
+    font-size: 0.56rem;
+    font-weight: 850;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.09em;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.4
+        );
+}
+
+
+/* ========================================
+   MEJOR RESULTADO
+======================================== */
+
+.team-best-result {
+    display: flex;
+
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding:
+        25px
+        24px;
+}
+
+
+.team-best-result strong {
+    margin-top: 5px;
+
+    font-size: 2.05rem;
+    font-weight: 950;
+
+    line-height: 1;
+
+    letter-spacing: -0.05em;
+
+    color:
+        var(--team-color);
+}
+
+
+.team-best-driver {
+    overflow: hidden;
+
+    font-size: 0.73rem;
+    font-weight: 850;
+
+    letter-spacing: 0.04em;
+
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #ffffff;
+}
+
+
+/* ========================================
    CARGANDO
 ======================================== */
 
@@ -901,6 +1150,14 @@
         height: 180px;
     }
 
+
+    .team-performance {
+        grid-template-columns:
+            1fr
+            2fr
+            1fr;
+    }
+
 }
 
 
@@ -939,6 +1196,46 @@
 
     .team-driver-photo {
         height: 155px;
+    }
+
+
+    .team-performance {
+        grid-template-columns:
+            1fr
+            1.8fr;
+    }
+
+
+    .team-superconstructor {
+        border-right:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.07
+            );
+    }
+
+
+    .team-performance-grid {
+        border-right: 0;
+    }
+
+
+    .team-best-result {
+        grid-column: 1 / -1;
+
+        min-height: 105px;
+
+        border-top:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.07
+            );
     }
 
 }
@@ -1028,7 +1325,7 @@
     }
 
 
-    /* DIVISIONES UNA DEBAJO DE OTRA */
+    /* DIVISIONES */
 
     .team-lineups {
         grid-template-columns: 1fr;
@@ -1057,7 +1354,7 @@
     }
 
 
-    /* PILOTOS SIGUEN 2 POR FILA */
+    /* PILOTOS */
 
     .team-drivers {
         gap: 10px;
@@ -1071,6 +1368,63 @@
 
     .team-driver.empty {
         min-height: 231px;
+    }
+
+
+    /* ESTADÍSTICAS */
+
+    .team-performance {
+        grid-template-columns: 1fr;
+    }
+
+
+    .team-superconstructor {
+        min-height: 115px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.07
+            );
+    }
+
+
+    .team-performance-grid {
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(
+                255,
+                255,
+                255,
+                0.07
+            );
+    }
+
+
+    .team-performance-stat {
+        min-height: 90px;
+    }
+
+
+    .team-best-result {
+        grid-column: auto;
+
+        min-height: 115px;
+
+        border-top: 0;
+    }
+
+
+    .team-superconstructor-data strong,
+    .team-best-result strong {
+        font-size: 1.8rem;
     }
 
 }
@@ -1102,6 +1456,13 @@
 
     .team-driver-photo {
         height: 150px;
+    }
+
+
+    .team-performance-stat {
+        padding:
+            16px
+            14px;
     }
 
 }
