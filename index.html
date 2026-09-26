@@ -53,6 +53,146 @@
         rel="stylesheet"
         href="css/style.css"
     >
+
+
+    <!-- ========================================
+         CONTADOR PRÓXIMA CARRERA
+         Aislado de style.css
+    ======================================== -->
+
+    <style>
+
+        .hero-next-race {
+            min-width: 340px;
+        }
+
+        .next-countdown {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .countdown-box {
+            min-width: 0;
+            padding: 9px 5px;
+
+            text-align: center;
+
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 4px;
+
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .countdown-number {
+            display: block;
+
+            color: #ffffff;
+
+            font-size: 17px;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        .countdown-text {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #8f9298;
+
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+
+        /* SECCIÓN GRANDE */
+
+        .next-session-card strong {
+            color: #ffffff;
+        }
+
+        .next-session-note {
+            margin-top: 8px;
+
+            color: #9b9da3;
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .next-countdown-card {
+            justify-content: center;
+        }
+
+        .next-countdown-card .next-countdown {
+            margin-top: 18px;
+        }
+
+        .next-countdown-card .countdown-box {
+            padding: 15px 5px;
+        }
+
+        .next-countdown-card .countdown-number {
+            font-size: 25px;
+        }
+
+        .next-countdown-card .countdown-text {
+            font-size: 8px;
+        }
+
+
+        /* TABLET */
+
+        @media (max-width: 1000px) {
+
+            .hero-next-race {
+                min-width: 320px;
+            }
+
+            .next-countdown-card .countdown-number {
+                font-size: 20px;
+            }
+
+        }
+
+
+        /* MÓVIL */
+
+        @media (max-width: 768px) {
+
+            .hero-next-race {
+                min-width: 0;
+                width: calc(100% - 40px);
+            }
+
+            .next-countdown {
+                gap: 5px;
+            }
+
+            .countdown-box {
+                padding: 8px 3px;
+            }
+
+            .countdown-number {
+                font-size: 15px;
+            }
+
+            .countdown-text {
+                font-size: 7px;
+            }
+
+            .next-countdown-card .countdown-number {
+                font-size: 19px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -110,19 +250,83 @@
             </div>
 
 
+            <!-- PRÓXIMA CARRERA HERO -->
+
             <div class="hero-next-race">
 
                 <span class="next-label">
                     PRÓXIMA CARRERA
                 </span>
 
-                <strong>
-                    PRÓXIMAMENTE
+                <strong id="hero-next-round">
+                    CARGANDO...
                 </strong>
 
-                <span class="next-info">
-                    SEASON 8
+                <span
+                    class="next-info"
+                    id="hero-next-division"
+                >
+                    CARGANDO SESIÓN...
                 </span>
+
+
+                <div
+                    class="next-countdown"
+                    id="hero-next-countdown"
+                >
+
+                    <div class="countdown-box">
+
+                        <span class="countdown-number">
+                            00
+                        </span>
+
+                        <span class="countdown-text">
+                            DÍAS
+                        </span>
+
+                    </div>
+
+
+                    <div class="countdown-box">
+
+                        <span class="countdown-number">
+                            00
+                        </span>
+
+                        <span class="countdown-text">
+                            HORAS
+                        </span>
+
+                    </div>
+
+
+                    <div class="countdown-box">
+
+                        <span class="countdown-number">
+                            00
+                        </span>
+
+                        <span class="countdown-text">
+                            MIN
+                        </span>
+
+                    </div>
+
+
+                    <div class="countdown-box">
+
+                        <span class="countdown-number">
+                            00
+                        </span>
+
+                        <span class="countdown-text">
+                            SEG
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -142,18 +346,21 @@
                     PRÓXIMA CARRERA
                 </span>
 
-                <h2>
-                    R4 · GP SILVERSTONE
+                <h2 id="next-race-title">
+                    CARGANDO...
                 </h2>
 
-                <p>
-                    30 SEPTIEMBRE — 1 OCTUBRE · SEASON 8
+                <p id="next-race-date">
+                    CARGANDO FECHA...
                 </p>
 
             </div>
 
 
             <div class="next-race-grid">
+
+
+                <!-- CIRCUITO -->
 
                 <div class="race-main-info">
 
@@ -163,8 +370,8 @@
                             ROUND
                         </span>
 
-                        <strong>
-                            04
+                        <strong id="next-race-round">
+                            --
                         </strong>
 
                     </div>
@@ -176,12 +383,15 @@
                             GRAN PREMIO
                         </span>
 
-                        <h3>
-                            SILVERSTONE
+                        <h3 id="next-race-gp">
+                            CARGANDO...
                         </h3>
 
-                        <div class="race-special">
-                            SPRINT
+                        <div
+                            class="race-special"
+                            id="next-race-format"
+                        >
+                            ...
                         </div>
 
                     </div>
@@ -189,43 +399,92 @@
                 </div>
 
 
-                <div class="division-card">
+
+                <!-- PRÓXIMA SESIÓN -->
+
+                <div class="division-card next-session-card">
 
                     <span class="division-label">
-                        ACADEMY
+                        SIGUIENTE SESIÓN
                     </span>
 
-                    <strong>
-                        MIÉRCOLES
+                    <strong id="next-race-division">
+                        CARGANDO...
                     </strong>
 
-                    <div class="division-date">
-                        30 SEPTIEMBRE
-                    </div>
-
-                    <div class="division-time">
-                        22:00
+                    <div class="next-session-note">
+                        22:00 · HORA ESPAÑOLA
                     </div>
 
                 </div>
 
 
-                <div class="division-card">
+
+                <!-- CONTADOR -->
+
+                <div class="division-card next-countdown-card">
 
                     <span class="division-label">
-                        HYPERDRIVE
+                        CUENTA ATRÁS
                     </span>
 
-                    <strong>
-                        JUEVES
-                    </strong>
 
-                    <div class="division-date">
-                        1 OCTUBRE
-                    </div>
+                    <div
+                        class="next-countdown"
+                        id="next-race-countdown"
+                    >
 
-                    <div class="division-time">
-                        22:00
+                        <div class="countdown-box">
+
+                            <span class="countdown-number">
+                                00
+                            </span>
+
+                            <span class="countdown-text">
+                                DÍAS
+                            </span>
+
+                        </div>
+
+
+                        <div class="countdown-box">
+
+                            <span class="countdown-number">
+                                00
+                            </span>
+
+                            <span class="countdown-text">
+                                HORAS
+                            </span>
+
+                        </div>
+
+
+                        <div class="countdown-box">
+
+                            <span class="countdown-number">
+                                00
+                            </span>
+
+                            <span class="countdown-text">
+                                MIN
+                            </span>
+
+                        </div>
+
+
+                        <div class="countdown-box">
+
+                            <span class="countdown-number">
+                                00
+                            </span>
+
+                            <span class="countdown-text">
+                                SEG
+                            </span>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -236,10 +495,10 @@
             <div class="next-race-actions">
 
                 <a
-                    href="#"
+                    href="calendario.html"
                     class="racehub-button"
                 >
-                    ENTRAR AL RACE HUB
+                    VER CALENDARIO
                 </a>
 
                 <a
@@ -756,6 +1015,9 @@
 
     <script src="js/layout.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- Contador independiente -->
+    <script src="js/race-countdown.js"></script>
 
 </body>
 
