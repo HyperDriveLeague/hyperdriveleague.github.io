@@ -9,6 +9,19 @@ document.addEventListener(
 
 
         // ========================================
+        // CONFIGURACIÓN
+        // ========================================
+
+        const TOTAL_ROUNDS = 12;
+
+        const DIVISIONS = [
+            "hyperdrive",
+            "academy"
+        ];
+
+
+
+        // ========================================
         // ELEMENTOS
         // ========================================
 
@@ -19,9 +32,7 @@ document.addEventListener(
 
 
         if (!teamsGrid) {
-
             return;
-
         }
 
 
@@ -49,6 +60,9 @@ document.addEventListener(
 
         const raceTeamInfo =
             new Map();
+
+
+        const raceSessions = [];
 
 
 
@@ -138,16 +152,8 @@ document.addEventListener(
             catch (error) {
 
                 if (required) {
-
                     throw error;
-
                 }
-
-
-                console.warn(
-                    `Archivo opcional no disponible: ${path}`,
-                    error
-                );
 
 
                 return null;
@@ -207,9 +213,7 @@ document.addEventListener(
 
 
             if (profileImage) {
-
                 return profileImage;
-
             }
 
 
@@ -288,9 +292,7 @@ document.addEventListener(
 
 
             if (!driverName) {
-
                 return;
-
             }
 
 
@@ -301,9 +303,7 @@ document.addEventListener(
 
 
             if (!key) {
-
                 return;
-
             }
 
 
@@ -343,9 +343,7 @@ document.addEventListener(
         ) {
 
             if (!node) {
-
                 return;
-
             }
 
 
@@ -377,7 +375,6 @@ document.addEventListener(
             }
 
 
-
             const explicitName =
                 String(
                     node.driverName ??
@@ -387,7 +384,6 @@ document.addEventListener(
                     node.displayName ??
                     ""
                 ).trim();
-
 
 
             let inferredName = "";
@@ -428,11 +424,9 @@ document.addEventListener(
             }
 
 
-
             const driverName =
                 explicitName ||
                 inferredName;
-
 
 
             if (
@@ -446,7 +440,6 @@ document.addEventListener(
                 );
 
             }
-
 
 
             Object.entries(node)
@@ -515,14 +508,12 @@ document.addEventListener(
             }
 
 
-
             const driverName =
                 String(
                     driver.driverName ??
                     driver.name ??
                     ""
                 ).trim();
-
 
 
             let teamName = "";
@@ -553,13 +544,9 @@ document.addEventListener(
             }
 
 
-
             if (!driverName) {
-
                 return null;
-
             }
-
 
 
             return {
@@ -580,10 +567,7 @@ document.addEventListener(
             data
         ) {
 
-            [
-                "hyperdrive",
-                "academy"
-            ].forEach(
+            DIVISIONS.forEach(
                 division => {
 
                     const list =
@@ -615,7 +599,177 @@ document.addEventListener(
 
 
         // ========================================
-        // INFORMACIÓN DE CARRERA
+        // VALIDAR SESSION
+        // ========================================
+
+        function isValidRaceFile(
+            data
+        ) {
+
+            return Boolean(
+
+                data &&
+                data.session &&
+                Array.isArray(
+                    data.session.drivers
+                )
+
+            );
+
+        }
+
+
+
+        // ========================================
+        // CARGAR R1 - R12
+        // ========================================
+
+        async function loadRaceFiles() {
+
+            const requests = [];
+
+
+            DIVISIONS.forEach(
+                division => {
+
+                    for (
+                        let round = 1;
+                        round <=
+                            TOTAL_ROUNDS;
+                        round++
+                    ) {
+
+                        requests.push(
+
+                            fetchJSON(
+                                `data/${division}_r${round}.json`
+                            ).then(
+                                data => {
+
+                                    if (
+                                        data &&
+                                        isValidRaceFile(
+                                            data
+                                        )
+                                    ) {
+
+                                        raceSessions.push({
+
+                                            division:
+                                                division,
+
+                                            round:
+                                                round,
+
+                                            type:
+                                                "race",
+
+                                            data:
+                                                data
+
+                                        });
+
+                                    }
+
+                                }
+                            )
+
+                        );
+
+
+                        requests.push(
+
+                            fetchJSON(
+                                `data/${division}_r${round}_sprint.json`
+                            ).then(
+                                data => {
+
+                                    if (
+                                        data &&
+                                        isValidRaceFile(
+                                            data
+                                        )
+                                    ) {
+
+                                        raceSessions.push({
+
+                                            division:
+                                                division,
+
+                                            round:
+                                                round,
+
+                                            type:
+                                                "sprint",
+
+                                            data:
+                                                data
+
+                                        });
+
+                                    }
+
+                                }
+                            )
+
+                        );
+
+                    }
+
+                }
+            );
+
+
+            await Promise.all(
+                requests
+            );
+
+
+            raceSessions.sort(
+                (
+                    a,
+                    b
+                ) => {
+
+                    if (
+                        a.round !==
+                        b.round
+                    ) {
+
+                        return (
+                            a.round -
+                            b.round
+                        );
+
+                    }
+
+
+                    if (
+                        a.type ===
+                        b.type
+                    ) {
+
+                        return 0;
+
+                    }
+
+
+                    return (
+                        a.type ===
+                        "sprint"
+                            ? -1
+                            : 1
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        // ========================================
+        // COLOR RLT
         // ========================================
 
         function normalizeTeamColor(
@@ -628,7 +782,6 @@ document.addEventListener(
                 ).trim();
 
 
-            // RLT:
             // #AARRGGBB
 
             if (
@@ -660,6 +813,10 @@ document.addEventListener(
 
 
 
+        // ========================================
+        // INFORMACIÓN DE CARRERAS
+        // ========================================
+
         function extractRaceInfo(
             data
         ) {
@@ -677,7 +834,6 @@ document.addEventListener(
                 return;
 
             }
-
 
 
             drivers.forEach(
@@ -705,13 +861,9 @@ document.addEventListener(
                         ).trim();
 
 
-
                     if (
                         driverKey &&
-                        raceNumber &&
-                        !raceDriverInfo.has(
-                            driverKey
-                        )
+                        raceNumber
                     ) {
 
                         raceDriverInfo.set(
@@ -725,7 +877,6 @@ document.addEventListener(
                     }
 
 
-
                     const teamName =
                         String(
                             driver
@@ -736,9 +887,7 @@ document.addEventListener(
 
 
                     if (!teamName) {
-
                         return;
-
                     }
 
 
@@ -756,12 +905,7 @@ document.addEventListener(
                         );
 
 
-                    if (
-                        teamKey &&
-                        !raceTeamInfo.has(
-                            teamKey
-                        )
-                    ) {
+                    if (teamKey) {
 
                         raceTeamInfo.set(
                             teamKey,
@@ -811,11 +955,8 @@ document.addEventListener(
 
 
             if (profileNumber) {
-
                 return profileNumber;
-
             }
-
 
 
             const raceInfo =
@@ -851,52 +992,32 @@ document.addEventListener(
                 officialDrivers
                     .hyperdrive
                     .find(
-                        driver => {
-
-                            return (
-                                normalizeKey(
-                                    driver
-                                        .driverName
-                                ) ===
-                                key
-                            );
-
-                        }
+                        driver =>
+                            normalizeKey(
+                                driver.driverName
+                            ) === key
                     );
 
 
             if (hyperdriveDriver) {
-
                 return "hyperdrive";
-
             }
-
 
 
             const academyDriver =
                 officialDrivers
                     .academy
                     .find(
-                        driver => {
-
-                            return (
-                                normalizeKey(
-                                    driver
-                                        .driverName
-                                ) ===
-                                key
-                            );
-
-                        }
+                        driver =>
+                            normalizeKey(
+                                driver.driverName
+                            ) === key
                     );
 
 
             if (academyDriver) {
-
                 return "academy";
-
             }
-
 
 
             return "";
@@ -1007,8 +1128,7 @@ document.addEventListener(
 
                         return (
                             normalizeKey(
-                                driver
-                                    .teamName
+                                driver.teamName
                             ) ===
                             teamKey
                         );
@@ -1025,7 +1145,475 @@ document.addEventListener(
 
 
         // ========================================
-        // PILOTO VACANTE
+        // PUNTOS
+        // ========================================
+
+        function toNumber(value) {
+
+            const number =
+                Number(value);
+
+
+            return Number.isFinite(
+                number
+            )
+                ? number
+                : 0;
+
+        }
+
+
+
+        function formatPoints(value) {
+
+            const number =
+                toNumber(value);
+
+
+            if (
+                Number.isInteger(
+                    number
+                )
+            ) {
+
+                return String(
+                    number
+                );
+
+            }
+
+
+            return new Intl.NumberFormat(
+                "es-ES",
+                {
+                    maximumFractionDigits:
+                        2
+                }
+            ).format(
+                number
+            );
+
+        }
+
+
+
+        // ========================================
+        // POSICIÓN DE CARRERA
+        // ========================================
+
+        function getRacePosition(
+            driver
+        ) {
+
+            const classification =
+                Number(
+                    driver
+                        ?.classificationPosition
+                );
+
+
+            if (
+                Number.isFinite(
+                    classification
+                ) &&
+                classification > 0
+            ) {
+
+                return classification;
+
+            }
+
+
+            const position =
+                Number(
+                    driver?.position
+                );
+
+
+            if (
+                Number.isFinite(
+                    position
+                ) &&
+                position > 0
+            ) {
+
+                return position;
+
+            }
+
+
+            return null;
+
+        }
+
+
+
+        // ========================================
+        // ESTADÍSTICAS DE EQUIPOS
+        // ========================================
+
+        function createTeamStats(
+            teamName
+        ) {
+
+            return {
+
+                teamName:
+                    teamName,
+
+                points:
+                    0,
+
+                position:
+                    null,
+
+                wins:
+                    0,
+
+                podiums:
+                    0,
+
+                poles:
+                    0,
+
+                fastestLaps:
+                    0,
+
+                bestPosition:
+                    null,
+
+                bestDriver:
+                    ""
+
+            };
+
+        }
+
+
+
+        function ensureTeamStats(
+            map,
+            teamName
+        ) {
+
+            const key =
+                normalizeKey(
+                    teamName
+                );
+
+
+            if (!key) {
+                return null;
+            }
+
+
+            if (!map.has(key)) {
+
+                map.set(
+                    key,
+                    createTeamStats(
+                        teamName
+                    )
+                );
+
+            }
+
+
+            return map.get(
+                key
+            );
+
+        }
+
+
+
+        function calculateTeamStats(
+            teams
+        ) {
+
+            const stats =
+                new Map();
+
+
+            teams.forEach(
+                team => {
+
+                    ensureTeamStats(
+                        stats,
+                        team.name
+                    );
+
+                }
+            );
+
+
+            raceSessions.forEach(
+                sessionFile => {
+
+                    const session =
+                        sessionFile
+                            ?.data
+                            ?.session;
+
+
+                    const drivers =
+                        session?.drivers;
+
+
+                    if (
+                        !Array.isArray(
+                            drivers
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const isMainRace =
+                        sessionFile.type ===
+                        "race";
+
+
+                    const fastestLapDriverKey =
+                        normalizeKey(
+                            session
+                                ?.fastestLap
+                                ?.driverName
+                        );
+
+
+                    drivers.forEach(
+                        driver => {
+
+                            const teamName =
+                                String(
+                                    driver
+                                        ?.team
+                                        ?.name ??
+                                    ""
+                                ).trim();
+
+
+                            if (!teamName) {
+                                return;
+                            }
+
+
+                            const team =
+                                ensureTeamStats(
+                                    stats,
+                                    teamName
+                                );
+
+
+                            if (!team) {
+                                return;
+                            }
+
+
+                            // ============================
+                            // SUPERCONSTRUCTORES
+                            // ============================
+
+                            const basePoints =
+                                toNumber(
+                                    driver
+                                        .driverPoints
+                                );
+
+
+                            const poleBonus =
+                                (
+                                    isMainRace &&
+                                    Number(
+                                        driver
+                                            .gridPosition
+                                    ) === 1
+                                )
+                                    ? 1
+                                    : 0;
+
+
+                            team.points +=
+                                basePoints +
+                                poleBonus;
+
+
+
+                            // ============================
+                            // EL RESTO SOLO CARRERA PRINCIPAL
+                            // ============================
+
+                            if (!isMainRace) {
+                                return;
+                            }
+
+
+                            const position =
+                                getRacePosition(
+                                    driver
+                                );
+
+
+                            if (
+                                position === 1
+                            ) {
+
+                                team.wins++;
+
+                            }
+
+
+                            if (
+                                position !==
+                                    null &&
+                                position <= 3
+                            ) {
+
+                                team.podiums++;
+
+                            }
+
+
+                            if (
+                                Number(
+                                    driver.gridPosition
+                                ) === 1
+                            ) {
+
+                                team.poles++;
+
+                            }
+
+
+
+                            // ============================
+                            // MEJOR RESULTADO
+                            // ============================
+
+                            if (
+                                position !==
+                                null
+                            ) {
+
+                                if (
+                                    team
+                                        .bestPosition ===
+                                        null ||
+                                    position <
+                                        team
+                                            .bestPosition
+                                ) {
+
+                                    team.bestPosition =
+                                        position;
+
+
+                                    team.bestDriver =
+                                        String(
+                                            driver
+                                                .driverName ??
+                                            ""
+                                        ).trim();
+
+                                }
+
+                            }
+
+
+
+                            // ============================
+                            // VUELTA RÁPIDA
+                            // ============================
+
+                            const driverKey =
+                                normalizeKey(
+                                    driver
+                                        .driverName
+                                );
+
+
+                            if (
+                                fastestLapDriverKey &&
+                                driverKey ===
+                                    fastestLapDriverKey
+                            ) {
+
+                                team.fastestLaps++;
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+
+            // ========================================
+            // CLASIFICACIÓN SUPERCONSTRUCTORES
+            // ========================================
+
+            const ordered =
+                Array.from(
+                    stats.values()
+                )
+                    .sort(
+                        (
+                            a,
+                            b
+                        ) => {
+
+                            if (
+                                b.points !==
+                                a.points
+                            ) {
+
+                                return (
+                                    b.points -
+                                    a.points
+                                );
+
+                            }
+
+
+                            return String(
+                                a.teamName
+                            ).localeCompare(
+                                String(
+                                    b.teamName
+                                ),
+                                "es"
+                            );
+
+                        }
+                    );
+
+
+            ordered.forEach(
+                (
+                    team,
+                    index
+                ) => {
+
+                    team.position =
+                        index + 1;
+
+                }
+            );
+
+
+            return stats;
+
+        }
+
+
+
+        // ========================================
+        // ASIENTO DISPONIBLE
         // ========================================
 
         function renderEmptySeat() {
@@ -1072,7 +1660,7 @@ document.addEventListener(
 
 
         // ========================================
-        // TARJETA PILOTO
+        // PILOTO
         // ========================================
 
         function renderDriver(
@@ -1080,11 +1668,8 @@ document.addEventListener(
         ) {
 
             if (!driver) {
-
                 return renderEmptySeat();
-
             }
-
 
 
             const driverName =
@@ -1304,7 +1889,6 @@ document.addEventListener(
             }
 
 
-
             return `
 
                 <div
@@ -1380,11 +1964,214 @@ document.addEventListener(
 
 
         // ========================================
+        // ESTADÍSTICAS VISUALES
+        // ========================================
+
+        function renderTeamStats(
+            stats
+        ) {
+
+            if (!stats) {
+
+                return "";
+
+            }
+
+
+            const bestResult =
+                stats.bestPosition !==
+                    null
+                    ? `P${stats.bestPosition}`
+                    : "—";
+
+
+            const bestDriver =
+                stats.bestDriver ||
+                "SIN RESULTADOS";
+
+
+            return `
+
+                <section
+                    class="
+                        team-performance
+                    "
+                >
+
+                    <div
+                        class="
+                            team-superconstructor
+                        "
+                    >
+
+                        <span
+                            class="
+                                team-performance-label
+                            "
+                        >
+                            SUPERCONSTRUCTORES
+                        </span>
+
+
+                        <div
+                            class="
+                                team-superconstructor-data
+                            "
+                        >
+
+                            <strong>
+                                P${escapeHTML(
+                                    stats.position
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(
+                                    formatPoints(
+                                        stats.points
+                                    )
+                                )}
+                                PTS
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            team-performance-grid
+                        "
+                    >
+
+                        <div
+                            class="
+                                team-performance-stat
+                            "
+                        >
+
+                            <strong>
+                                ${escapeHTML(
+                                    stats.wins
+                                )}
+                            </strong>
+
+                            <span>
+                                VICTORIAS
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                team-performance-stat
+                            "
+                        >
+
+                            <strong>
+                                ${escapeHTML(
+                                    stats.podiums
+                                )}
+                            </strong>
+
+                            <span>
+                                PODIOS
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                team-performance-stat
+                            "
+                        >
+
+                            <strong>
+                                ${escapeHTML(
+                                    stats.poles
+                                )}
+                            </strong>
+
+                            <span>
+                                POLES
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                team-performance-stat
+                            "
+                        >
+
+                            <strong>
+                                ${escapeHTML(
+                                    stats.fastestLaps
+                                )}
+                            </strong>
+
+                            <span>
+                                VUELTAS RÁPIDAS
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            team-best-result
+                        "
+                    >
+
+                        <span
+                            class="
+                                team-performance-label
+                            "
+                        >
+                            MEJOR RESULTADO
+                        </span>
+
+
+                        <strong>
+                            ${escapeHTML(
+                                bestResult
+                            )}
+                        </strong>
+
+
+                        <span
+                            class="
+                                team-best-driver
+                            "
+                        >
+                            ${escapeHTML(
+                                bestDriver
+                            )}
+                        </span>
+
+                    </div>
+
+                </section>
+
+            `;
+
+        }
+
+
+
+        // ========================================
         // EQUIPO
         // ========================================
 
         function renderTeam(
-            team
+            team,
+            teamStats
         ) {
 
             const teamName =
@@ -1427,6 +2214,13 @@ document.addEventListener(
                     "academy"
                 );
 
+
+            const stats =
+                teamStats.get(
+                    normalizeKey(
+                        teamName
+                    )
+                );
 
 
             return `
@@ -1534,6 +2328,15 @@ document.addEventListener(
                     </div>
 
 
+                    <!-- ESTADÍSTICAS -->
+
+                    ${
+                        renderTeamStats(
+                            stats
+                        )
+                    }
+
+
                 </article>
 
             `;
@@ -1547,7 +2350,8 @@ document.addEventListener(
         // ========================================
 
         function renderTeams(
-            teams
+            teams,
+            teamStats
         ) {
 
             if (
@@ -1574,7 +2378,11 @@ document.addEventListener(
             teamsGrid.innerHTML =
                 teams
                     .map(
-                        renderTeam
+                        team =>
+                            renderTeam(
+                                team,
+                                teamStats
+                            )
                     )
                     .join("");
 
@@ -1604,9 +2412,7 @@ document.addEventListener(
                 const [
                     teamProfilesData,
                     officialDriversData,
-                    driverProfilesData,
-                    hyperdriveRace,
-                    academyRace
+                    driverProfilesData
                 ] =
                     await Promise.all([
 
@@ -1622,16 +2428,6 @@ document.addEventListener(
 
                         fetchJSON(
                             "data/driver-profiles.json",
-                            false
-                        ),
-
-                        fetchJSON(
-                            "data/hyperdrive_r1.json",
-                            false
-                        ),
-
-                        fetchJSON(
-                            "data/academy_r1.json",
                             false
                         )
 
@@ -1666,16 +2462,25 @@ document.addEventListener(
 
 
                 // ========================================
-                // COLORES / DORSALES DE RESPALDO
+                // TODAS LAS CARRERAS
                 // ========================================
 
-                extractRaceInfo(
-                    hyperdriveRace
-                );
+                await loadRaceFiles();
 
 
-                extractRaceInfo(
-                    academyRace
+
+                // ========================================
+                // DATOS RLT
+                // ========================================
+
+                raceSessions.forEach(
+                    session => {
+
+                        extractRaceInfo(
+                            session.data
+                        );
+
+                    }
                 );
 
 
@@ -1694,8 +2499,25 @@ document.addEventListener(
                         : [];
 
 
+
+                // ========================================
+                // ESTADÍSTICAS
+                // ========================================
+
+                const teamStats =
+                    calculateTeamStats(
+                        teams
+                    );
+
+
+
+                // ========================================
+                // MOSTRAR
+                // ========================================
+
                 renderTeams(
-                    teams
+                    teams,
+                    teamStats
                 );
 
             }
