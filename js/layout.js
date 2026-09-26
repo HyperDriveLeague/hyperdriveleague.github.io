@@ -136,11 +136,104 @@
                 </a>
 
 
-                <div class="more-menu">
+                <!-- MÁS -->
 
-                    <span>
+                <div
+                    class="more-menu"
+                    id="more-menu"
+                    style="
+                        position: relative;
+                    "
+                >
+
+                    <button
+                        id="more-menu-button"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="more-dropdown"
+                        style="
+                            all: unset;
+                            cursor: pointer;
+                            display: block;
+                        "
+                    >
                         MÁS ▾
-                    </span>
+                    </button>
+
+
+                    <div
+                        id="more-dropdown"
+                        style="
+                            display: none;
+                            position: absolute;
+                            top: calc(100% + 18px);
+                            right: 0;
+                            z-index: 9999;
+                            width: 230px;
+                            padding: 8px;
+                            border: 1px solid rgba(255,255,255,0.10);
+                            border-radius: 8px;
+                            background: #101010;
+                            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+                        "
+                    >
+
+                        <a
+                            href="hall-of-fame.html"
+                            class="${activeClass("hall-of-fame.html")}"
+                            style="
+                                display: block;
+                                padding: 14px 15px;
+                                border-radius: 5px;
+                                white-space: nowrap;
+                            "
+                        >
+                            HALL OF FAME
+                        </a>
+
+
+                        <span
+                            style="
+                                display: block;
+                                padding: 14px 15px;
+                                border-radius: 5px;
+                                white-space: nowrap;
+                                opacity: 0.35;
+                                cursor: default;
+                            "
+                        >
+                            HISTORIA
+                        </span>
+
+
+                        <span
+                            style="
+                                display: block;
+                                padding: 14px 15px;
+                                border-radius: 5px;
+                                white-space: nowrap;
+                                opacity: 0.35;
+                                cursor: default;
+                            "
+                        >
+                            REGLAMENTO
+                        </span>
+
+
+                        <span
+                            style="
+                                display: block;
+                                padding: 14px 15px;
+                                border-radius: 5px;
+                                white-space: nowrap;
+                                opacity: 0.35;
+                                cursor: default;
+                            "
+                        >
+                            INSCRIPCIONES
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -316,9 +409,7 @@
             <div class="footer-container">
 
 
-                <!-- ========================================
-                     MARCA
-                ======================================== -->
+                <!-- MARCA -->
 
                 <div class="footer-brand">
 
@@ -335,9 +426,7 @@
                 </div>
 
 
-                <!-- ========================================
-                     ENLACES
-                ======================================== -->
+                <!-- ENLACES -->
 
                 <div class="footer-links">
 
@@ -444,9 +533,7 @@
             </div>
 
 
-            <!-- ========================================
-                 PIE INFERIOR
-            ======================================== -->
+            <!-- PIE INFERIOR -->
 
             <div class="footer-bottom">
 
@@ -497,6 +584,153 @@
 
         footerTarget.innerHTML =
             footerHTML;
+
+    }
+
+
+    // ========================================
+    // DESPLEGABLE "MÁS"
+    // ========================================
+
+    const moreMenu =
+        document.getElementById(
+            "more-menu"
+        );
+
+
+    const moreButton =
+        document.getElementById(
+            "more-menu-button"
+        );
+
+
+    const moreDropdown =
+        document.getElementById(
+            "more-dropdown"
+        );
+
+
+    function closeMoreMenu() {
+
+        if (
+            !moreButton ||
+            !moreDropdown
+        ) {
+            return;
+        }
+
+
+        moreDropdown.style.display =
+            "none";
+
+
+        moreButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    function openMoreMenu() {
+
+        if (
+            !moreButton ||
+            !moreDropdown
+        ) {
+            return;
+        }
+
+
+        moreDropdown.style.display =
+            "block";
+
+
+        moreButton.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    }
+
+
+    if (
+        moreButton &&
+        moreDropdown
+    ) {
+
+        moreButton.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+
+                const isOpen =
+                    moreButton.getAttribute(
+                        "aria-expanded"
+                    ) === "true";
+
+
+                if (isOpen) {
+
+                    closeMoreMenu();
+
+                }
+                else {
+
+                    openMoreMenu();
+
+                }
+
+            }
+        );
+
+
+        moreDropdown.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    moreMenu &&
+                    !moreMenu.contains(
+                        event.target
+                    )
+                ) {
+
+                    closeMoreMenu();
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeMoreMenu();
+
+                }
+
+            }
+        );
 
     }
 
