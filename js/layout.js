@@ -248,7 +248,10 @@
                         EQUIPOS
                     </a>
 
-                    <a href="#">
+                    <a
+                        href="hall-of-fame.html"
+                        class="${activeClass("hall-of-fame.html")}"
+                    >
                         HALL OF FAME
                     </a>
 
@@ -386,7 +389,7 @@
                             Equipos
                         </a>
 
-                        <a href="#">
+                        <a href="hall-of-fame.html">
                             Hall of Fame
                         </a>
 
