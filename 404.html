@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>404 | HyperDrive</title>
+
+    <meta name="robots" content="noindex">
+
+    <link rel="icon" type="image/jpeg" href="images/logo/favicon.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/logo/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <meta name="theme-color" content="#080808">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="HyperDrive">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .error-page {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 140px 20px 80px;
+            background:
+                radial-gradient(
+                    circle at 70% 30%,
+                    rgba(255, 213, 0, 0.08),
+                    transparent 32%
+                ),
+                #080808;
+        }
+
+        .error-page::before {
+            content: "404";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -54%);
+            color: rgba(255, 255, 255, 0.025);
+            font-size: clamp(13rem, 38vw, 34rem);
+            line-height: 0.8;
+            font-weight: 950;
+            letter-spacing: -0.09em;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .error-content {
+            width: min(760px, 100%);
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .error-code {
+            display: inline-block;
+            margin-bottom: 18px;
+            color: #ffd500;
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0.18em;
+        }
+
+        .error-content h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: clamp(3rem, 8vw, 6.8rem);
+            line-height: 0.88;
+            font-weight: 950;
+            letter-spacing: -0.065em;
+            text-transform: uppercase;
+        }
+
+        .error-content p {
+            max-width: 570px;
+            margin: 24px auto 0;
+            color: #9b9b9b;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .error-line {
+            width: 60px;
+            height: 4px;
+            margin: 28px auto;
+            background: #ffd500;
+        }
+
+        .error-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .error-actions a {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .error-home {
+            color: #080808;
+            background: #ffd500;
+            border: 1px solid #ffd500;
+        }
+
+        .error-home:hover {
+            transform: translateY(-2px);
+            color: #ffd500;
+            background: transparent;
+        }
+
+        .error-discord {
+            color: #ffffff;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .error-discord:hover {
+            transform: translateY(-2px);
+            color: #ffd500;
+            border-color: rgba(255, 213, 0, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .error-page {
+                min-height: calc(100vh - 70px);
+                padding: 120px 20px 60px;
+            }
+
+            .error-content h1 {
+                font-size: clamp(3rem, 15vw, 4.8rem);
+            }
+
+            .error-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .error-actions a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="site-header"></div>
+
+    <main class="error-page">
+
+        <div class="error-content">
+
+            <span class="error-code">
+                ERROR 404
+            </span>
+
+            <h1>
+                FUERA DE PISTA
+            </h1>
+
+            <div class="error-line"></div>
+
+            <p>
+                La página que buscas no existe, ha cambiado de dirección
+                o ha sido retirada.
+            </p>
+
+            <div class="error-actions">
+
+                <a
+                    href="index.html"
+                    class="error-home"
+                >
+                    VOLVER AL INICIO
+                </a>
+
+                <a
+                    href="https://discord.gg/SvKXMBRDgu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="error-discord"
+                >
+                    IR AL DISCORD
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="js/layout.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
