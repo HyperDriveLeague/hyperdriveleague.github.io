@@ -42,7 +42,8 @@
     const isMorePage =
         currentPage === "hall-of-fame.html" ||
         currentPage === "quienes-somos.html" ||
-        currentPage === "reglamento.html";
+        currentPage === "reglamento.html" ||
+        currentPage === "inscripciones.html";
 
 
     // ========================================
@@ -227,18 +228,18 @@
                         </a>
 
 
-                        <span
+                        <a
+                            href="inscripciones.html"
+                            class="${activeClass("inscripciones.html")}"
                             style="
                                 display: block;
                                 padding: 14px 15px;
                                 border-radius: 5px;
                                 white-space: nowrap;
-                                opacity: 0.35;
-                                cursor: default;
                             "
                         >
                             INSCRIPCIONES
-                        </span>
+                        </a>
 
                     </div>
 
@@ -369,7 +370,10 @@
                         REGLAMENTO
                     </a>
 
-                    <a href="#">
+                    <a
+                        href="inscripciones.html"
+                        class="${activeClass("inscripciones.html")}"
+                    >
                         INSCRIPCIONES
                     </a>
 
@@ -495,6 +499,10 @@
                             Hall of Fame
                         </a>
 
+                        <a href="quienes-somos.html">
+                            Quiénes Somos
+                        </a>
+
                     </div>
 
 
@@ -530,7 +538,7 @@
                             Instagram
                         </a>
 
-                        <a href="#">
+                        <a href="inscripciones.html">
                             Inscripciones
                         </a>
 
