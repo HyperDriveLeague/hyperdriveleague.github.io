@@ -1,20 +1,11 @@
 {
   "news": [
     {
-      "title": "Prueba de publicación desde Pages CMS",
-      "category": "ANUNCIO",
-      "date": "2026-09-25",
-      "summary": "Esta noticia se ha publicado directamente desde el panel de administración de HyperDrive.",
-      "body": "`Prueba del nuevo sistema de noticias.`",
-      "image": "/images/news/audi.png",
-      "featured": false
-    },
-    {
       "title": "Silverstone recibe la Ronda 4 de la Season 8",
       "category": "CAMPEONATO",
-      "date": "2026-09-25",
-      "summary": "HyperDrive llega a Silverstone para la cuarta ronda de la temporada. Academy competirá el miércoles 30 de septiembre y HyperDrive el jueves 1 de octubre, con formato Sprint.",
-      "image": "/images/news/silverstone.jpg",
+      "date": "2026-09-26",
+      "summary": "La Season 8 de HyperDrive League llega esta semana a uno de los circuitos más emblemáticos del calendario. Silverstone será el escenario de la Ronda 4 y del primer fin de semana Sprint de la temporada, con Academy compitiendo el miércoles 30 de septiembre y HyperDrive el jueves 1 de octubre, ambas a las 22:00.\n\nEl trazado británico promete una carrera especialmente exigente. Sus curvas rápidas y enlazadas convierten Silverstone en un circuito donde la estabilidad del monoplaza y la confianza del piloto serán fundamentales. Además, el formato Sprint ofrecerá una oportunidad extra para sumar puntos, por lo que cualquier error puede tener más consecuencias de lo habitual.\n\nBlackStorm defiende el liderato de Academy.\n\nTras tres rondas, BlackStorm llega como líder de Academy con 47 puntos, después de conseguir una victoria en China y volver al podio con un segundo puesto en Imola.  \n\nLa lucha, sin embargo, está muy abierta. German es segundo con 36 puntos, seguido por Alvarosn94 con 34, que llega reforzado después de conseguir la victoria en Imola. Martinez93 suma 31, mientras que Victor y GranBoss están empatados con 30 puntos. \n\nAdemás, las tres primeras carreras han tenido tres ganadores diferentes: BlackStorm en China, Martinez93 en Bakú y Alvarosn94 en Imola. Silverstone podría darnos al primer piloto que repite victoria esta temporada.\n\nMercedes, Cadillac y Red Bull, separados por solo 10 puntos\nLa clasificación de constructores está todavía más ajustada. Mercedes lidera con 74 puntos, Cadillac es segunda con 67 y Red Bull tercera con 64. Solo diez puntos separan a los tres primeros equipos.    \n\nCon más puntos disponibles por el formato Sprint, Silverstone puede convertirse en la primera ronda capaz de provocar cambios importantes tanto en el campeonato de pilotos como en el de constructores.\n\nLa Ronda 4 está lista. Silverstone espera.",
+      "image": "/images/news/gettyimages-2161609470-640x640.jpg",
       "featured": true
     },
     {
