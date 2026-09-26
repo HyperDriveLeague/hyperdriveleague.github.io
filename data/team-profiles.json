@@ -1,0 +1,70 @@
+{
+    "teams": [
+        {
+            "name": "Alpine",
+            "key": "alpine",
+            "logo": "images/teams/alpine-logo.svg",
+            "teamPrincipal": "Toni"
+        },
+        {
+            "name": "Aston Martin",
+            "key": "aston-martin",
+            "logo": "images/teams/astonmartin-logo.svg",
+            "teamPrincipal": "Pedro"
+        },
+        {
+            "name": "Audi",
+            "key": "audi",
+            "logo": "images/teams/audi-logo.svg",
+            "teamPrincipal": "Imulero"
+        },
+        {
+            "name": "Mercedes",
+            "key": "mercedes",
+            "logo": "images/teams/mercedes-logo.svg",
+            "teamPrincipal": "Blackstorm"
+        },
+        {
+            "name": "Racing Bulls",
+            "key": "racing-bulls",
+            "logo": "images/teams/racingbulls-logo.svg",
+            "teamPrincipal": "Iker"
+        },
+        {
+            "name": "Cadillac",
+            "key": "cadillac",
+            "logo": "images/teams/cadillac-logo.svg",
+            "teamPrincipal": "Ironser"
+        },
+        {
+            "name": "Haas",
+            "key": "haas",
+            "logo": "images/teams/haas-logo.svg",
+            "teamPrincipal": "Pelitallica"
+        },
+        {
+            "name": "McLaren",
+            "key": "mclaren",
+            "logo": "images/teams/mclaren-logo.svg",
+            "teamPrincipal": "Pini"
+        },
+        {
+            "name": "Williams",
+            "key": "williams",
+            "logo": "images/teams/williams-logo.svg",
+            "teamPrincipal": "Sebitas"
+        },
+        {
+            "name": "Red Bull",
+            "key": "red-bull",
+            "logo": "images/teams/redbull-logo.svg",
+            "teamPrincipal": "Alvarosn94"
+        },
+        {
+            "name": "Ferrari",
+            "key": "ferrari",
+            "logo": "images/teams/ferrari-logo.svg",
+            "teamPrincipal": "Luis"
+        }
+    ]
+}
