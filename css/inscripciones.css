@@ -1,0 +1,980 @@
+/* =========================================================
+   HYPERDRIVE — INSCRIPCIONES
+   ========================================================= */
+
+:root {
+    --join-bg: #080808;
+    --join-card: #101010;
+    --join-card-light: #151515;
+    --join-border: rgba(255, 255, 255, 0.09);
+    --join-border-strong: rgba(255, 255, 255, 0.16);
+    --join-white: #ffffff;
+    --join-muted: #9b9b9b;
+    --join-muted-dark: #6f6f6f;
+    --join-yellow: #ffd500;
+    --join-yellow-soft: rgba(255, 213, 0, 0.1);
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+body {
+    background: var(--join-bg);
+}
+
+.join-container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.join-section {
+    position: relative;
+    padding: 85px 0;
+}
+
+.join-small-label,
+.join-heading > span {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--join-yellow);
+    font-size: 0.74rem;
+    font-weight: 850;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.join-heading {
+    max-width: 780px;
+    margin-bottom: 38px;
+}
+
+.join-heading.centered {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.join-heading h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.1rem, 5vw, 4.2rem);
+    line-height: 0.95;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+    text-transform: uppercase;
+}
+
+.join-heading p {
+    margin: 16px 0 0;
+    color: var(--join-muted);
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.join-hero {
+    position: relative;
+    min-height: 650px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 76% 34%,
+            rgba(255, 213, 0, 0.09),
+            transparent 32%
+        ),
+        linear-gradient(
+            145deg,
+            #111111 0%,
+            #080808 50%,
+            #050505 100%
+        );
+}
+
+.join-hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.035) 1px,
+            transparent 1px
+        );
+    background-size: 50px 50px;
+    mask-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        #000 38%,
+        #000 100%
+    );
+}
+
+.join-hero-glow {
+    position: absolute;
+    right: -220px;
+    bottom: -250px;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: rgba(255, 213, 0, 0.07);
+    filter: blur(35px);
+}
+
+.join-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 170px 0 70px;
+}
+
+.join-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    color: var(--join-yellow);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+}
+
+.join-eyebrow::before {
+    content: "";
+    width: 35px;
+    height: 3px;
+    background: var(--join-yellow);
+}
+
+.join-hero h1 {
+    max-width: 920px;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(3.7rem, 8vw, 7.4rem);
+    line-height: 0.85;
+    font-weight: 950;
+    letter-spacing: -0.07em;
+    text-transform: uppercase;
+}
+
+.join-hero-content > p {
+    max-width: 650px;
+    margin: 26px 0 0;
+    color: rgba(255,255,255,0.76);
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    line-height: 1.55;
+}
+
+.join-hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+}
+
+.join-primary-button,
+.join-secondary-button {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.join-primary-button {
+    color: #080808;
+    background: var(--join-yellow);
+    border: 1px solid var(--join-yellow);
+}
+
+.join-primary-button:hover {
+    transform: translateY(-2px);
+    color: var(--join-yellow);
+    background: transparent;
+}
+
+.join-secondary-button {
+    color: #fff;
+    border: 1px solid var(--join-border-strong);
+    background: rgba(255,255,255,0.02);
+}
+
+.join-secondary-button:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,213,0,0.35);
+    color: var(--join-yellow);
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.join-intro-section {
+    padding: 35px 0 0;
+}
+
+.join-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: end;
+    padding: 34px 0;
+    border-bottom: 1px solid var(--join-border);
+}
+
+.join-intro h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 0.95;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.join-intro > p {
+    margin: 0;
+    color: var(--join-muted);
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   PROCESO
+   ========================================================= */
+
+.join-process-section {
+    padding-top: 85px;
+}
+
+.join-process-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.join-process-card {
+    position: relative;
+    min-height: 290px;
+    padding: 22px;
+    overflow: hidden;
+    border: 1px solid var(--join-border);
+    border-radius: 8px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.025),
+            transparent
+        ),
+        #0f0f0f;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.join-process-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 213, 0, 0.28);
+}
+
+.join-process-number {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    color: rgba(255,255,255,0.035);
+    font-size: 4.3rem;
+    line-height: 1;
+    font-weight: 950;
+}
+
+.join-process-icon {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid rgba(255,213,0,0.25);
+    border-radius: 4px;
+    color: var(--join-yellow);
+    background: rgba(255,213,0,0.03);
+    font-size: 0.62rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.join-process-card h3 {
+    position: relative;
+    z-index: 1;
+    margin: 105px 0 10px;
+    color: #fff;
+    font-size: 0.94rem;
+    line-height: 1.15;
+    font-weight: 900;
+}
+
+.join-process-card p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: var(--join-muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+.join-process-card p strong {
+    color: #fff;
+}
+
+
+/* =========================================================
+   TICKET
+   ========================================================= */
+
+.join-ticket-section {
+    padding-top: 45px;
+}
+
+.join-ticket-card {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    gap: 45px;
+    padding: 38px;
+    border: 1px solid rgba(255,213,0,0.14);
+    border-radius: 9px;
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(255,213,0,0.06),
+            transparent 35%
+        ),
+        #101010;
+}
+
+.join-ticket-copy h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 0.92;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.join-ticket-copy p {
+    max-width: 520px;
+    margin: 18px 0 0;
+    color: var(--join-muted);
+    line-height: 1.65;
+}
+
+.join-ticket-data {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-content: center;
+}
+
+.join-ticket-data span {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    border: 1px solid var(--join-border);
+    border-radius: 5px;
+    color: rgba(255,255,255,0.74);
+    background: rgba(255,255,255,0.018);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DIVISIONES
+   ========================================================= */
+
+.join-divisions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.join-division-card {
+    position: relative;
+    min-height: 290px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    border: 1px solid var(--join-border);
+    border-radius: 8px;
+    background: #101010;
+}
+
+.join-division-card::before {
+    content: "";
+    position: absolute;
+    right: -110px;
+    top: -120px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.035);
+}
+
+.join-division-card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+}
+
+.join-division-card.hyperdrive::after {
+    background: var(--join-yellow);
+}
+
+.join-division-card.academy::after {
+    background: rgba(255,255,255,0.42);
+}
+
+.join-division-label {
+    position: relative;
+    z-index: 1;
+    color: var(--join-muted);
+    font-size: 0.66rem;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+}
+
+.join-division-card h3 {
+    position: relative;
+    z-index: 1;
+    margin: 10px 0 12px;
+    color: #fff;
+    font-size: clamp(2.3rem, 4vw, 4rem);
+    line-height: 0.9;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.join-division-card p {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0;
+    color: var(--join-muted);
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESERVAS
+   ========================================================= */
+
+.join-reserve-section {
+    padding-top: 40px;
+}
+
+.join-reserve-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 45px;
+    padding: 38px;
+    border: 1px solid var(--join-border);
+    border-radius: 9px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.02),
+            transparent
+        ),
+        #101010;
+}
+
+.join-reserve-main h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    line-height: 0.94;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.join-reserve-main p {
+    max-width: 550px;
+    margin: 18px 0 0;
+    color: var(--join-muted);
+    line-height: 1.65;
+}
+
+.join-reserve-rules {
+    display: grid;
+    gap: 10px;
+    align-content: center;
+}
+
+.join-reserve-rules article {
+    padding: 20px;
+    border: 1px solid var(--join-border);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.018);
+}
+
+.join-reserve-rules strong {
+    display: block;
+    color: var(--join-yellow);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.join-reserve-rules span {
+    display: block;
+    margin-top: 8px;
+    color: var(--join-muted);
+    font-size: 0.8rem;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   MERCADO
+   ========================================================= */
+
+.join-market-section {
+    padding-top: 55px;
+}
+
+.join-split {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 55px;
+    align-items: start;
+}
+
+.join-split-heading > span {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--join-yellow);
+    font-size: 0.72rem;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+}
+
+.join-split-heading h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    line-height: 0.88;
+    font-weight: 950;
+    letter-spacing: -0.06em;
+}
+
+.join-split-heading p {
+    max-width: 470px;
+    margin: 20px 0 0;
+    color: var(--join-muted);
+    line-height: 1.65;
+}
+
+.join-market-box {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.join-market-box > div {
+    min-height: 145px;
+    padding: 20px;
+    border: 1px solid var(--join-border);
+    border-radius: 7px;
+    background: #0f0f0f;
+}
+
+.join-market-box span {
+    display: block;
+    color: rgba(255,255,255,0.13);
+    font-size: 1.35rem;
+    font-weight: 950;
+}
+
+.join-market-box strong {
+    display: block;
+    margin-top: 42px;
+    color: #fff;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   VALORES
+   ========================================================= */
+
+.join-values-section {
+    padding-top: 60px;
+}
+
+.join-values {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.join-values span {
+    padding: 12px 16px;
+    border: 1px solid var(--join-border);
+    border-radius: 5px;
+    color: rgba(255,255,255,0.75);
+    background: #0f0f0f;
+    font-size: 0.7rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   REGLAMENTO
+   ========================================================= */
+
+.join-rules-section {
+    padding-top: 45px;
+}
+
+.join-rules-card {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 35px;
+    padding: 36px;
+    border: 1px solid var(--join-border);
+    border-radius: 8px;
+    background:
+        radial-gradient(
+            circle at 90% 15%,
+            rgba(255,213,0,0.05),
+            transparent 30%
+        ),
+        #101010;
+}
+
+.join-rules-card h2 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    line-height: 0.94;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+}
+
+.join-rules-card p {
+    max-width: 650px;
+    margin: 16px 0 0;
+    color: var(--join-muted);
+    line-height: 1.6;
+}
+
+.join-rules-button {
+    flex-shrink: 0;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 18px;
+    border: 1px solid rgba(255,213,0,0.35);
+    border-radius: 5px;
+    color: var(--join-yellow);
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.join-rules-button:hover {
+    color: #080808;
+    background: var(--join-yellow);
+}
+
+
+/* =========================================================
+   FINAL
+   ========================================================= */
+
+.join-final-section {
+    padding: 70px 0 110px;
+}
+
+.join-final-card {
+    padding: 55px 40px;
+    text-align: center;
+    border: 1px solid rgba(255,213,0,0.16);
+    border-radius: 10px;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255,213,0,0.10),
+            transparent 38%
+        ),
+        #101010;
+}
+
+.join-final-card h2 {
+    max-width: 850px;
+    margin: 0 auto;
+    color: #fff;
+    font-size: clamp(2.5rem, 6vw, 5.2rem);
+    line-height: 0.9;
+    font-weight: 950;
+    letter-spacing: -0.065em;
+}
+
+.join-final-card p {
+    max-width: 620px;
+    margin: 20px auto 0;
+    color: var(--join-muted);
+    line-height: 1.65;
+}
+
+.join-final-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 50px;
+    margin-top: 30px;
+    padding: 0 22px;
+    border: 1px solid var(--join-yellow);
+    border-radius: 5px;
+    color: #080808;
+    background: var(--join-yellow);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.join-final-button:hover {
+    transform: translateY(-2px);
+    color: var(--join-yellow);
+    background: transparent;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .join-process-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .join-ticket-card {
+        grid-template-columns: 1fr;
+    }
+
+    .join-reserve-card {
+        grid-template-columns: 1fr;
+    }
+
+    .join-split {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .join-container {
+        width: min(100% - 28px, 1180px);
+    }
+
+    .join-section {
+        padding: 62px 0;
+    }
+
+
+    /* HERO */
+
+    .join-hero {
+        min-height: 600px;
+    }
+
+    .join-hero-content {
+        padding: 150px 0 42px;
+    }
+
+    .join-hero h1 {
+        font-size: clamp(3rem, 16vw, 5.2rem);
+    }
+
+    .join-hero-content > p {
+        font-size: 0.98rem;
+    }
+
+    .join-hero-buttons {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+
+    /* INTRO */
+
+    .join-intro {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+
+    /* PROCESO */
+
+    .join-process-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .join-process-card {
+        min-height: 205px;
+        padding: 19px;
+    }
+
+    .join-process-card h3 {
+        margin-top: 65px;
+    }
+
+
+    /* TICKET */
+
+    .join-ticket-card {
+        padding: 26px 22px;
+    }
+
+    .join-ticket-data {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    /* DIVISIONES */
+
+    .join-divisions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .join-division-card {
+        min-height: 230px;
+        padding: 24px;
+    }
+
+
+    /* RESERVAS */
+
+    .join-reserve-card {
+        padding: 26px 22px;
+    }
+
+
+    /* MERCADO */
+
+    .join-market-box {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .join-market-box > div {
+        min-height: 130px;
+        padding: 16px;
+    }
+
+    .join-market-box strong {
+        margin-top: 32px;
+        font-size: 0.72rem;
+    }
+
+
+    /* VALORES */
+
+    .join-values {
+        justify-content: flex-start;
+    }
+
+
+    /* REGLAMENTO */
+
+    .join-rules-card {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 26px 22px;
+    }
+
+
+    /* FINAL */
+
+    .join-final-section {
+        padding: 65px 0 75px;
+    }
+
+    .join-final-card {
+        padding: 36px 22px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL PEQUEÑO
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .join-ticket-data {
+        grid-template-columns: 1fr;
+    }
+
+    .join-market-box {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .join-values span {
+        font-size: 0.62rem;
+        padding: 10px 12px;
+    }
+
+}
