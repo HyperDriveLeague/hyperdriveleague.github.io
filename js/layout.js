@@ -39,6 +39,11 @@
         getCurrentPage();
 
 
+    const isMorePage =
+        currentPage === "hall-of-fame.html" ||
+        currentPage === "quienes-somos.html";
+
+
     // ========================================
     // CLASE ACTIVA
     // ========================================
@@ -139,7 +144,7 @@
                 <!-- MÁS -->
 
                 <div
-                    class="more-menu"
+                    class="more-menu${isMorePage ? " active" : ""}"
                     id="more-menu"
                     style="
                         position: relative;
@@ -155,6 +160,7 @@
                             all: unset;
                             cursor: pointer;
                             display: block;
+                            ${isMorePage ? "color: var(--yellow);" : ""}
                         "
                     >
                         MÁS ▾
@@ -192,18 +198,18 @@
                         </a>
 
 
-                        <span
+                        <a
+                            href="quienes-somos.html"
+                            class="${activeClass("quienes-somos.html")}"
                             style="
                                 display: block;
                                 padding: 14px 15px;
                                 border-radius: 5px;
                                 white-space: nowrap;
-                                opacity: 0.35;
-                                cursor: default;
                             "
                         >
-                            HISTORIA
-                        </span>
+                            QUIÉNES SOMOS
+                        </a>
 
 
                         <span
@@ -348,8 +354,11 @@
                         HALL OF FAME
                     </a>
 
-                    <a href="#">
-                        HISTORIA
+                    <a
+                        href="quienes-somos.html"
+                        class="${activeClass("quienes-somos.html")}"
+                    >
+                        QUIÉNES SOMOS
                     </a>
 
                     <a href="#">
