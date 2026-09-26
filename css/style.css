@@ -91,7 +91,8 @@ body {
     color: var(--yellow);
 }
 
-.main-nav a:first-child {
+.main-nav a.active,
+.more-menu:has(a.active) {
     color: var(--yellow);
 }
 
@@ -3759,7 +3760,7 @@ body {
         background: rgba(255, 213, 0, 0.04);
     }
 
-    .mobile-menu-nav a:first-child {
+    .mobile-menu-nav a.active {
         color: var(--yellow);
         border-color: rgba(255, 213, 0, 0.22);
         background: rgba(255, 213, 0, 0.045);
