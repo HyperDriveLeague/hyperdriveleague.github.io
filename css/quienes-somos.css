@@ -817,83 +817,123 @@ body {
     letter-spacing: -0.04em;
 }
 
+
+/* GRID HYPERDRIVE */
+
 .champions-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 9px;
+    gap: 10px;
 }
+
+
+/* TARJETA */
 
 .champion-card {
     position: relative;
-    min-height: 235px;
+    min-height: 285px;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
-    border: 1px solid var(--about-border);
-    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 8px;
     background:
         linear-gradient(
             180deg,
-            #171717 0%,
-            #0e0e0e 100%
+            #191919 0%,
+            #101010 55%,
+            #090909 100%
         );
 }
+
+
+/* DEGRADADO PARA TEXTO */
 
 .champion-card::after {
     content: "";
     position: absolute;
     inset: auto 0 0;
-    height: 55%;
-    background: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.96) 0%,
-        rgba(0, 0, 0, 0.55) 45%,
-        transparent 100%
-    );
+    height: 48%;
+    background:
+        linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.96) 0%,
+            rgba(0, 0, 0, 0.66) 40%,
+            rgba(0, 0, 0, 0.12) 78%,
+            transparent 100%
+        );
+    pointer-events: none;
 }
+
+
+/* PILOTO MÁS GRANDE */
 
 .champion-card img {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    left: 50%;
+    bottom: 0;
+
+    width: 135%;
+    height: 96%;
+
+    max-width: none;
+
     object-fit: contain;
     object-position: center bottom;
-    transition: transform 0.25s ease;
+
+    transform: translateX(-50%);
+
+    transition:
+        transform 0.25s ease;
 }
 
+
+/* EFECTO HOVER */
+
 .champion-card:hover img {
-    transform: scale(1.035);
+    transform:
+        translateX(-50%)
+        scale(1.04);
 }
+
+
+/* TEXTO */
 
 .champion-card > div {
     position: relative;
     z-index: 2;
     width: 100%;
-    padding: 15px;
+    padding: 15px 14px 16px;
 }
 
 .champion-card small {
     display: block;
     margin-bottom: 5px;
     color: var(--about-yellow);
-    font-size: 0.62rem;
+    font-size: 0.66rem;
+    line-height: 1.2;
     font-weight: 850;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
 }
 
 .champion-card strong {
     display: block;
     color: #fff;
-    font-size: 0.9rem;
-    line-height: 1.05;
-    font-weight: 900;
+    font-size: 0.96rem;
+    line-height: 1.02;
+    font-weight: 950;
 }
+
+
+/* GRID ACADEMY */
 
 .academy-champions .champions-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    max-width: 850px;
+    max-width: 930px;
 }
+
+
+/* NOTA ACADEMY */
 
 .champions-note {
     max-width: 730px;
@@ -1064,6 +1104,15 @@ body {
     .academy-champions .champions-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         max-width: none;
+    }
+
+    .champion-card {
+        min-height: 300px;
+    }
+
+    .champion-card img {
+        width: 125%;
+        height: 96%;
     }
 }
 
@@ -1330,7 +1379,12 @@ body {
     }
 
     .champion-card {
-        min-height: 240px;
+        min-height: 285px;
+    }
+
+    .champion-card img {
+        width: 135%;
+        height: 96%;
     }
 
     .championship-title {
@@ -1406,7 +1460,12 @@ body {
     }
 
     .champion-card {
-        min-height: 215px;
+        min-height: 255px;
+    }
+
+    .champion-card img {
+        width: 140%;
+        height: 97%;
     }
 
     .champion-card > div {
@@ -1414,7 +1473,7 @@ body {
     }
 
     .champion-card strong {
-        font-size: 0.82rem;
+        font-size: 0.86rem;
     }
 
 }
