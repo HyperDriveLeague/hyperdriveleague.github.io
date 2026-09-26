@@ -128,7 +128,10 @@
                     PILOTOS
                 </a>
 
-                <a href="#">
+                <a
+                    href="equipos.html"
+                    class="${activeClass("equipos.html")}"
+                >
                     EQUIPOS
                 </a>
 
@@ -238,7 +241,10 @@
                         PILOTOS
                     </a>
 
-                    <a href="#">
+                    <a
+                        href="equipos.html"
+                        class="${activeClass("equipos.html")}"
+                    >
                         EQUIPOS
                     </a>
 
@@ -376,7 +382,7 @@
                             Pilotos
                         </a>
 
-                        <a href="#">
+                        <a href="equipos.html">
                             Equipos
                         </a>
 
