@@ -17,7 +17,7 @@
   let events = [];
   let licenseById = new Map();
 
-  const esc = value => String(value ?? '').replace(/[&<>'\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch]));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const divisionName = value => value === 'academy' ? 'Academy' : value === 'hyperdrive' ? 'HyperDrive' : 'Sin asiento';
   const formatDate = value => value ? new Intl.DateTimeFormat('es-ES').format(new Date(`${value}T12:00:00`)) : '—';
 
