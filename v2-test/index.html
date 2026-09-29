@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=5">
+  <link rel="stylesheet" href="css/pending.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -19,6 +20,22 @@
       <div class="auth-brand"><span class="eyebrow">HYPERDRIVE LEAGUE</span><h1>Área privada</h1><p>Acceso para pilotos, Team Principals, staff y administración.</p></div>
       <div class="auth-card"><div class="auth-card-header"><span class="status-dot"></span><span>ACCESO V2</span></div><form id="loginForm" class="login-form" novalidate><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required><label for="password">Contraseña</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required><button id="loginButton" class="primary-button" type="submit"><span>INICIAR SESIÓN</span></button><p id="loginMessage" class="form-message" role="status" aria-live="polite"></p></form><p class="auth-note">¿Todavía no tienes cuenta? <a style="color:var(--yellow);font-weight:800;text-decoration:none" href="auth.html?mode=register">Crear cuenta</a><br><a style="color:#b8bbc1;font-weight:700;text-decoration:none" href="auth.html?mode=forgot">He olvidado mi contraseña</a></p></div>
     </section>
+
+    <section id="pendingView" class="pending-view is-hidden">
+      <header class="module-header"><div><span class="eyebrow">HYPERDRIVE LEAGUE</span><h1>Área privada</h1></div><button id="pendingLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></header>
+      <section class="pending-card">
+        <div class="pending-icon">…</div>
+        <span class="panel-label">REGISTRO COMPLETADO</span>
+        <h2>Cuenta pendiente de aprobación</h2>
+        <p class="pending-copy">Tu cuenta está creada y el correo ya está confirmado. Administración tiene que identificarte y vincularte con tu piloto antes de activar tus módulos.</p>
+        <div class="pending-details">
+          <div class="pending-detail"><span>Discord</span><strong id="pendingDiscord">—</strong></div>
+          <div class="pending-detail"><span>Correo</span><strong id="pendingEmail">—</strong></div>
+        </div>
+        <div class="pending-status"><strong>Estado: pendiente.</strong> No tienes que volver a registrarte. Cuando Administración te asigne tus permisos, podrás acceder con este mismo correo y contraseña.</div>
+      </section>
+    </section>
+
     <section id="dashboardView" class="dashboard-view is-hidden">
       <header class="topbar"><div><span class="eyebrow">HYPERDRIVE LEAGUE</span><h1>Control Center</h1></div><div class="topbar-actions"><div class="session-pill"><span class="status-dot"></span><span id="sessionLabel">Sesión activa</span></div><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div></header>
       <section class="identity-panel"><div class="identity-main"><div class="driver-number" id="driverNumber">--</div><div><span class="panel-label">USUARIO</span><h2 id="displayName">Cargando…</h2><p id="userEmail" class="muted"></p></div></div><div id="rolesContainer" class="role-list" aria-label="Roles del usuario"></div></section>
@@ -27,10 +44,11 @@
         <article class="access-card module-card" data-role-card="pilot" data-module="pilot" tabindex="0" role="button" aria-label="Abrir módulo Piloto"><div class="access-card-top"><span class="access-index">01</span><span class="access-state">Sin acceso</span></div><h3>Piloto</h3><p>Perfil, estadísticas, resultados y superlicencia.</p><span class="module-link">ABRIR MÓDULO →</span></article>
         <a class="access-card module-card module-anchor" data-role-card="team_principal" href="/v2-test/team.html?v=2" aria-label="Abrir módulo Team Principal"><div class="access-card-top"><span class="access-index">02</span><span class="access-state">Sin acceso</span></div><h3>Team Principal</h3><p id="teamPrincipalText">Gestión deportiva y económica de la escudería.</p><span class="module-link">ABRIR MÓDULO →</span></a>
         <a class="access-card module-card module-anchor" data-role-card="staff" href="staff.html?v=1" aria-label="Abrir módulo Staff"><div class="access-card-top"><span class="access-index">03</span><span class="access-state">Sin acceso</span></div><h3>Staff</h3><p>Gestión de competición, sanciones, pilotos y operaciones.</p><span class="module-link">ABRIR MÓDULO →</span></a>
-        <a class="access-card module-card module-anchor" data-role-card="admin" href="admin.html?v=1" aria-label="Abrir módulo Administración"><div class="access-card-top"><span class="access-index">04</span><span class="access-state">Sin acceso</span></div><h3>Administración</h3><p>Control de cuentas, perfiles, roles y accesos de la plataforma.</p><span class="module-link">ABRIR MÓDULO →</span></a>
+        <a class="access-card module-card module-anchor" data-role-card="admin" href="admin.html?v=3" aria-label="Abrir módulo Administración"><div class="access-card-top"><span class="access-index">04</span><span class="access-state">Sin acceso</span></div><h3>Administración</h3><p>Control de cuentas, perfiles, roles y accesos de la plataforma.</p><span class="module-link">ABRIR MÓDULO →</span></a>
       </section>
       <section class="system-panel"><div><span class="panel-label">ESTADO DEL SISTEMA</span><h3 id="systemStatus">Comprobando permisos…</h3></div><span id="systemIndicator" class="system-indicator">CARGANDO</span></section>
     </section>
+
     <section id="pilotView" class="pilot-view is-hidden">
       <header class="module-header"><div><span class="eyebrow">ÁREA DE PILOTO · TEMPORADA 8</span><h1 id="pilotTitle">Mi piloto</h1></div><div class="topbar-actions"><button id="backToDashboard" class="secondary-button" type="button">← Control Center</button><button id="pilotLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div></header>
       <section class="pilot-hero"><div class="pilot-hero-number" id="pilotRaceNumber">--</div><div class="pilot-hero-copy"><span class="panel-label">PILOTO OFICIAL</span><h2 id="pilotNickname">Cargando…</h2><div class="pilot-tags"><span id="pilotDivision" class="info-tag">—</span><span id="pilotTeam" class="info-tag">—</span><span id="pilotRegion" class="info-tag">—</span></div></div></section>
@@ -40,6 +58,6 @@
       <section class="history-card"><div id="licenseHistory" class="history-list"><div class="history-empty">Cargando historial…</div></div></section>
     </section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=5"></script><script src="js/app.js?v=5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=5"></script><script src="js/app.js?v=6"></script>
 </body>
 </html>
