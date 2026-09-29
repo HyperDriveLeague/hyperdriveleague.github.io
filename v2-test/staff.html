@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=5">
   <link rel="stylesheet" href="css/staff.css?v=1">
-  <link rel="stylesheet" href="css/staff-actions.css?v=1">
+  <link rel="stylesheet" href="css/staff-operations.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -28,7 +28,7 @@
     <div id="staffContent" class="is-hidden">
       <section class="staff-hero">
         <div class="staff-mark">RC</div>
-        <div><span class="panel-label">CONTROL DE COMPETICIÓN</span><h2>Superlicencias T8</h2><div class="pilot-tags"><span class="info-tag">STAFF</span><span class="info-tag">GESTIÓN ACTIVA</span></div></div>
+        <div><span class="panel-label">CONTROL DE COMPETICIÓN</span><h2>Race Control T8</h2><div class="pilot-tags"><span class="info-tag">STAFF</span><span class="info-tag">GESTIÓN ACTIVA</span></div></div>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del campeonato</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
@@ -39,31 +39,66 @@
         <article class="staff-summary-card"><span>MOVIMIENTOS</span><strong id="eventCount">—</strong><small>eventos de superlicencia</small></article>
       </section>
 
-      <section id="staffActions">
-        <section class="module-section-heading"><div><span class="eyebrow">OPERACIONES</span><h2>Gestión de superlicencia</h2></div><span class="season-badge">STAFF / ADMIN</span></section>
-        <section class="staff-actions-grid">
-          <article class="staff-action-card">
-            <span class="panel-label">REGISTRAR</span><h3>Nueva incidencia</h3>
-            <p class="staff-action-help">Registra la causa real. Los NO QUALY y RACE BAN se generan automáticamente cuando corresponda según los puntos de superlicencia.</p>
-            <form id="staffEventForm" class="staff-action-form">
-              <label class="staff-action-field full"><span>Piloto</span><select id="eventLicense" class="staff-action-select" required><option value="">Selecciona piloto</option></select></label>
-              <label class="staff-action-field"><span>Tipo</span><select id="eventType" class="staff-action-select"><option value="points_penalty">Pérdida de puntos</option><option value="warning">Aviso</option><option value="attendance_incident">Incidencia de asistencia</option><option value="points_restore">Recuperación de puntos</option></select></label>
-              <label class="staff-action-field"><span>Puntos</span><input id="eventPoints" class="staff-action-input" type="number" min="0" max="12" step="1" value="1"></label>
-              <label class="staff-action-field"><span>Ronda</span><input id="eventRound" class="staff-action-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
-              <label class="staff-action-field"><span>Fecha</span><input id="eventDate" class="staff-action-input" type="date" required></label>
-              <label class="staff-action-field full"><span>Artículo / referencia</span><input id="eventArticle" class="staff-action-input" type="text" maxlength="80" placeholder="Opcional · Ej.: Art.SP1"></label>
-              <label class="staff-action-field full"><span>Descripción</span><textarea id="eventDescription" class="staff-action-textarea" maxlength="500" placeholder="Motivo de la incidencia o sanción…" required></textarea></label>
-              <div id="eventPreview" class="points-preview">Selecciona un piloto para ver el efecto de la operación.</div>
-              <div class="staff-action-footer"><p id="eventActionStatus" class="staff-action-status" aria-live="polite"></p><button id="eventSubmitButton" class="primary-button staff-action-button" type="submit"><span>REGISTRAR INCIDENCIA</span></button></div>
-            </form>
-          </article>
+      <section id="staffOperations">
+        <section class="module-section-heading"><div><span class="eyebrow">OPERACIONES</span><h2>Sanciones y economía</h2></div><span class="season-badge">STAFF / ADMIN</span></section>
+        <div class="operations-tabs">
+          <button class="operation-tab active" type="button" data-operation-tab="sanctions">SANCIONES</button>
+          <button class="operation-tab" type="button" data-operation-tab="fines">MULTAS</button>
+          <button class="operation-tab" type="button" data-operation-tab="manual">MOVIMIENTO MANUAL</button>
+        </div>
 
-          <article class="staff-action-card">
-            <span class="panel-label">CUMPLIMIENTO</span><h3>Sanciones pendientes</h3>
-            <p class="staff-action-help">Aquí aparecen los NO QUALY y RACE BAN automáticos todavía pendientes. Al cumplir un RACE BAN a 0 puntos, el sistema devuelve 6 puntos automáticamente.</p>
-            <div id="pendingSanctionsList" class="pending-sanctions"><div class="empty-sanctions">Cargando sanciones pendientes…</div></div>
-          </article>
-        </section>
+        <article class="operation-panel" data-operation-panel="sanctions">
+          <span class="panel-label">REGLAMENTO DEPORTIVO</span><h3>Registrar sanción</h3>
+          <p class="operation-help">Selecciona el artículo y Race Control carga automáticamente la descripción, los puntos y la sanción en segundos. Los segundos son informativos; solo los puntos numéricos modifican la superlicencia.</p>
+          <form id="sportSanctionForm" class="operation-form">
+            <label class="op-field full"><span>Artículo</span><select id="sanctionArticle" class="op-select" required><option value="">Cargando reglamento…</option></select></label>
+            <div class="article-preview">
+              <div class="article-preview-top"><span class="rule-pill">SEGUNDOS: <strong id="articleSeconds">—</strong></span><span class="rule-pill">PUNTOS: <strong id="articlePoints">—</strong></span></div>
+              <p id="articleDescription">Selecciona un artículo para cargar la sanción del reglamento.</p>
+            </div>
+            <label class="op-field"><span>Piloto</span><select id="sanctionDriver" class="op-select" required></select></label>
+            <label class="op-field"><span>Escudería sancionada</span><select id="sanctionTeam" class="op-select" required></select><small id="sanctionTeamMode" class="team-mode">Se rellenará al elegir piloto.</small></label>
+            <label class="op-field"><span>Escudería beneficiada · opcional</span><select id="beneficiaryTeam" class="op-select"></select><small class="money-hint">Si eliges una, se transfieren automáticamente 0,50 M entre equipos.</small></label>
+            <label class="op-field"><span>Ronda</span><input id="sanctionRound" class="op-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
+            <label class="op-field"><span>Fecha</span><input id="sanctionDate" class="op-input" type="date" required></label>
+            <div class="operation-note">Si el piloto tiene asiento oficial, su escudería queda fijada automáticamente. Si es reserva o no tiene asiento oficial para esa ronda, podrás seleccionarla manualmente.</div>
+            <div class="operation-footer"><p id="sanctionStatus" class="operation-status" aria-live="polite"></p><button id="sanctionSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR SANCIÓN</span></button></div>
+          </form>
+        </article>
+
+        <article class="operation-panel is-hidden" data-operation-panel="fines">
+          <span class="panel-label">ECONOMÍA</span><h3>Registrar multa</h3>
+          <p class="operation-help">La descripción y el importe son manuales. El dinero se descuenta de la cuenta de la escudería seleccionada.</p>
+          <form id="fineForm" class="operation-form">
+            <label class="op-field"><span>Piloto</span><select id="fineDriver" class="op-select" required></select></label>
+            <label class="op-field"><span>Escudería</span><select id="fineTeam" class="op-select" required></select><small id="fineTeamMode" class="team-mode">Se rellenará al elegir piloto.</small></label>
+            <label class="op-field"><span>Importe en millones</span><input id="fineAmount" class="op-input" type="number" min="0.01" step="0.01" placeholder="Ej.: 0.50" required></label>
+            <label class="op-field"><span>Ronda</span><input id="fineRound" class="op-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
+            <label class="op-field"><span>Fecha</span><input id="fineDate" class="op-input" type="date" required></label>
+            <label class="op-field full"><span>Descripción</span><textarea id="fineDescription" class="op-textarea" maxlength="500" placeholder="Motivo de la multa…" required></textarea></label>
+            <div class="operation-footer"><p id="fineStatus" class="operation-status" aria-live="polite"></p><button id="fineSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR MULTA</span></button></div>
+          </form>
+        </article>
+
+        <article class="operation-panel is-hidden" data-operation-panel="manual">
+          <span class="panel-label">BANCO</span><h3>Movimiento manual</h3>
+          <p class="operation-help">Añade directamente un ingreso o un gasto a una escudería para cualquier ajuste económico que no dependa de una sanción o multa.</p>
+          <form id="manualMovementForm" class="operation-form">
+            <label class="op-field"><span>Escudería</span><select id="manualTeam" class="op-select" required></select></label>
+            <label class="op-field"><span>Movimiento</span><select id="manualDirection" class="op-select"><option value="income">Sumar dinero</option><option value="expense">Restar dinero</option></select></label>
+            <label class="op-field"><span>Importe en millones</span><input id="manualAmount" class="op-input" type="number" min="0.01" step="0.01" placeholder="Ej.: 0.50" required></label>
+            <label class="op-field"><span>Ronda</span><input id="manualRound" class="op-input" type="number" min="1" step="1" placeholder="Opcional"></label>
+            <label class="op-field"><span>Fecha</span><input id="manualDate" class="op-input" type="date" required></label>
+            <label class="op-field full"><span>Descripción</span><textarea id="manualDescription" class="op-textarea" maxlength="500" placeholder="Concepto del movimiento…" required></textarea></label>
+            <div class="operation-footer"><p id="manualStatus" class="operation-status" aria-live="polite"></p><button id="manualSubmit" class="primary-button op-submit" type="submit"><span>AÑADIR MOVIMIENTO</span></button></div>
+          </form>
+        </article>
+
+        <article class="operation-panel pending-sanctions-section">
+          <span class="panel-label">SUPERLICENCIA</span><h3>NQ / Race Ban pendientes</h3>
+          <p class="operation-help">Los genera automáticamente el sistema al alcanzar los umbrales de superlicencia. Aquí solo se marcan como cumplidos.</p>
+          <div id="pendingSanctionsList" class="pending-sanctions"><div class="empty-sanctions">Cargando sanciones pendientes…</div></div>
+        </article>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">PILOTOS</span><h2>Control de superlicencias</h2></div></section>
@@ -78,13 +113,13 @@
         <div id="resultCount" class="result-count"></div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Últimos movimientos</h2></div><span class="season-badge">T8</span></section>
+      <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Últimos movimientos de superlicencia</h2></div><span class="season-badge">T8</span></section>
       <section class="staff-panel table-panel"><div class="table-wrap"><table class="staff-table events-table"><thead><tr><th>Fecha</th><th>Ronda</th><th>Piloto</th><th>Tipo</th><th>Detalle</th><th>Puntos</th></tr></thead><tbody id="eventsBody"></tbody></table></div></section>
     </div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=1"></script>
-  <script src="js/staff-actions.js?v=1"></script>
+  <script src="js/staff-operations.js?v=1"></script>
 </body>
 </html>
