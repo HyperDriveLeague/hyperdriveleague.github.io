@@ -16,6 +16,7 @@
   let rosterByDriver = new Map();
   let events = [];
   let licenseById = new Map();
+  let sanctionsByEvent = new Map();
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const divisionName = value => value === 'academy' ? 'Academy' : value === 'hyperdrive' ? 'HyperDrive' : 'Sin asiento';
@@ -90,12 +91,63 @@
     document.getElementById('resultCount').textContent = `${rows.length} de ${licenses.length} superlicencias`;
   }
 
+  async function deleteManagedSanction(sanction, buttonGroup) {
+    const moneyText = sanction.team_expense_transaction_id || sanction.beneficiary_income_transaction_id
+      ? '\n• Se revertirán los movimientos económicos asociados.'
+      : '';
+    const pointsText = sanction.superlicense_event_id
+      ? '\n• Se recalculará por completo la superlicencia del piloto.'
+      : '';
+    const ok = window.confirm(`¿Eliminar definitivamente la sanción ${sanction.article_code}?\n\nSe desharán todos sus efectos:${pointsText}${moneyText}\n\nLos demás movimientos históricos no se tocarán.`);
+    if (!ok) return;
+
+    [...buttonGroup.querySelectorAll('button')].forEach(button => button.disabled = true);
+    const { error } = await client.rpc('staff_delete_sporting_sanction', { p_sanction_id: sanction.id });
+    if (error) {
+      [...buttonGroup.querySelectorAll('button')].forEach(button => button.disabled = false);
+      window.alert(error.message || 'No se pudo eliminar la sanción.');
+      return;
+    }
+    window.location.reload();
+  }
+
+  function createHistoryActions(item) {
+    const cell = document.createElement('td');
+    cell.className = 'history-actions-cell';
+    const sanction = sanctionsByEvent.get(item.id);
+    if (!sanction) {
+      cell.textContent = '—';
+      return cell;
+    }
+
+    const group = document.createElement('div');
+    group.className = 'history-actions';
+
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'history-action edit';
+    edit.textContent = 'EDITAR';
+    edit.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('hyperdrive:edit-sanction', { detail: sanction }));
+    });
+
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'history-action delete';
+    remove.textContent = 'ELIMINAR';
+    remove.addEventListener('click', () => deleteManagedSanction(sanction, group));
+
+    group.append(edit, remove);
+    cell.appendChild(group);
+    return cell;
+  }
+
   function renderEvents() {
     const body = document.getElementById('eventsBody');
     body.innerHTML = '';
     const sorted = [...events].sort((a,b) => new Date(b.event_date || b.created_at || 0).getTime() - new Date(a.event_date || a.created_at || 0).getTime()).slice(0,20);
     if (!sorted.length) {
-      body.innerHTML = '<tr class="empty-row"><td colspan="6">No hay movimientos registrados.</td></tr>';
+      body.innerHTML = '<tr class="empty-row"><td colspan="7">No hay movimientos registrados.</td></tr>';
       return;
     }
     sorted.forEach(item => {
@@ -106,7 +158,8 @@
       const sign = delta > 0 ? '+' : '';
       const detail = item.description || item.article || 'Movimiento de superlicencia';
       const row = document.createElement('tr');
-      row.innerHTML = `<td>${esc(formatDate(item.event_date))}</td><td>${item.round_number ? `R${esc(item.round_number)}` : '—'}</td><td><strong>${esc(driver.nickname || 'Piloto')}</strong></td><td>${esc(item.event_type || '—')}</td><td class="events-detail">${esc(detail)}</td><td class="${deltaClass}">${sign}${esc(delta)}</td>`;
+      row.innerHTML = `<td>${esc(formatDate(item.event_date))}</td><td>${item.round_number ? `R${esc(item.round_number)}` : '—'}</td><td><strong>${esc(driver.nickname || 'Piloto')}</strong></td><td>${esc(item.article || item.event_type || '—')}</td><td class="events-detail">${esc(detail)}</td><td class="${deltaClass}">${sign}${esc(delta)}</td>`;
+      row.appendChild(createHistoryActions(item));
       body.appendChild(row);
     });
   }
@@ -117,21 +170,31 @@
     const rolesResponse = await client.from('user_roles').select('role').eq('user_id', session.user.id).in('role', ['staff','admin']);
     if (rolesResponse.error) return showError('No se pudieron comprobar tus permisos de Staff.');
     if (!(rolesResponse.data || []).length) return showError('Tu cuenta no tiene permisos de Staff o Administración.');
-    const [licensesResponse, rosterResponse] = await Promise.all([
+
+    const [licensesResponse, rosterResponse, sanctionsResponse] = await Promise.all([
       client.from('superlicenses').select('id, driver_id, season_number, starting_points, current_points, warning_count, attendance_incident_count, nq_earned_count, nq_served_count, rb_earned_count, rb_served_count, is_active, drivers:driver_id(id, nickname, race_number)').eq('season_number', config.currentSeason),
-      client.from('season_roster').select('driver_id, division, roster_status, start_round, end_round, teams:team_id(name)').eq('season_number', config.currentSeason).eq('is_active', true)
+      client.from('season_roster').select('driver_id, division, roster_status, start_round, end_round, teams:team_id(name)').eq('season_number', config.currentSeason).eq('is_active', true),
+      client.from('staff_sporting_sanctions').select('id,season_number,round_number,sanction_date,article_code,driver_id,team_id,beneficiary_team_id,seconds_text,points_text,description,superlicense_event_id,team_expense_transaction_id,beneficiary_income_transaction_id,created_at').eq('season_number', config.currentSeason)
     ]);
-    if (licensesResponse.error || rosterResponse.error) return showError('La sesión está activa, pero no se pudieron cargar los datos de competición.');
+    if (licensesResponse.error || rosterResponse.error || sanctionsResponse.error) return showError('La sesión está activa, pero no se pudieron cargar los datos de competición.');
+
     licenses = licensesResponse.data || [];
     licenseById = new Map(licenses.map(item => [item.id, item]));
     rosterByDriver = new Map((rosterResponse.data || []).map(item => [item.driver_id, item]));
+    sanctionsByEvent = new Map((sanctionsResponse.data || []).filter(item => item.superlicense_event_id).map(item => [item.superlicense_event_id, item]));
+
     if (licenses.length) {
-      const eventsResponse = await client.from('superlicense_events').select('superlicense_id, round_number, event_date, event_type, points_delta, article, description, status, created_at').in('superlicense_id', licenses.map(item => item.id));
+      const eventsResponse = await client.from('superlicense_events').select('id, superlicense_id, round_number, event_date, event_type, points_delta, article, description, status, created_at').in('superlicense_id', licenses.map(item => item.id));
       if (eventsResponse.error) return showError('Se cargaron las superlicencias, pero no el historial de movimientos.');
       events = eventsResponse.data || [];
     }
-    renderSummary(); renderLicenses(); renderEvents();
-    loadingPanel.classList.add('is-hidden'); errorPanel.classList.add('is-hidden'); staffContent.classList.remove('is-hidden');
+
+    renderSummary();
+    renderLicenses();
+    renderEvents();
+    loadingPanel.classList.add('is-hidden');
+    errorPanel.classList.add('is-hidden');
+    staffContent.classList.remove('is-hidden');
   }
 
   [driverSearch, divisionFilter, statusFilter].forEach(el => el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', renderLicenses));
