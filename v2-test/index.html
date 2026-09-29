@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/app.css?v=3">
+  <link rel="stylesheet" href="css/app.css?v=5">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -25,7 +25,7 @@
       <section class="section-heading"><div><span class="eyebrow">PERMISOS DETECTADOS</span><h2>Tu área de trabajo</h2></div><span id="seasonBadge" class="season-badge">TEMPORADA 8</span></section>
       <section id="accessGrid" class="access-grid">
         <article class="access-card module-card" data-role-card="pilot" data-module="pilot" tabindex="0" role="button" aria-label="Abrir módulo Piloto"><div class="access-card-top"><span class="access-index">01</span><span class="access-state">Sin acceso</span></div><h3>Piloto</h3><p>Perfil, estadísticas, resultados y superlicencia.</p><span class="module-link">ABRIR MÓDULO →</span></article>
-        <article class="access-card" data-role-card="team_principal"><div class="access-card-top"><span class="access-index">02</span><span class="access-state">Sin acceso</span></div><h3>Team Principal</h3><p id="teamPrincipalText">Gestión deportiva y económica de la escudería.</p><span class="coming-soon">Módulo en desarrollo</span></article>
+        <a class="access-card module-card module-anchor" data-role-card="team_principal" href="/v2-test/team.html?v=2" aria-label="Abrir módulo Team Principal"><div class="access-card-top"><span class="access-index">02</span><span class="access-state">Sin acceso</span></div><h3>Team Principal</h3><p id="teamPrincipalText">Gestión deportiva y económica de la escudería.</p><span class="module-link">ABRIR MÓDULO →</span></a>
         <article class="access-card" data-role-card="staff"><div class="access-card-top"><span class="access-index">03</span><span class="access-state">Sin acceso</span></div><h3>Staff</h3><p>Gestión de competición, sanciones, pilotos y operaciones.</p><span class="coming-soon">Módulo en desarrollo</span></article>
         <article class="access-card" data-role-card="admin"><div class="access-card-top"><span class="access-index">04</span><span class="access-state">Sin acceso</span></div><h3>Administración</h3><p>Control completo del sistema y configuración de la plataforma.</p><span class="coming-soon">Módulo en desarrollo</span></article>
       </section>
@@ -40,6 +40,6 @@
       <section class="history-card"><div id="licenseHistory" class="history-list"><div class="history-empty">Cargando historial…</div></div></section>
     </section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=3"></script><script src="js/app.js?v=3"></script><script src="js/team-link.js?v=1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=5"></script><script src="js/app.js?v=5"></script>
 </body>
 </html>
