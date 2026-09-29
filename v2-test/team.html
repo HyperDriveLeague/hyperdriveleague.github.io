@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperDrive V2 | Team Principal</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=4">
+  <link rel="stylesheet" href="css/team.css?v=1">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <main class="app-shell team-shell">
+    <header class="module-header">
+      <div><span class="eyebrow">TEAM PRINCIPAL · TEMPORADA 8</span><h1 id="teamPageTitle">Mi escudería</h1></div>
+      <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><button id="teamLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+    </header>
+
+    <section id="loadingPanel" class="team-message-card">Cargando datos de la escudería…</section>
+    <section id="errorPanel" class="team-message-card error is-hidden"></section>
+
+    <div id="teamContent" class="is-hidden">
+      <section class="team-hero">
+        <div class="team-mark">TP</div>
+        <div><span class="panel-label">ESCUDERÍA</span><h2 id="teamName">—</h2><div class="pilot-tags"><span class="info-tag">TEMPORADA 8</span><span id="teamStatus" class="info-tag">ACTIVA</span></div></div>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">FINANZAS</span><h2>Resumen económico</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
+      <section class="finance-grid">
+        <article class="finance-card featured"><span>SALDO ACTUAL</span><strong id="currentBalance">—</strong><small>millones</small></article>
+        <article class="finance-card"><span>INGRESOS T8</span><strong id="totalIncome">—</strong><small>millones</small></article>
+        <article class="finance-card"><span>GASTOS T8</span><strong id="totalExpense">—</strong><small>millones</small></article>
+        <article class="finance-card"><span>RESULTADO T8</span><strong id="seasonProfit">—</strong><small>millones</small></article>
+      </section>
+
+      <section class="team-two-col">
+        <article class="team-panel">
+          <span class="panel-label">SALARY CAP</span>
+          <div class="cap-value"><strong id="contractValue">—</strong><span>/</span><span id="salaryCap">—</span></div>
+          <div class="license-meter"><div id="capMeterFill" class="license-meter-fill"></div></div>
+          <p id="capStatus" class="muted">—</p>
+        </article>
+        <article class="team-panel">
+          <span class="panel-label">SPONSORS</span>
+          <div class="sponsor-money"><strong id="pendingSponsors">—</strong><span> M pendientes</span></div>
+          <div class="charge-row"><span>Fair Play</span><strong id="fairPlayCharge">—</strong></div>
+          <div class="charge-row"><span>Impuesto de lujo</span><strong id="luxuryTax">—</strong></div>
+        </article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">PLANTILLA</span><h2>Pilotos oficiales</h2></div></section>
+      <section class="roster-grid">
+        <article class="team-panel"><span class="panel-label">HYPERDRIVE</span><div id="hyperdriveRoster" class="roster-list"></div></article>
+        <article class="team-panel"><span class="panel-label">ACADEMY</span><div id="academyRoster" class="roster-list"></div></article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">CONTRATOS</span><h2>Valor de la plantilla</h2></div></section>
+      <section class="team-panel table-panel"><div class="table-wrap"><table class="team-table"><thead><tr><th>Piloto</th><th>Valor</th><th>Cláusula</th><th>Contrato</th></tr></thead><tbody id="contractsBody"></tbody></table></div></section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">OBJETIVOS</span><h2>Sponsors activos</h2></div></section>
+      <section class="sponsor-columns">
+        <article class="team-panel"><span class="panel-label">HYPERDRIVE</span><div id="hyperdriveSponsors" class="sponsor-list"></div></article>
+        <article class="team-panel"><span class="panel-label">ACADEMY</span><div id="academySponsors" class="sponsor-list"></div></article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">BANCO</span><h2>Últimos movimientos</h2></div><span class="season-badge">SOLO LECTURA</span></section>
+      <section class="team-panel table-panel"><div class="table-wrap"><table class="team-table"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Importe</th></tr></thead><tbody id="transactionsBody"></tbody></table></div></section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js?v=4"></script>
+  <script src="js/team.js?v=1"></script>
+</body>
+</html>
