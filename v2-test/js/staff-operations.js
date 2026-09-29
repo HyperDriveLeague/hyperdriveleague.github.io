@@ -22,6 +22,7 @@
   const articleDescription = document.getElementById('articleDescription');
   const sanctionStatus = document.getElementById('sanctionStatus');
   const sanctionSubmit = document.getElementById('sanctionSubmit');
+  const cancelSanctionEdit = document.getElementById('cancelSanctionEdit');
 
   const fineForm = document.getElementById('fineForm');
   const fineDriver = document.getElementById('fineDriver');
@@ -54,6 +55,9 @@
   let rosterRows = [];
   let licenses = [];
   let licenseById = new Map();
+  let editingSanctionId = null;
+  let operationsReady = false;
+  let queuedEdit = null;
 
   const localToday = () => {
     const now = new Date();
@@ -172,6 +176,46 @@
     if (current && current !== payer && teamById.has(current)) beneficiaryTeam.value = current;
   }
 
+  function exitEditMode(reset = true) {
+    editingSanctionId = null;
+    if (cancelSanctionEdit) cancelSanctionEdit.classList.add('is-hidden');
+    sanctionSubmit.querySelector('span').textContent = 'REGISTRAR SANCIÓN';
+    if (!reset) return;
+    sanctionForm.reset();
+    sanctionDate.value = localToday();
+    sanctionArticle.value = '';
+    sanctionDriver.value = '';
+    sanctionTeam.disabled = false;
+    sanctionTeam.value = '';
+    beneficiaryTeam.value = '';
+    sanctionTeamMode.textContent = 'Se rellenará al elegir piloto.';
+    sanctionTeamMode.classList.remove('manual');
+    syncArticlePreview();
+    setStatus(sanctionStatus);
+  }
+
+  function enterEditMode(sanction) {
+    if (!operationsReady) {
+      queuedEdit = sanction;
+      return;
+    }
+    editingSanctionId = sanction.id;
+    showTab('sanctions');
+    sanctionArticle.value = sanction.article_code || '';
+    sanctionDriver.value = sanction.driver_id || '';
+    sanctionRound.value = sanction.round_number ?? '';
+    sanctionDate.value = sanction.sanction_date || localToday();
+    syncArticlePreview();
+    syncDriverTeam(sanctionDriver, sanctionRound, sanctionTeam, sanctionTeamMode, true);
+    if (!sanctionTeam.disabled) sanctionTeam.value = sanction.team_id || '';
+    syncBeneficiaryOptions();
+    beneficiaryTeam.value = sanction.beneficiary_team_id || '';
+    sanctionSubmit.querySelector('span').textContent = 'GUARDAR CAMBIOS';
+    if (cancelSanctionEdit) cancelSanctionEdit.classList.remove('is-hidden');
+    setStatus(sanctionStatus, `Editando ${sanction.article_code}. Al guardar se revertirán primero los efectos anteriores.`, 'edit');
+    sanctionForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   async function loadPendingSanctions() {
     pendingSanctionsList.textContent = 'Cargando sanciones pendientes…';
     if (!licenses.length) {
@@ -255,13 +299,16 @@
     const team = teamById.get(sanctionTeam.value);
     const beneficiary = teamById.get(beneficiaryTeam.value);
     const special = article.points_numeric == null && article.points_text !== '-';
-    let message = `¿Registrar sanción?\n\n${driver?.nickname || 'Piloto'} · ${team?.name || ''}\n${article.article_code}\n${article.description}\nSegundos: ${article.seconds_text}\nPuntos: ${article.points_text}`;
+    const isEdit = !!editingSanctionId;
+    let message = `${isEdit ? '¿Guardar cambios en la sanción?' : '¿Registrar sanción?'}\n\n${driver?.nickname || 'Piloto'} · ${team?.name || ''}\n${article.article_code}\n${article.description}\nSegundos: ${article.seconds_text}\nPuntos: ${article.points_text}`;
     if (special) message += '\n\nEl valor de puntos es especial y NO se descontará automáticamente.';
     if (beneficiary) message += `\n\nSe transferirán 0,50 M de ${team?.name} a ${beneficiary.name}.`;
+    if (isEdit) message += '\n\nLa sanción anterior se revertirá primero: puntos y movimientos económicos volverán a su estado previo antes de aplicar estos nuevos datos.';
     if (!window.confirm(message)) return;
 
-    setBusy(sanctionSubmit, true, 'GUARDANDO…', 'REGISTRAR SANCIÓN');
-    const { error } = await client.rpc('staff_apply_sporting_sanction', {
+    const normalText = isEdit ? 'GUARDAR CAMBIOS' : 'REGISTRAR SANCIÓN';
+    setBusy(sanctionSubmit, true, 'GUARDANDO…', normalText);
+    const args = {
       p_driver_id: sanctionDriver.value,
       p_article_code: sanctionArticle.value,
       p_team_id: sanctionTeam.value || null,
@@ -269,10 +316,12 @@
       p_round_number: sanctionRound.value ? Number(sanctionRound.value) : null,
       p_sanction_date: sanctionDate.value,
       p_season_number: config.currentSeason
-    });
-    setBusy(sanctionSubmit, false, 'GUARDANDO…', 'REGISTRAR SANCIÓN');
-    if (error) return setStatus(sanctionStatus, error.message || 'No se pudo registrar la sanción.', 'error');
-    setStatus(sanctionStatus, 'Sanción registrada correctamente.', 'success');
+    };
+    if (isEdit) args.p_sanction_id = editingSanctionId;
+    const { error } = await client.rpc(isEdit ? 'staff_edit_sporting_sanction' : 'staff_apply_sporting_sanction', args);
+    setBusy(sanctionSubmit, false, 'GUARDANDO…', normalText);
+    if (error) return setStatus(sanctionStatus, error.message || 'No se pudo guardar la sanción.', 'error');
+    setStatus(sanctionStatus, isEdit ? 'Sanción corregida correctamente.' : 'Sanción registrada correctamente.', 'success');
     window.setTimeout(() => window.location.reload(), 650);
   });
 
@@ -341,6 +390,8 @@
   sanctionTeam.addEventListener('change', syncBeneficiaryOptions);
   fineDriver.addEventListener('change', () => syncDriverTeam(fineDriver, fineRound, fineTeam, fineTeamMode));
   fineRound.addEventListener('input', () => syncDriverTeam(fineDriver, fineRound, fineTeam, fineTeamMode));
+  if (cancelSanctionEdit) cancelSanctionEdit.addEventListener('click', () => exitEditMode(true));
+  window.addEventListener('hyperdrive:edit-sanction', event => enterEditMode(event.detail));
 
   async function init() {
     const { data: { session: activeSession } } = await client.auth.getSession();
@@ -383,6 +434,12 @@
     manualDate.value = today;
     syncArticlePreview();
     showTab('sanctions');
+    operationsReady = true;
+    if (queuedEdit) {
+      const pending = queuedEdit;
+      queuedEdit = null;
+      enterEditMode(pending);
+    }
     await loadPendingSanctions();
   }
 
