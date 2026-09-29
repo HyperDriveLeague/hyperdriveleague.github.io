@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperDrive V2 | Administración</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5">
+  <link rel="stylesheet" href="css/admin.css?v=1">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <main class="app-shell admin-shell">
+    <header class="module-header">
+      <div><span class="eyebrow">ADMINISTRACIÓN · TEMPORADA 8</span><h1>System Control</h1></div>
+      <div class="topbar-actions"><a class="secondary-button admin-link-button" href="index.html">← Control Center</a><button id="adminLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+    </header>
+
+    <section id="loadingPanel" class="admin-message-card">Cargando configuración del sistema…</section>
+    <section id="errorPanel" class="admin-message-card error is-hidden"></section>
+
+    <div id="adminContent" class="is-hidden">
+      <section class="admin-hero">
+        <div class="admin-mark">A</div>
+        <div><span class="panel-label">CONTROL DE ACCESO</span><h2>Administración</h2><p>Estado de cuentas, perfiles, permisos y Team Principals.</p></div>
+        <span class="system-indicator ok">SOLO LECTURA</span>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del sistema</h2></div></section>
+      <section class="admin-summary-grid">
+        <article class="admin-summary-card"><span>PERFILES</span><strong id="profileCount">—</strong><small>cuentas con perfil</small></article>
+        <article class="admin-summary-card"><span>PILOTOS VINCULADOS</span><strong id="linkedCount">—</strong><small>perfiles con piloto</small></article>
+        <article class="admin-summary-card featured"><span>SIN PILOTO</span><strong id="pendingCount">—</strong><small>cuentas a revisar</small></article>
+        <article class="admin-summary-card"><span>TEAM PRINCIPALS</span><strong id="principalCount">—</strong><small>activos en T8</small></article>
+        <article class="admin-summary-card"><span>ROLES ASIGNADOS</span><strong id="roleCount">—</strong><small>permisos totales</small></article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">CUENTAS</span><h2>Usuarios configurados</h2></div><input id="accountSearch" class="admin-search" type="search" placeholder="Buscar usuario, piloto, equipo o rol…"></section>
+      <section class="admin-panel table-panel">
+        <div class="table-wrap"><table class="admin-table"><thead><tr><th>Perfil</th><th>Piloto</th><th>Roles</th><th>Team Principal</th><th>Estado</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">ALTAS</span><h2>Cuentas sin piloto vinculado</h2></div><span class="season-badge">REVISIÓN MANUAL</span></section>
+      <section class="admin-panel">
+        <p class="admin-note">Aquí aparecerán las nuevas cuentas creadas en Supabase que todavía no estén vinculadas a un piloto. Una cuenta exclusivamente de Staff podría aparecer también aquí si no tiene piloto asociado.</p>
+        <div id="pendingAccounts" class="pending-list"></div>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
+      <section id="roleDistribution" class="role-distribution"></section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/admin.js?v=1"></script>
+</body>
+</html>
