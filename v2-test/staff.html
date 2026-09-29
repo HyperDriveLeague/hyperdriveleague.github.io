@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=5">
   <link rel="stylesheet" href="css/staff.css?v=1">
+  <link rel="stylesheet" href="css/staff-actions.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -27,7 +28,7 @@
     <div id="staffContent" class="is-hidden">
       <section class="staff-hero">
         <div class="staff-mark">RC</div>
-        <div><span class="panel-label">CONTROL DE COMPETICIÓN</span><h2>Superlicencias T8</h2><div class="pilot-tags"><span class="info-tag">STAFF</span><span class="info-tag">SOLO LECTURA</span></div></div>
+        <div><span class="panel-label">CONTROL DE COMPETICIÓN</span><h2>Superlicencias T8</h2><div class="pilot-tags"><span class="info-tag">STAFF</span><span class="info-tag">GESTIÓN ACTIVA</span></div></div>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del campeonato</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
@@ -36,6 +37,33 @@
         <article class="staff-summary-card"><span>EN PLANTILLA</span><strong id="rosterCount">—</strong><small>pilotos activos</small></article>
         <article class="staff-summary-card alert"><span>NQ / RB PENDIENTE</span><strong id="pendingCount">—</strong><small>sanciones por cumplir</small></article>
         <article class="staff-summary-card"><span>MOVIMIENTOS</span><strong id="eventCount">—</strong><small>eventos de superlicencia</small></article>
+      </section>
+
+      <section id="staffActions">
+        <section class="module-section-heading"><div><span class="eyebrow">OPERACIONES</span><h2>Gestión de superlicencia</h2></div><span class="season-badge">STAFF / ADMIN</span></section>
+        <section class="staff-actions-grid">
+          <article class="staff-action-card">
+            <span class="panel-label">REGISTRAR</span><h3>Nueva incidencia</h3>
+            <p class="staff-action-help">Registra la causa real. Los NO QUALY y RACE BAN se generan automáticamente cuando corresponda según los puntos de superlicencia.</p>
+            <form id="staffEventForm" class="staff-action-form">
+              <label class="staff-action-field full"><span>Piloto</span><select id="eventLicense" class="staff-action-select" required><option value="">Selecciona piloto</option></select></label>
+              <label class="staff-action-field"><span>Tipo</span><select id="eventType" class="staff-action-select"><option value="points_penalty">Pérdida de puntos</option><option value="warning">Aviso</option><option value="attendance_incident">Incidencia de asistencia</option><option value="points_restore">Recuperación de puntos</option></select></label>
+              <label class="staff-action-field"><span>Puntos</span><input id="eventPoints" class="staff-action-input" type="number" min="0" max="12" step="1" value="1"></label>
+              <label class="staff-action-field"><span>Ronda</span><input id="eventRound" class="staff-action-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
+              <label class="staff-action-field"><span>Fecha</span><input id="eventDate" class="staff-action-input" type="date" required></label>
+              <label class="staff-action-field full"><span>Artículo / referencia</span><input id="eventArticle" class="staff-action-input" type="text" maxlength="80" placeholder="Opcional · Ej.: Art.SP1"></label>
+              <label class="staff-action-field full"><span>Descripción</span><textarea id="eventDescription" class="staff-action-textarea" maxlength="500" placeholder="Motivo de la incidencia o sanción…" required></textarea></label>
+              <div id="eventPreview" class="points-preview">Selecciona un piloto para ver el efecto de la operación.</div>
+              <div class="staff-action-footer"><p id="eventActionStatus" class="staff-action-status" aria-live="polite"></p><button id="eventSubmitButton" class="primary-button staff-action-button" type="submit"><span>REGISTRAR INCIDENCIA</span></button></div>
+            </form>
+          </article>
+
+          <article class="staff-action-card">
+            <span class="panel-label">CUMPLIMIENTO</span><h3>Sanciones pendientes</h3>
+            <p class="staff-action-help">Aquí aparecen los NO QUALY y RACE BAN automáticos todavía pendientes. Al cumplir un RACE BAN a 0 puntos, el sistema devuelve 6 puntos automáticamente.</p>
+            <div id="pendingSanctionsList" class="pending-sanctions"><div class="empty-sanctions">Cargando sanciones pendientes…</div></div>
+          </article>
+        </section>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">PILOTOS</span><h2>Control de superlicencias</h2></div></section>
@@ -57,5 +85,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=1"></script>
+  <script src="js/staff-actions.js?v=1"></script>
 </body>
 </html>
