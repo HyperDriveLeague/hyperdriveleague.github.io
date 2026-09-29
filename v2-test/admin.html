@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=5">
-  <link rel="stylesheet" href="css/admin.css?v=1">
+  <link rel="stylesheet" href="css/admin.css?v=2">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -28,14 +28,14 @@
       <section class="admin-hero">
         <div class="admin-mark">A</div>
         <div><span class="panel-label">CONTROL DE ACCESO</span><h2>Administración</h2><p>Estado de cuentas, perfiles, permisos y Team Principals.</p></div>
-        <span class="system-indicator ok">SOLO LECTURA</span>
+        <span class="system-indicator ok">GESTIÓN ACTIVA</span>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del sistema</h2></div></section>
       <section class="admin-summary-grid">
         <article class="admin-summary-card"><span>PERFILES</span><strong id="profileCount">—</strong><small>cuentas con perfil</small></article>
         <article class="admin-summary-card"><span>PILOTOS VINCULADOS</span><strong id="linkedCount">—</strong><small>perfiles con piloto</small></article>
-        <article class="admin-summary-card featured"><span>SIN PILOTO</span><strong id="pendingCount">—</strong><small>cuentas a revisar</small></article>
+        <article class="admin-summary-card featured"><span>PENDIENTES</span><strong id="pendingCount">—</strong><small>cuentas por configurar</small></article>
         <article class="admin-summary-card"><span>TEAM PRINCIPALS</span><strong id="principalCount">—</strong><small>activos en T8</small></article>
         <article class="admin-summary-card"><span>ROLES ASIGNADOS</span><strong id="roleCount">—</strong><small>permisos totales</small></article>
       </section>
@@ -45,9 +45,9 @@
         <div class="table-wrap"><table class="admin-table"><thead><tr><th>Perfil</th><th>Piloto</th><th>Roles</th><th>Team Principal</th><th>Estado</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">ALTAS</span><h2>Cuentas sin piloto vinculado</h2></div><span class="season-badge">REVISIÓN MANUAL</span></section>
+      <section class="module-section-heading"><div><span class="eyebrow">ALTAS</span><h2>Cuentas pendientes de configurar</h2></div><span class="season-badge">SOLO ADMIN</span></section>
       <section class="admin-panel">
-        <p class="admin-note">Aquí aparecerán las nuevas cuentas creadas en Supabase que todavía no estén vinculadas a un piloto. Una cuenta exclusivamente de Staff podría aparecer también aquí si no tiene piloto asociado.</p>
+        <p class="admin-note">Cuando alguien cree una cuenta nueva, aparecerá aquí. El administrador puede vincularla a un piloto y asignar sus permisos. Los pilotos y escuderías que ya estén asignados se excluyen de las opciones disponibles para evitar duplicados.</p>
         <div id="pendingAccounts" class="pending-list"></div>
       </section>
 
@@ -58,6 +58,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
-  <script src="js/admin.js?v=1"></script>
+  <script src="js/admin.js?v=2"></script>
 </body>
 </html>
