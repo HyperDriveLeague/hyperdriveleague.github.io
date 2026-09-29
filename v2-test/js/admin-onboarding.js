@@ -45,10 +45,11 @@
       const occupiedTeamIds = new Set(principals.filter(p => p.user_id !== account.user_id).map(p => p.team_id));
       const driverOptions = drivers.filter(d => !usedDriverIds.has(d.id)).map(d => `<option value="${esc(d.id)}">#${esc(d.race_number ?? '--')} · ${esc(d.nickname)}</option>`).join('');
       const teamOptions = teams.filter(t => !occupiedTeamIds.has(t.id)).map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+      const discordName = account.discord_username || account.display_name || 'No indicado';
 
       const card = document.createElement('div');
       card.className = 'pending-account pending-config-card';
-      card.innerHTML = `<div class="pending-account-head"><div><strong>${esc(account.email || account.display_name || 'Cuenta')}</strong><small>${esc(account.display_name || 'Sin nombre')} · Alta ${esc(formatDate(account.created_at))}</small></div><span class="pending-badge">PENDIENTE</span></div>
+      card.innerHTML = `<div class="pending-account-head"><div><strong>${esc(account.email || 'Cuenta')}</strong><small>Discord: ${esc(discordName)} · Alta ${esc(formatDate(account.created_at))}</small></div><span class="pending-badge">PENDIENTE</span></div>
       <form class="pending-config-form">
         <label class="config-field"><span>Piloto</span><select name="driver"><option value="">Sin piloto</option>${driverOptions}</select></label>
         <fieldset class="role-selector"><legend>Permisos</legend>${['pilot','team_principal','staff','admin'].map(role => `<label><input type="checkbox" name="roles" value="${role}" ${defaults.includes(role)?'checked':''}><span>${esc(roleLabel(role))}</span></label>`).join('')}</fieldset>
