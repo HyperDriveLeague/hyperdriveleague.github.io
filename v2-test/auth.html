@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperDrive V2 | Cuenta</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5">
+  <style>
+    .account-shell{min-height:calc(100vh - 96px);display:grid;place-items:center;padding:40px 0}.account-wrap{width:min(560px,100%)}.account-head{margin-bottom:18px}.account-head h1{margin:8px 0 0;font-size:clamp(38px,7vw,62px);letter-spacing:-.05em}.account-head p{color:var(--grey);line-height:1.6}.account-card{padding:26px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.018));border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.28)}.account-form{display:grid;gap:10px}.account-form label{margin-top:8px;color:#c5c7cb;font-size:12px;font-weight:700}.account-form input{width:100%;padding:15px 16px;color:#fff;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.12);border-radius:10px;outline:none}.account-form input:focus{border-color:rgba(255,213,0,.8);box-shadow:0 0 0 3px rgba(255,213,0,.08)}.account-message{min-height:24px;margin:10px 0 0;color:#b8bbc1;font-size:12px;line-height:1.5}.account-message.error{color:var(--red)}.account-message.success{color:var(--green)}.account-back{display:inline-block;margin-top:16px;color:#a7abb1;text-decoration:none;font-size:12px}.account-back:hover{color:var(--yellow)}.account-note{margin:10px 0 0;color:#72767d;font-size:11px;line-height:1.5}
+  </style>
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <main class="app-shell account-shell">
+    <div class="account-wrap">
+      <header class="account-head"><span class="eyebrow">HYPERDRIVE LEAGUE</span><h1 id="accountTitle">Crear cuenta</h1><p id="accountIntro">Regístrate con tu correo y tu nombre de Discord. Tu cuenta quedará pendiente hasta que Administración te vincule con tu piloto.</p></header>
+      <section class="account-card">
+        <form id="registerForm" class="account-form">
+          <label for="discordUsername">Nombre de Discord</label>
+          <input id="discordUsername" name="discordUsername" type="text" autocomplete="nickname" minlength="2" maxlength="64" placeholder="Ej.: Xavineta" required>
+          <label for="registerEmail">Correo electrónico</label>
+          <input id="registerEmail" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+          <label for="registerPassword">Contraseña</label>
+          <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres" required>
+          <label for="registerPasswordConfirm">Repite la contraseña</label>
+          <input id="registerPasswordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="8" placeholder="Repite tu contraseña" required>
+          <button class="primary-button" type="submit"><span>CREAR CUENTA</span></button>
+        </form>
+        <form id="forgotForm" class="account-form is-hidden">
+          <label for="forgotEmail">Correo electrónico</label>
+          <input id="forgotEmail" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+          <button class="primary-button" type="submit"><span>ENVIAR ENLACE</span></button>
+        </form>
+        <form id="changeForm" class="account-form is-hidden">
+          <label for="newPassword">Nueva contraseña</label>
+          <input id="newPassword" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres" required>
+          <label for="newPasswordConfirm">Repite la nueva contraseña</label>
+          <input id="newPasswordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="8" placeholder="Repite la contraseña" required>
+          <button class="primary-button" type="submit"><span>CAMBIAR CONTRASEÑA</span></button>
+        </form>
+        <p id="accountMessage" class="account-message" role="status" aria-live="polite"></p>
+        <p class="account-note" id="accountNote">El nombre de Discord es obligatorio para que Administración pueda identificarte antes de asignarte permisos.</p>
+        <a class="account-back" href="index.html">← Volver a iniciar sesión</a>
+      </section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/auth.js?v=1"></script>
+</body>
+</html>
