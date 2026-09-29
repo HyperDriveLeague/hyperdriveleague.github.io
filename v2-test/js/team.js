@@ -19,6 +19,46 @@
     errorPanel.classList.remove('is-hidden');
   }
 
+  function renderManagement(finance, roster, sponsors, account) {
+    const cap = Number(finance.salary_cap_m || account.salary_cap_m || 500);
+    const contracts = Number(finance.active_contract_value_m || 0);
+    const available = cap - contracts;
+    const usage = cap > 0 ? (contracts / cap) * 100 : 0;
+    const pending = sponsors.filter(item => !item.is_completed);
+    const pendingReward = pending.reduce((sum, item) => sum + Number(item.effective_reward_m || 0), 0);
+
+    document.getElementById('capAvailable').textContent = `${money(available)} M`;
+    document.getElementById('capUsage').textContent = `${usage.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
+    document.getElementById('activeSponsors').textContent = pending.length;
+    document.getElementById('activeSponsorsMoney').textContent = `${money(pendingReward)} M potenciales`;
+    document.getElementById('rosterCount').textContent = roster.length;
+
+    const alerts = document.getElementById('managementAlerts');
+    const messages = [];
+
+    if (available < 0) {
+      messages.push({ ok: false, html: `<strong>Salary cap superado.</strong> La plantilla está ${money(Math.abs(available))} M por encima del límite.` });
+    } else if (available <= 25) {
+      messages.push({ ok: false, html: `<strong>Margen salarial reducido.</strong> Quedan ${money(available)} M disponibles antes de alcanzar el límite.` });
+    } else {
+      messages.push({ ok: true, html: `<strong>Salary cap dentro del límite.</strong> Hay ${money(available)} M disponibles.` });
+    }
+
+    if (pending.length) {
+      messages.push({ ok: false, html: `<strong>${pending.length} sponsors pendientes.</strong> Pueden aportar hasta ${money(pendingReward)} M si se cumplen sus objetivos.` });
+    } else {
+      messages.push({ ok: true, html: '<strong>Todos los sponsors registrados están completados.</strong>' });
+    }
+
+    const charges = Number(finance.fair_play_charge_m || 0) + Number(finance.luxury_tax_m || 0);
+    messages.push(charges > 0
+      ? { ok: false, html: `<strong>Cargos económicos activos.</strong> Fair Play + impuesto de lujo suman ${money(charges)} M.` }
+      : { ok: true, html: '<strong>Sin cargos adicionales.</strong> No hay Fair Play ni impuesto de lujo aplicados actualmente.' }
+    );
+
+    alerts.innerHTML = messages.map(item => `<div class="management-alert${item.ok ? ' ok' : ''}"><span class="management-alert-dot"></span><div>${item.html}</div></div>`).join('');
+  }
+
   function renderRoster(items, division, targetId) {
     const target = document.getElementById(targetId);
     const rows = items.filter(item => item.division === division);
@@ -122,6 +162,8 @@
     }
 
     const finance = financeResponse.data || {};
+    const roster = rosterResponse.data || [];
+    const sponsors = sponsorsResponse.data || [];
     const teamName = account.teams?.name || principal.teams?.name || 'Escudería';
     document.getElementById('teamPageTitle').textContent = teamName;
     document.getElementById('teamName').textContent = teamName;
@@ -144,11 +186,12 @@
     const available = cap - contracts;
     document.getElementById('capStatus').textContent = available >= 0 ? `${money(available)} M disponibles antes de alcanzar el límite.` : `${money(Math.abs(available))} M por encima del límite.`;
 
-    renderRoster(rosterResponse.data || [], 'hyperdrive', 'hyperdriveRoster');
-    renderRoster(rosterResponse.data || [], 'academy', 'academyRoster');
+    renderManagement(finance, roster, sponsors, account);
+    renderRoster(roster, 'hyperdrive', 'hyperdriveRoster');
+    renderRoster(roster, 'academy', 'academyRoster');
     renderContracts(contractsResponse.data || []);
-    renderSponsors(sponsorsResponse.data || [], 'hyperdrive', 'hyperdriveSponsors');
-    renderSponsors(sponsorsResponse.data || [], 'academy', 'academySponsors');
+    renderSponsors(sponsors, 'hyperdrive', 'hyperdriveSponsors');
+    renderSponsors(sponsors, 'academy', 'academySponsors');
     renderTransactions(transactionsResponse.data || []);
 
     loadingPanel.classList.add('is-hidden');
