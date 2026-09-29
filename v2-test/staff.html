@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperDrive V2 | Staff</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5">
+  <link rel="stylesheet" href="css/staff.css?v=1">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <main class="app-shell staff-shell">
+    <header class="module-header">
+      <div><span class="eyebrow">STAFF · TEMPORADA 8</span><h1>Race Control</h1></div>
+      <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><button id="staffLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+    </header>
+
+    <section id="loadingPanel" class="staff-message-card">Comprobando permisos y cargando datos…</section>
+    <section id="errorPanel" class="staff-message-card error is-hidden"></section>
+
+    <div id="staffContent" class="is-hidden">
+      <section class="staff-hero">
+        <div class="staff-mark">RC</div>
+        <div><span class="panel-label">CONTROL DE COMPETICIÓN</span><h2>Superlicencias T8</h2><div class="pilot-tags"><span class="info-tag">STAFF</span><span class="info-tag">SOLO LECTURA</span></div></div>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del campeonato</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
+      <section class="staff-summary-grid">
+        <article class="staff-summary-card"><span>SUPERLICENCIAS</span><strong id="licenseCount">—</strong><small>registradas en T8</small></article>
+        <article class="staff-summary-card"><span>EN PLANTILLA</span><strong id="rosterCount">—</strong><small>pilotos activos</small></article>
+        <article class="staff-summary-card alert"><span>NQ / RB PENDIENTE</span><strong id="pendingCount">—</strong><small>sanciones por cumplir</small></article>
+        <article class="staff-summary-card"><span>MOVIMIENTOS</span><strong id="eventCount">—</strong><small>eventos de superlicencia</small></article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">PILOTOS</span><h2>Control de superlicencias</h2></div></section>
+      <section class="staff-panel filters-panel">
+        <input id="driverSearch" class="staff-input" type="search" placeholder="Buscar piloto, dorsal o equipo…" autocomplete="off">
+        <select id="divisionFilter" class="staff-select"><option value="all">Todas las divisiones</option><option value="hyperdrive">HyperDrive</option><option value="academy">Academy</option><option value="none">Sin asiento activo</option></select>
+        <select id="statusFilter" class="staff-select"><option value="all">Todos los estados</option><option value="pending">NQ / RB pendiente</option><option value="danger">6 puntos o menos</option><option value="ok">Sin sanción pendiente</option></select>
+      </section>
+
+      <section class="staff-panel table-panel">
+        <div class="table-wrap"><table class="staff-table"><thead><tr><th>Piloto</th><th>Equipo / división</th><th>Puntos</th><th>Avisos</th><th>Asistencia</th><th>NQ</th><th>RB</th><th>Estado</th></tr></thead><tbody id="licensesBody"></tbody></table></div>
+        <div id="resultCount" class="result-count"></div>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Últimos movimientos</h2></div><span class="season-badge">T8</span></section>
+      <section class="staff-panel table-panel"><div class="table-wrap"><table class="staff-table events-table"><thead><tr><th>Fecha</th><th>Ronda</th><th>Piloto</th><th>Tipo</th><th>Detalle</th><th>Puntos</th></tr></thead><tbody id="eventsBody"></tbody></table></div></section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/staff.js?v=1"></script>
+</body>
+</html>
