@@ -14,8 +14,9 @@
   const message = document.getElementById('accountMessage');
   const note = document.getElementById('accountNote');
 
-  const indexUrl = new URL('index.html', window.location.href).toString().split('#')[0].split('?')[0];
-  const changePasswordUrl = new URL('auth.html?mode=change', window.location.href).toString().split('#')[0];
+  const appBaseUrl = 'https://hyperdriveleague.github.io/v2-test/';
+  const indexUrl = `${appBaseUrl}index.html`;
+  const changePasswordUrl = `${appBaseUrl}auth.html?mode=change`;
 
   function setMessage(text = '', type = '') {
     message.textContent = text;
