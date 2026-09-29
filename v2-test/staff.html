@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=5">
   <link rel="stylesheet" href="css/staff.css?v=1">
-  <link rel="stylesheet" href="css/staff-operations.css?v=1">
+  <link rel="stylesheet" href="css/staff-operations.css?v=2">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -62,7 +62,7 @@
             <label class="op-field"><span>Ronda</span><input id="sanctionRound" class="op-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
             <label class="op-field"><span>Fecha</span><input id="sanctionDate" class="op-input" type="date" required></label>
             <div class="operation-note">Si el piloto tiene asiento oficial, su escudería queda fijada automáticamente. Si es reserva o no tiene asiento oficial para esa ronda, podrás seleccionarla manualmente.</div>
-            <div class="operation-footer"><p id="sanctionStatus" class="operation-status" aria-live="polite"></p><button id="sanctionSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR SANCIÓN</span></button></div>
+            <div class="operation-footer"><p id="sanctionStatus" class="operation-status" aria-live="polite"></p><div class="operation-buttons"><button id="cancelSanctionEdit" class="secondary-button cancel-edit is-hidden" type="button">CANCELAR EDICIÓN</button><button id="sanctionSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR SANCIÓN</span></button></div></div>
           </form>
         </article>
 
@@ -114,12 +114,12 @@
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Últimos movimientos de superlicencia</h2></div><span class="season-badge">T8</span></section>
-      <section class="staff-panel table-panel"><div class="table-wrap"><table class="staff-table events-table"><thead><tr><th>Fecha</th><th>Ronda</th><th>Piloto</th><th>Tipo</th><th>Detalle</th><th>Puntos</th></tr></thead><tbody id="eventsBody"></tbody></table></div></section>
+      <section class="staff-panel table-panel"><div class="table-wrap"><table class="staff-table events-table"><thead><tr><th>Fecha</th><th>Ronda</th><th>Piloto</th><th>Artículo / tipo</th><th>Detalle</th><th>Puntos</th><th>Acciones</th></tr></thead><tbody id="eventsBody"></tbody></table></div></section>
     </div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
-  <script src="js/staff.js?v=1"></script>
-  <script src="js/staff-operations.js?v=1"></script>
+  <script src="js/staff.js?v=2"></script>
+  <script src="js/staff-operations.js?v=2"></script>
 </body>
 </html>
