@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=4">
-  <link rel="stylesheet" href="css/team.css?v=1">
+  <link rel="stylesheet" href="css/team.css?v=2">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -30,7 +30,16 @@
         <div><span class="panel-label">ESCUDERÍA</span><h2 id="teamName">—</h2><div class="pilot-tags"><span class="info-tag">TEMPORADA 8</span><span id="teamStatus" class="info-tag">ACTIVA</span></div></div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">FINANZAS</span><h2>Resumen económico</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
+      <section class="module-section-heading"><div><span class="eyebrow">CONTROL DE GESTIÓN</span><h2>Situación de la escudería</h2></div><span class="system-indicator ok">DATOS EN VIVO</span></section>
+      <section class="management-grid">
+        <article class="management-card"><span>MARGEN SALARY CAP</span><strong id="capAvailable">—</strong><small>disponible</small></article>
+        <article class="management-card"><span>CAP UTILIZADO</span><strong id="capUsage">—</strong><small>de 500 M</small></article>
+        <article class="management-card"><span>SPONSORS PENDIENTES</span><strong id="activeSponsors">—</strong><small id="activeSponsorsMoney">—</small></article>
+        <article class="management-card"><span>PLANTILLA OFICIAL</span><strong id="rosterCount">—</strong><small>pilotos activos</small></article>
+      </section>
+      <section id="managementAlerts" class="management-alerts"></section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">FINANZAS</span><h2>Resumen económico</h2></div></section>
       <section class="finance-grid">
         <article class="finance-card featured"><span>SALDO ACTUAL</span><strong id="currentBalance">—</strong><small>millones</small></article>
         <article class="finance-card"><span>INGRESOS T8</span><strong id="totalIncome">—</strong><small>millones</small></article>
@@ -75,6 +84,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=4"></script>
-  <script src="js/team.js?v=1"></script>
+  <script src="js/team.js?v=2"></script>
 </body>
 </html>
