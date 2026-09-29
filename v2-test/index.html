@@ -22,42 +22,25 @@
         <h1>Área privada</h1>
         <p>Acceso para pilotos, Team Principals, staff y administración.</p>
       </div>
-
       <div class="auth-card">
-        <div class="auth-card-header">
-          <span class="status-dot"></span>
-          <span>ACCESO V2</span>
-        </div>
-
+        <div class="auth-card-header"><span class="status-dot"></span><span>ACCESO V2</span></div>
         <form id="loginForm" class="login-form" novalidate>
           <label for="email">Correo electrónico</label>
           <input id="email" name="email" type="email" autocomplete="email" placeholder="tu@correo.com" required>
-
           <label for="password">Contraseña</label>
           <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
-
-          <button id="loginButton" class="primary-button" type="submit">
-            <span>INICIAR SESIÓN</span>
-          </button>
-
+          <button id="loginButton" class="primary-button" type="submit"><span>INICIAR SESIÓN</span></button>
           <p id="loginMessage" class="form-message" role="status" aria-live="polite"></p>
         </form>
-
         <p class="auth-note">Las cuentas se crean desde la organización de HyperDrive League.</p>
       </div>
     </section>
 
     <section id="dashboardView" class="dashboard-view is-hidden">
       <header class="topbar">
-        <div>
-          <span class="eyebrow">HYPERDRIVE LEAGUE</span>
-          <h1>Control Center</h1>
-        </div>
+        <div><span class="eyebrow">HYPERDRIVE LEAGUE</span><h1>Control Center</h1></div>
         <div class="topbar-actions">
-          <div class="session-pill">
-            <span class="status-dot"></span>
-            <span id="sessionLabel">Sesión activa</span>
-          </div>
+          <div class="session-pill"><span class="status-dot"></span><span id="sessionLabel">Sesión activa</span></div>
           <button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button>
         </div>
       </header>
@@ -65,71 +48,97 @@
       <section class="identity-panel">
         <div class="identity-main">
           <div class="driver-number" id="driverNumber">--</div>
-          <div>
-            <span class="panel-label">USUARIO</span>
-            <h2 id="displayName">Cargando…</h2>
-            <p id="userEmail" class="muted"></p>
-          </div>
+          <div><span class="panel-label">USUARIO</span><h2 id="displayName">Cargando…</h2><p id="userEmail" class="muted"></p></div>
         </div>
         <div id="rolesContainer" class="role-list" aria-label="Roles del usuario"></div>
       </section>
 
       <section class="section-heading">
-        <div>
-          <span class="eyebrow">PERMISOS DETECTADOS</span>
-          <h2>Tu área de trabajo</h2>
-        </div>
+        <div><span class="eyebrow">PERMISOS DETECTADOS</span><h2>Tu área de trabajo</h2></div>
         <span id="seasonBadge" class="season-badge">TEMPORADA 8</span>
       </section>
 
       <section id="accessGrid" class="access-grid">
-        <article class="access-card" data-role-card="pilot">
-          <div class="access-card-top">
-            <span class="access-index">01</span>
-            <span class="access-state">Sin acceso</span>
-          </div>
-          <h3>Piloto</h3>
-          <p>Perfil, estadísticas, resultados y superlicencia.</p>
-          <span class="coming-soon">Módulo en desarrollo</span>
+        <article class="access-card module-card" data-role-card="pilot" data-module="pilot" tabindex="0" role="button" aria-label="Abrir módulo Piloto">
+          <div class="access-card-top"><span class="access-index">01</span><span class="access-state">Sin acceso</span></div>
+          <h3>Piloto</h3><p>Perfil, estadísticas, resultados y superlicencia.</p><span class="module-link">ABRIR MÓDULO →</span>
         </article>
-
         <article class="access-card" data-role-card="team_principal">
-          <div class="access-card-top">
-            <span class="access-index">02</span>
-            <span class="access-state">Sin acceso</span>
-          </div>
-          <h3>Team Principal</h3>
-          <p id="teamPrincipalText">Gestión deportiva y económica de la escudería.</p>
-          <span class="coming-soon">Módulo en desarrollo</span>
+          <div class="access-card-top"><span class="access-index">02</span><span class="access-state">Sin acceso</span></div>
+          <h3>Team Principal</h3><p id="teamPrincipalText">Gestión deportiva y económica de la escudería.</p><span class="coming-soon">Módulo en desarrollo</span>
         </article>
-
         <article class="access-card" data-role-card="staff">
-          <div class="access-card-top">
-            <span class="access-index">03</span>
-            <span class="access-state">Sin acceso</span>
-          </div>
-          <h3>Staff</h3>
-          <p>Gestión de competición, sanciones, pilotos y operaciones.</p>
-          <span class="coming-soon">Módulo en desarrollo</span>
+          <div class="access-card-top"><span class="access-index">03</span><span class="access-state">Sin acceso</span></div>
+          <h3>Staff</h3><p>Gestión de competición, sanciones, pilotos y operaciones.</p><span class="coming-soon">Módulo en desarrollo</span>
         </article>
-
         <article class="access-card" data-role-card="admin">
-          <div class="access-card-top">
-            <span class="access-index">04</span>
-            <span class="access-state">Sin acceso</span>
-          </div>
-          <h3>Administración</h3>
-          <p>Control completo del sistema y configuración de la plataforma.</p>
-          <span class="coming-soon">Módulo en desarrollo</span>
+          <div class="access-card-top"><span class="access-index">04</span><span class="access-state">Sin acceso</span></div>
+          <h3>Administración</h3><p>Control completo del sistema y configuración de la plataforma.</p><span class="coming-soon">Módulo en desarrollo</span>
         </article>
       </section>
 
       <section class="system-panel">
-        <div>
-          <span class="panel-label">ESTADO DEL SISTEMA</span>
-          <h3 id="systemStatus">Comprobando permisos…</h3>
-        </div>
+        <div><span class="panel-label">ESTADO DEL SISTEMA</span><h3 id="systemStatus">Comprobando permisos…</h3></div>
         <span id="systemIndicator" class="system-indicator">CARGANDO</span>
+      </section>
+    </section>
+
+    <section id="pilotView" class="pilot-view is-hidden">
+      <header class="module-header">
+        <div>
+          <button id="backToDashboard" class="back-button" type="button">← VOLVER AL CONTROL CENTER</button>
+          <span class="eyebrow">ÁREA DE PILOTO · TEMPORADA 8</span>
+          <h1 id="pilotTitle">Mi piloto</h1>
+        </div>
+        <button id="pilotLogoutButton" class="secondary-button" type="button">Cerrar sesión</button>
+      </header>
+
+      <section class="pilot-hero">
+        <div class="pilot-hero-number" id="pilotRaceNumber">--</div>
+        <div class="pilot-hero-copy">
+          <span class="panel-label">PILOTO OFICIAL</span>
+          <h2 id="pilotNickname">Cargando…</h2>
+          <div class="pilot-tags">
+            <span id="pilotDivision" class="info-tag">—</span>
+            <span id="pilotTeam" class="info-tag">—</span>
+            <span id="pilotRegion" class="info-tag">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="module-section-heading">
+        <div><span class="eyebrow">SUPERLICENCIA</span><h2>Estado actual</h2></div>
+        <span id="licenseStateBadge" class="system-indicator ok">ACTIVA</span>
+      </section>
+
+      <section class="license-layout">
+        <article class="license-main-card">
+          <div class="license-score-row">
+            <div><span class="panel-label">PUNTOS ACTUALES</span><div class="license-score"><strong id="licenseCurrent">--</strong><span>/</span><span id="licenseStarting">12</span></div></div>
+            <div class="license-meter-wrap"><div class="license-meter"><div id="licenseMeterFill" class="license-meter-fill"></div></div><span id="licenseLostText" class="muted">—</span></div>
+          </div>
+          <div class="license-stats">
+            <div class="mini-stat"><span>AVISOS</span><strong id="licenseWarnings">0</strong></div>
+            <div class="mini-stat"><span>INCID. ASISTENCIA</span><strong id="licenseAttendance">0</strong></div>
+            <div class="mini-stat"><span>NQ</span><strong id="licenseNq">0</strong></div>
+            <div class="mini-stat"><span>RB</span><strong id="licenseRb">0</strong></div>
+          </div>
+        </article>
+
+        <article class="license-rules-card">
+          <span class="panel-label">REFERENCIA</span>
+          <h3>Umbrales de sanción</h3>
+          <div class="rule-row"><span>6 puntos perdidos</span><strong>NQ</strong></div>
+          <div class="rule-row"><span>12 puntos perdidos</span><strong>RB</strong></div>
+          <p>Los datos se actualizan automáticamente desde la base de datos de la liga.</p>
+        </article>
+      </section>
+
+      <section class="module-section-heading history-heading">
+        <div><span class="eyebrow">HISTORIAL</span><h2>Movimientos de superlicencia</h2></div>
+      </section>
+      <section class="history-card">
+        <div id="licenseHistory" class="history-list"><div class="history-empty">Cargando historial…</div></div>
       </section>
     </section>
   </main>
