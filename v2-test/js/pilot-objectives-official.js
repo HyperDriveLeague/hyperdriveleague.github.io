@@ -26,6 +26,7 @@
       empty.className = 'pilot-dashboard-empty';
       empty.textContent = 'No hay objetivos activos para esta división.';
       target.appendChild(empty);
+      target.style.visibility = '';
       return;
     }
 
@@ -58,12 +59,28 @@
       card.append(top, description, note);
       target.appendChild(card);
     });
+    target.style.visibility = '';
+  }
+
+  function renderError() {
+    const target = document.getElementById('pilotObjectives');
+    if (!target) return;
+    target.textContent = '';
+    const marker = document.createElement('span');
+    marker.hidden = true;
+    marker.dataset.officialObjectivesRender = '1';
+    const empty = document.createElement('div');
+    empty.className = 'pilot-dashboard-empty';
+    empty.textContent = 'No se pudo comprobar el estado oficial de los objetivos.';
+    target.append(marker, empty);
+    target.style.visibility = '';
   }
 
   async function applyOfficialStatus() {
     const target = document.getElementById('pilotObjectives');
     if (!target || pilotView.classList.contains('is-hidden')) return;
     if (target.querySelector('[data-official-objectives-render]')) return;
+    target.style.visibility = 'hidden';
     if (loading) {
       queued = true;
       return;
@@ -71,7 +88,8 @@
     loading = true;
     const { data, error } = await client.rpc('pilot_dashboard_private', { p_season_number: config.currentSeason });
     loading = false;
-    if (!error) render(data?.objectives || []);
+    if (error) renderError();
+    else render(data?.objectives || []);
     if (queued) {
       queued = false;
       window.setTimeout(applyOfficialStatus, 20);
