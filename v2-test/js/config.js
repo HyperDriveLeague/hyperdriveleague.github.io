@@ -14,6 +14,11 @@ if (window.location.pathname.endsWith('/staff.html')) {
   objectivesScript.src = 'js/staff-objectives.js?v=1';
   objectivesScript.defer = true;
   document.head.appendChild(objectivesScript);
+
+  const objectivesUnconfirmScript = document.createElement('script');
+  objectivesUnconfirmScript.src = 'js/staff-objectives-unconfirm.js?v=1';
+  objectivesUnconfirmScript.defer = true;
+  document.head.appendChild(objectivesUnconfirmScript);
 }
 
 if (window.location.pathname.endsWith('/index.html') || window.location.pathname.endsWith('/v2-test/')) {
