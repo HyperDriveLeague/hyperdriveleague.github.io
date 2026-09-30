@@ -110,6 +110,30 @@
         return match ? Number(match[1]) : null;
     };
 
+    const weatherLabel = value => {
+        const raw = String(value || '').trim();
+        const key = raw.toLowerCase().replace(/[^a-z]/g, '');
+        const labels = {
+            clear: 'Despejado',
+            lightcloud: 'Poco nublado',
+            cloudy: 'Nublado',
+            overcast: 'Nublado',
+            lightRain: 'Lluvia ligera',
+            lightrain: 'Lluvia ligera',
+            rain: 'Lluvia',
+            heavyrain: 'Lluvia intensa',
+            storm: 'Tormenta',
+            wet: 'Mojado'
+        };
+        return labels[key] || raw;
+    };
+
+    const finiteTemperature = value => {
+        if (value === null || value === undefined || value === '') return null;
+        const number = Number(value);
+        return Number.isFinite(number) ? number : null;
+    };
+
     function normaliseRecord(raw) {
         const timeMs = parseTimeMs(raw);
         return {
@@ -123,7 +147,10 @@
             round: Number(raw.round ?? raw.roundNumber) || null,
             division: divisionLabel(raw.division || raw.league || ''),
             date: raw.date || raw.eventDate || null,
-            sessionPosition: Number(raw.sessionPosition ?? raw.qualyPosition ?? raw.position) || null
+            sessionPosition: Number(raw.sessionPosition ?? raw.qualyPosition ?? raw.position) || null,
+            weatherType: raw.weatherType || raw.weather || '',
+            airTemperature: finiteTemperature(raw.airTemperature ?? raw.airTemp),
+            trackTemperature: finiteTemperature(raw.trackTemperature ?? raw.trackTemp)
         };
     }
 
@@ -154,6 +181,9 @@
             date: data?.event?.eventDate || null,
             sessionPosition: Number(driver?.classificationPosition ?? driver?.position) || null,
             teamName: driver?.team?.name || '',
+            weatherType: info.weatherType || '',
+            airTemperature: finiteTemperature(info.airTemperature),
+            trackTemperature: finiteTemperature(info.trackTemperature),
             source: 'rlt-qualy'
         };
     }
@@ -181,6 +211,15 @@
             .map((record, index) => ({ ...record, historicalPosition: index + 1 }));
     }
 
+    function conditionsMeta(record) {
+        const bits = [];
+        const weather = weatherLabel(record.weatherType);
+        if (weather) bits.push(weather);
+        if (record.airTemperature !== null) bits.push(`Aire ${record.airTemperature} °C`);
+        if (record.trackTemperature !== null) bits.push(`Pista ${record.trackTemperature} °C`);
+        return bits.join(' · ');
+    }
+
     function recordMeta(record) {
         const bits = [];
         if (record.season) bits.push(`Season ${record.season}`);
@@ -188,6 +227,8 @@
         if (record.round) bits.push(`R${record.round}`);
         if (record.sessionPosition) bits.push(`Qualy P${record.sessionPosition}`);
         if (record.date) bits.push(formatDate(record.date));
+        const conditions = conditionsMeta(record);
+        if (conditions) bits.push(conditions);
         return bits.join(' · ');
     }
 
