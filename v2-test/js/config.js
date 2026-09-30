@@ -9,4 +9,16 @@ if (window.location.pathname.endsWith('/staff.html')) {
   metricsScript.src = 'js/staff-hub-metrics.js?v=1';
   metricsScript.defer = true;
   document.head.appendChild(metricsScript);
+
+  const objectivesScript = document.createElement('script');
+  objectivesScript.src = 'js/staff-objectives.js?v=1';
+  objectivesScript.defer = true;
+  document.head.appendChild(objectivesScript);
+}
+
+if (window.location.pathname.endsWith('/index.html') || window.location.pathname.endsWith('/v2-test/')) {
+  const officialObjectivesScript = document.createElement('script');
+  officialObjectivesScript.src = 'js/pilot-objectives-official.js?v=1';
+  officialObjectivesScript.defer = true;
+  document.head.appendChild(officialObjectivesScript);
 }
