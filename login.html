@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <title>Iniciar sesión | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="images/logo/favicon.jpg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .public-login-page{min-height:100vh;display:grid;grid-template-rows:auto 1fr;background:radial-gradient(circle at 70% 15%,rgba(255,213,0,.07),transparent 28%),#08090b;color:#fff}.public-login-header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 42px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(8,9,11,.97)}.public-login-header img{width:115px;display:block}.public-login-back{color:#a8abb0;text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.5px}.public-login-back:hover{color:#ffd500}.public-login-main{display:grid;place-items:center;padding:50px 20px}.public-login-wrap{width:min(500px,100%)}.public-login-eyebrow{display:block;color:#ffd500;font-size:10px;font-weight:900;letter-spacing:2px}.public-login-wrap h1{margin:10px 0 8px;font-size:clamp(38px,7vw,62px);line-height:.95;letter-spacing:-2px}.public-login-intro{margin:0 0 22px;color:#9b9da3;font-size:13px;line-height:1.6}.public-login-card{padding:26px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));box-shadow:0 30px 80px rgba(0,0,0,.28)}.public-login-form{display:grid;gap:10px}.public-login-form label{margin-top:8px;color:#c5c7cb;font-size:11px;font-weight:800}.public-login-form input{width:100%;padding:14px 15px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:#0b0d10;color:#fff;outline:none;font:inherit}.public-login-form input:focus{border-color:rgba(255,213,0,.75);box-shadow:0 0 0 3px rgba(255,213,0,.07)}.public-login-submit{margin-top:8px;min-height:48px;border:0;border-radius:4px;background:#ffd500;color:#08090b;font:inherit;font-size:11px;font-weight:950;letter-spacing:.7px;cursor:pointer}.public-login-submit:disabled{opacity:.55;cursor:wait}.public-login-message{min-height:20px;margin:10px 0 0;color:#a7aab0;font-size:11px;font-weight:700}.public-login-message.error{color:#ff7373}.public-login-message.success{color:#7be39d}.public-login-links{margin:14px 0 0;color:#777b82;font-size:11px;line-height:1.8}.public-login-links a{color:#ffd500;text-decoration:none;font-weight:800}.public-login-links a.secondary{color:#aaaeb4}@media(max-width:700px){.public-login-header{height:68px;padding:0 18px}.public-login-header img{width:100px}.public-login-main{padding-top:34px}.public-login-card{padding:20px}}
+  </style>
+</head>
+<body class="public-login-page">
+  <header class="public-login-header">
+    <a href="index.html"><img src="images/logo/hyperdrive-logo.png" alt="HyperDrive League"></a>
+    <a class="public-login-back" href="index.html">← VOLVER A LA WEB</a>
+  </header>
+  <main class="public-login-main">
+    <div class="public-login-wrap">
+      <span class="public-login-eyebrow">HYPERDRIVE LEAGUE</span>
+      <h1>Área personal</h1>
+      <p class="public-login-intro">Inicia sesión con tu cuenta de HyperDrive. Al entrar volverás a la web y tendrás acceso directo a tu área privada.</p>
+      <section class="public-login-card">
+        <form id="publicLoginForm" class="public-login-form" novalidate>
+          <label for="publicLoginEmail">Correo electrónico</label>
+          <input id="publicLoginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+          <label for="publicLoginPassword">Contraseña</label>
+          <input id="publicLoginPassword" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          <button id="publicLoginButton" class="public-login-submit" type="submit">INICIAR SESIÓN</button>
+        </form>
+        <p id="publicLoginMessage" class="public-login-message" role="status" aria-live="polite"></p>
+        <p class="public-login-links">¿No tienes cuenta? <a href="v2-test/auth.html?mode=register">Crear cuenta</a><br><a class="secondary" href="v2-test/auth.html?mode=forgot">He olvidado mi contraseña</a></p>
+      </section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/public-login.js?v=1"></script>
+</body>
+</html>
