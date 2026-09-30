@@ -5,7 +5,7 @@
   const roleDistribution = document.getElementById('roleDistribution');
   if (!adminContent || !roleDistribution) return;
 
-  const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const esc = value => String(value ?? '').replace(/[&<>'\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch]));
   const roleNames = {pilot:'Piloto',team_principal:'Team Principal',staff:'Staff',admin:'Admin'};
 
   async function init() {
@@ -14,7 +14,7 @@
 
     const [adminCheck, profilesRes, rolesRes, principalsRes, driversRes, teamsRes] = await Promise.all([
       client.from('user_roles').select('role').eq('user_id',session.user.id).eq('role','admin').maybeSingle(),
-      client.from('profiles').select('id,driver_id,display_name,discord_username,is_active,drivers:driver_id(id,nickname,race_number)').order('display_name'),
+      client.from('profiles').select('id,driver_id,display_name,discord_username,is_active,application_status,drivers:driver_id(id,nickname,race_number)').neq('application_status','discarded').order('display_name'),
       client.from('user_roles').select('user_id,role'),
       client.from('team_principals').select('user_id,team_id,season_number,is_active').eq('season_number',config.currentSeason).eq('is_active',true),
       client.from('drivers').select('id,nickname,race_number,is_active').eq('is_active',true).order('nickname'),
