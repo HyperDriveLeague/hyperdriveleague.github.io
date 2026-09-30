@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/app.css?v=5">
   <link rel="stylesheet" href="css/staff.css?v=1">
   <link rel="stylesheet" href="css/staff-operations.css?v=2">
+  <link rel="stylesheet" href="css/staff-economy-history.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -46,6 +47,7 @@
           <button class="operation-tab" type="button" data-operation-tab="bans">NQ / RB</button>
           <button class="operation-tab" type="button" data-operation-tab="fines">MULTAS</button>
           <button class="operation-tab" type="button" data-operation-tab="manual">MOVIMIENTO MANUAL</button>
+          <button class="operation-tab" type="button" data-operation-tab="economy-history">HISTÓRICO ECONÓMICO</button>
         </div>
 
         <article class="operation-panel" data-operation-panel="sanctions">
@@ -100,6 +102,31 @@
             <div class="operation-footer"><p id="manualStatus" class="operation-status" aria-live="polite"></p><button id="manualSubmit" class="primary-button op-submit" type="submit"><span>AÑADIR MOVIMIENTO</span></button></div>
           </form>
         </article>
+
+        <article class="operation-panel is-hidden" data-operation-panel="economy-history">
+          <span class="panel-label">BANCO · RACE CONTROL</span><h3>Histórico económico editable</h3>
+          <p class="economy-history-note">Aquí aparecen únicamente las multas y movimientos manuales creados desde Race Control. Las transferencias asociadas a sanciones deportivas se editan o eliminan desde la propia sanción, para mantener puntos y dinero sincronizados.</p>
+          <p id="economyHistoryMessage" class="economy-history-message" aria-live="polite"></p>
+          <div class="table-wrap">
+            <table class="economy-history-table">
+              <thead><tr><th>Tipo</th><th>Fecha</th><th>Ronda</th><th>Piloto</th><th>Escudería</th><th>Descripción</th><th>Movimiento</th><th>Acciones</th></tr></thead>
+              <tbody id="economyHistoryBody"><tr><td colspan="8" class="economy-history-empty">Cargando histórico económico…</td></tr></tbody>
+            </table>
+          </div>
+          <div id="economyEditBox" class="economy-edit-box is-hidden">
+            <div class="economy-edit-head"><div><span class="panel-label">EDITAR</span><h4>Modificar movimiento</h4></div><span id="economyEditTypeLabel" class="economy-edit-kind">—</span></div>
+            <form id="economyEditForm" class="operation-form">
+              <label id="economyEditDriverField" class="op-field"><span>Piloto</span><select id="economyEditDriver" class="op-select"></select></label>
+              <label class="op-field"><span>Escudería</span><select id="economyEditTeam" class="op-select" required></select></label>
+              <label id="economyEditDirectionField" class="op-field"><span>Movimiento</span><select id="economyEditDirection" class="op-select"><option value="income">Sumar dinero</option><option value="expense">Restar dinero</option></select></label>
+              <label class="op-field"><span>Importe en millones</span><input id="economyEditAmount" class="op-input" type="number" min="0.01" step="0.01" required></label>
+              <label class="op-field"><span>Ronda</span><input id="economyEditRound" class="op-input" type="number" min="1" step="1" placeholder="Opcional"></label>
+              <label class="op-field"><span>Fecha</span><input id="economyEditDate" class="op-input" type="date" required></label>
+              <label class="op-field full"><span>Descripción</span><textarea id="economyEditDescription" class="op-textarea" maxlength="500" required></textarea></label>
+              <div class="operation-footer"><span></span><div class="operation-buttons"><button id="economyEditCancel" class="secondary-button" type="button">CANCELAR</button><button id="economyEditSave" class="primary-button op-submit" type="submit"><span>GUARDAR CAMBIOS</span></button></div></div>
+            </form>
+          </div>
+        </article>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">PILOTOS</span><h2>Control de superlicencias</h2></div></section>
@@ -122,5 +149,6 @@
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=2"></script>
   <script src="js/staff-operations.js?v=3"></script>
+  <script src="js/staff-economy-history.js?v=1"></script>
 </body>
 </html>
