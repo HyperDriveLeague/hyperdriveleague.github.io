@@ -1,5 +1,28 @@
 {
   "version": 1,
-  "updatedAt": null,
+  "updatedAt": "2026-09-30",
+  "circuits": [
+    {
+      "id": "shanghai",
+      "name": "Shanghai",
+      "country": "China",
+      "firstSeason": 8,
+      "lastSeason": 8
+    },
+    {
+      "id": "baku",
+      "name": "Baku",
+      "country": "Azerbaijan",
+      "firstSeason": 8,
+      "lastSeason": 8
+    },
+    {
+      "id": "imola",
+      "name": "Imola",
+      "country": "Italy",
+      "firstSeason": 8,
+      "lastSeason": 8
+    }
+  ],
   "records": []
 }
