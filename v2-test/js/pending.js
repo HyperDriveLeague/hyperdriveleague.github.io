@@ -76,7 +76,7 @@
   if (!document.getElementById('pilotDashboardScript')) {
     const script = document.createElement('script');
     script.id = 'pilotDashboardScript';
-    script.src = 'js/pilot-dashboard.js?v=3';
+    script.src = 'js/pilot-dashboard.js?v=4';
     document.body.appendChild(script);
   }
 })();
