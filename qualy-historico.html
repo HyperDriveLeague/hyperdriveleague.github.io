@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Qualy | HyperDrive League</title>
+
+    <link rel="icon" type="image/jpeg" href="images/logo/favicon.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/logo/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#080808">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/qualy-historico.css?v=1">
+</head>
+<body>
+    <div id="site-header"></div>
+
+    <main class="qualy-page">
+        <section class="qualy-hero">
+            <div class="qualy-hero-copy">
+                <span class="qualy-kicker">HYPERDRIVE LEAGUE · ARCHIVO HISTÓRICO</span>
+                <h1>HISTÓRICO<br><span>DE QUALY.</span></h1>
+                <p>
+                    Los mejores tiempos de clasificación registrados por cada piloto en cada circuito.
+                    Si un trazado vuelve al calendario en otra temporada, solo se conserva la mejor vuelta
+                    histórica de cada piloto para construir el ranking global de la liga.
+                </p>
+            </div>
+
+            <div class="qualy-hero-stats" aria-label="Resumen del histórico">
+                <div class="qualy-stat">
+                    <strong id="qualy-circuit-count">--</strong>
+                    <span>CIRCUITOS</span>
+                </div>
+                <div class="qualy-stat">
+                    <strong id="qualy-driver-count">--</strong>
+                    <span>PILOTOS</span>
+                </div>
+                <div class="qualy-stat">
+                    <strong id="qualy-record-count">--</strong>
+                    <span>REGISTROS</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="qualy-controls-section">
+            <div class="qualy-section-head">
+                <div>
+                    <span>CONSULTA EL ARCHIVO</span>
+                    <h2>RÉCORDS POR CIRCUITO</h2>
+                </div>
+            </div>
+
+            <div class="qualy-controls">
+                <label class="qualy-field">
+                    <span>CIRCUITO</span>
+                    <select id="qualy-circuit-select" disabled>
+                        <option>Cargando circuitos...</option>
+                    </select>
+                </label>
+
+                <label class="qualy-field">
+                    <span>PILOTO</span>
+                    <select id="qualy-driver-select" disabled>
+                        <option value="">Todos los pilotos</option>
+                    </select>
+                </label>
+            </div>
+        </section>
+
+        <section class="qualy-highlight-grid">
+            <article class="qualy-record-card">
+                <div class="qualy-card-label">RÉCORD ABSOLUTO</div>
+                <div id="qualy-record-content" class="qualy-record-content">
+                    <span class="qualy-muted">Selecciona un circuito.</span>
+                </div>
+            </article>
+
+            <article class="qualy-driver-card">
+                <div class="qualy-card-label">CONSULTA DE PILOTO</div>
+                <div id="qualy-driver-content" class="qualy-driver-content">
+                    <span class="qualy-muted">Selecciona un piloto para ver su mejor registro histórico.</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="qualy-ranking-section">
+            <div class="qualy-section-head qualy-ranking-head">
+                <div>
+                    <span>CLASIFICACIÓN HISTÓRICA</span>
+                    <h2 id="qualy-ranking-title">RANKING GLOBAL</h2>
+                </div>
+                <p id="qualy-ranking-meta"></p>
+            </div>
+
+            <div class="qualy-table-wrap">
+                <div class="qualy-table-header">
+                    <span>POS</span>
+                    <span>PILOTO</span>
+                    <span>MEJOR TIEMPO</span>
+                    <span>DIF.</span>
+                    <span>REGISTRO</span>
+                </div>
+                <div id="qualy-ranking-list" class="qualy-ranking-list">
+                    <div class="qualy-loading">CARGANDO HISTÓRICO...</div>
+                </div>
+            </div>
+
+            <p class="qualy-footnote">
+                Cada piloto figura una sola vez por circuito. Si mejora su tiempo en una temporada posterior,
+                el nuevo registro sustituye a su anterior mejor vuelta en el ranking.
+            </p>
+        </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/public-account.js?v=1"></script>
+    <script src="js/qualy-historico.js?v=1"></script>
+</body>
+</html>
