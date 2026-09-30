@@ -15,7 +15,7 @@
   let principals = [];
   let pendingAccounts = [];
 
-  const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const esc = value => String(value ?? '').replace(/[&<>'\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch]));
   const roleLabel = role => ({ pilot:'Piloto', team_principal:'Team Principal', staff:'Staff', admin:'Admin' }[role] || role);
   const formatDate = value => value ? new Intl.DateTimeFormat('es-ES', { day:'2-digit', month:'2-digit', year:'numeric' }).format(new Date(value)) : '—';
 
@@ -117,7 +117,7 @@
     if (!adminRoleResponse.data) return showError('Tu cuenta no tiene permisos de Administración.');
 
     const [profilesResponse, rolesResponse, principalsResponse, pendingResponse] = await Promise.all([
-      client.from('profiles').select('id, driver_id, display_name, is_active, created_at, drivers:driver_id(id, nickname, race_number)').order('created_at', { ascending:true }),
+      client.from('profiles').select('id, driver_id, display_name, is_active, application_status, created_at, drivers:driver_id(id, nickname, race_number)').neq('application_status','discarded').order('created_at', { ascending:true }),
       client.from('user_roles').select('user_id, role, created_at').order('created_at', { ascending:true }),
       client.from('team_principals').select('user_id, team_id, season_number, is_active, teams:team_id(name)').eq('season_number', config.currentSeason).eq('is_active', true),
       client.rpc('staff_pending_accounts')
