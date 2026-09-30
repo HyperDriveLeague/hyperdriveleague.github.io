@@ -8,6 +8,8 @@
   const errorPanel = document.getElementById('errorPanel');
   const teamContent = document.getElementById('teamContent');
   const logoutButton = document.getElementById('teamLogoutButton');
+  const previewTeamId = new URLSearchParams(window.location.search).get('preview_team');
+  const previewMode = !!previewTeamId;
 
   const money = value => Number(value || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const date = value => value ? new Intl.DateTimeFormat('es-ES').format(new Date(`${value}T12:00:00`)) : '—';
@@ -17,6 +19,38 @@
     teamContent.classList.add('is-hidden');
     errorPanel.textContent = message;
     errorPanel.classList.remove('is-hidden');
+  }
+
+  function configurePreviewUi(teamName) {
+    if (!previewMode) return;
+    const eyebrow = document.querySelector('.module-header .eyebrow');
+    if (eyebrow) eyebrow.textContent = 'ADMINISTRACIÓN · VISTA TEAM PRINCIPAL';
+    const back = document.querySelector('.module-header .topbar-actions a');
+    if (back) {
+      back.href = 'admin.html';
+      back.textContent = '← Administración';
+    }
+    document.getElementById('teamPageTitle').textContent = `${teamName} · Vista admin`;
+
+    if (!document.getElementById('adminPreviewBanner')) {
+      const banner = document.createElement('section');
+      banner.id = 'adminPreviewBanner';
+      banner.style.cssText = 'margin:0 0 16px;padding:14px 16px;border:1px solid rgba(255,213,0,.28);border-radius:12px;background:rgba(255,213,0,.055);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap';
+      const copy = document.createElement('div');
+      const label = document.createElement('strong');
+      label.textContent = 'VISTA ADMINISTRADOR';
+      label.style.cssText = 'display:block;color:var(--yellow);font-size:10px;letter-spacing:.08em';
+      const text = document.createElement('span');
+      text.textContent = `Estás viendo el mismo panel de Team Principal de ${teamName}. Esta vista es de comprobación.`;
+      text.style.cssText = 'display:block;margin-top:4px;color:#969aa1;font-size:10px;line-height:1.5';
+      copy.append(label, text);
+      const returnLink = document.createElement('a');
+      returnLink.href = 'admin.html';
+      returnLink.className = 'secondary-button link-button';
+      returnLink.textContent = 'VOLVER A ADMINISTRACIÓN';
+      banner.append(copy, returnLink);
+      teamContent.insertAdjacentElement('afterbegin', banner);
+    }
   }
 
   function renderManagement(finance, roster, sponsors, account) {
@@ -123,32 +157,48 @@
       return;
     }
 
-    const principalResponse = await client
-      .from('team_principals')
-      .select('team_id, season_number, is_active, teams:team_id(id, name, slug)')
-      .eq('user_id', session.user.id)
-      .eq('season_number', config.currentSeason)
-      .eq('is_active', true)
-      .maybeSingle();
+    let teamId = null;
+    let principal = null;
 
-    if (principalResponse.error) return showError('No se pudo comprobar tu acceso de Team Principal.');
-    const principal = principalResponse.data;
-    if (!principal) return showError('Tu cuenta no tiene una escudería activa asignada como Team Principal en esta temporada.');
+    if (previewMode) {
+      const roleResponse = await client.from('user_roles')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .limit(1);
+      if (roleResponse.error || !(roleResponse.data || []).length) {
+        return showError('Esta vista de comprobación está disponible únicamente para administradores.');
+      }
+      teamId = previewTeamId;
+    } else {
+      const principalResponse = await client
+        .from('team_principals')
+        .select('team_id, season_number, is_active, teams:team_id(id, name, slug)')
+        .eq('user_id', session.user.id)
+        .eq('season_number', config.currentSeason)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (principalResponse.error) return showError('No se pudo comprobar tu acceso de Team Principal.');
+      principal = principalResponse.data;
+      if (!principal) return showError('Tu cuenta no tiene una escudería activa asignada como Team Principal en esta temporada.');
+      teamId = principal.team_id;
+    }
 
     const accountResponse = await client
       .from('team_accounts')
       .select('id, team_id, season_number, opening_balance_m, salary_cap_m, is_active, teams:team_id(name, slug)')
-      .eq('team_id', principal.team_id)
+      .eq('team_id', teamId)
       .eq('season_number', config.currentSeason)
       .eq('is_active', true)
       .maybeSingle();
 
-    if (accountResponse.error || !accountResponse.data) return showError('No se pudo cargar la cuenta económica de tu escudería.');
+    if (accountResponse.error || !accountResponse.data) return showError('No se pudo cargar la cuenta económica de esta escudería.');
     const account = accountResponse.data;
 
     const [financeResponse, rosterResponse, contractsResponse, sponsorsResponse, transactionsResponse] = await Promise.all([
       client.from('team_financial_summary').select('*').eq('team_account_id', account.id).maybeSingle(),
-      client.from('season_roster').select('division, roster_status, start_round, end_round, drivers:driver_id(id, nickname, race_number)').eq('team_id', principal.team_id).eq('season_number', config.currentSeason).eq('is_active', true),
+      client.from('season_roster').select('division, roster_status, start_round, end_round, drivers:driver_id(id, nickname, race_number)').eq('team_id', teamId).eq('season_number', config.currentSeason).eq('is_active', true),
       client.from('driver_contracts').select('driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, drivers:driver_id(id, nickname, race_number)').eq('team_account_id', account.id).eq('status', 'active'),
       client.from('team_sponsor_rewards').select('division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
       client.from('economic_transactions').select('transaction_date, description, category, direction, amount_m, round_number, created_at').eq('account_id', account.id).order('transaction_date', { ascending: false }).order('created_at', { ascending: false }).limit(12)
@@ -164,10 +214,11 @@
     const finance = financeResponse.data || {};
     const roster = rosterResponse.data || [];
     const sponsors = sponsorsResponse.data || [];
-    const teamName = account.teams?.name || principal.teams?.name || 'Escudería';
+    const teamName = account.teams?.name || principal?.teams?.name || 'Escudería';
     document.getElementById('teamPageTitle').textContent = teamName;
     document.getElementById('teamName').textContent = teamName;
     document.getElementById('teamStatus').textContent = account.is_active ? 'ACTIVA' : 'INACTIVA';
+    configurePreviewUi(teamName);
 
     document.getElementById('currentBalance').textContent = money(finance.current_balance_m);
     document.getElementById('totalIncome').textContent = money(finance.total_income_m);
