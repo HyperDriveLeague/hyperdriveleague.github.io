@@ -27,3 +27,49 @@ if (window.location.pathname.endsWith('/index.html') || window.location.pathname
   officialObjectivesScript.defer = true;
   document.head.appendChild(officialObjectivesScript);
 }
+
+(() => {
+  const publicUrl = 'https://hyperdriveleague.github.io/';
+
+  function makePublicLink(extraClass = '') {
+    const link = document.createElement('a');
+    link.href = publicUrl;
+    link.className = `secondary-button link-button v2-public-site-link${extraClass ? ` ${extraClass}` : ''}`;
+    link.textContent = '← WEB PRINCIPAL';
+    link.setAttribute('aria-label', 'Volver a la web principal de HyperDrive');
+    return link;
+  }
+
+  function installPublicLinks() {
+    if (!document.getElementById('v2PublicSiteLinkStyles')) {
+      const style = document.createElement('style');
+      style.id = 'v2PublicSiteLinkStyles';
+      style.textContent = '.v2-public-site-link{white-space:nowrap;text-decoration:none}.v2-public-site-link.floating{position:fixed;top:18px;right:18px;z-index:5000;background:#111318}@media(max-width:720px){.v2-public-site-link.floating{top:12px;right:12px;padding:9px 11px;font-size:9px}}';
+      document.head.appendChild(style);
+    }
+
+    const actionGroups = [...document.querySelectorAll('.topbar-actions')];
+    actionGroups.forEach(group => {
+      if (!group.querySelector('.v2-public-site-link')) {
+        group.insertBefore(makePublicLink(), group.firstChild);
+      }
+    });
+
+    document.querySelectorAll('.module-header').forEach(header => {
+      if (!header.querySelector('.topbar-actions') && !header.querySelector('.v2-public-site-link')) {
+        header.appendChild(makePublicLink());
+      }
+    });
+
+    const hasHeader = document.querySelector('.topbar, .module-header');
+    if (!hasHeader && !document.querySelector('.v2-public-site-link')) {
+      document.body.appendChild(makePublicLink('floating'));
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', installPublicLinks, { once: true });
+  } else {
+    installPublicLinks();
+  }
+})();
