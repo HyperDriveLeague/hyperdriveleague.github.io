@@ -31,13 +31,10 @@
 
   async function checkPending(session) {
     if (!session?.user) return hidePending();
-
     const rolesResponse = await client.from('user_roles').select('role').eq('user_id', session.user.id);
     if (rolesResponse.error || (rolesResponse.data || []).length) return hidePending();
-
     const profileResponse = await client.from('profiles').select('display_name, discord_username').eq('id', session.user.id).maybeSingle();
     if (profileResponse.error) return;
-
     isPending = true;
     const profile = profileResponse.data;
     pendingDiscord.textContent = profile?.discord_username || profile?.display_name || 'No indicado';
@@ -79,7 +76,7 @@
   if (!document.getElementById('pilotDashboardScript')) {
     const script = document.createElement('script');
     script.id = 'pilotDashboardScript';
-    script.src = 'js/pilot-dashboard.js?v=1';
+    script.src = 'js/pilot-dashboard.js?v=2';
     document.body.appendChild(script);
   }
 })();
