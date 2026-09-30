@@ -67,3 +67,19 @@
     if (session) window.setTimeout(() => checkPending(session), 120);
   })();
 })();
+
+(() => {
+  if (!document.getElementById('pilotDashboardCss')) {
+    const link = document.createElement('link');
+    link.id = 'pilotDashboardCss';
+    link.rel = 'stylesheet';
+    link.href = 'css/pilot-dashboard.css?v=1';
+    document.head.appendChild(link);
+  }
+  if (!document.getElementById('pilotDashboardScript')) {
+    const script = document.createElement('script');
+    script.id = 'pilotDashboardScript';
+    script.src = 'js/pilot-dashboard.js?v=1';
+    document.body.appendChild(script);
+  }
+})();
