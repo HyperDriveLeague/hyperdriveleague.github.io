@@ -3,6 +3,7 @@
   const pilotView = document.getElementById('pilotView');
   if (!config || !pilotView || !window.supabase) return;
 
+  const TOTAL_ROUNDS = 12;
   const client = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
@@ -21,6 +22,14 @@
     const d = new Date(String(v).includes('T') ? v : `${v}T12:00:00`);
     return Number.isNaN(d.getTime()) ? '—' : new Intl.DateTimeFormat('es-ES',{day:'2-digit',month:'short'}).format(d);
   };
+  const classificationPosition = d => {
+    const c = Number(d?.classificationPosition);
+    if (Number.isFinite(c) && c > 0) return c;
+    const p = Number(d?.position);
+    return Number.isFinite(p) && p > 0 ? p : null;
+  };
+  const isFinished = d => String(d?.status ?? '').toLowerCase() === 'finished';
+  const sessionPoints = (session, d) => num(d?.driverPoints) + (session.type === 'race' && num(d?.gridPosition) === 1 ? 1 : 0);
 
   function buildShell() {
     if (document.getElementById('pilotSportDashboard')) return;
@@ -50,74 +59,128 @@
   async function getJSON(path) {
     try {
       const r = await fetch(path,{cache:'no-store'});
+      if (r.status === 404) return null;
       return r.ok ? await r.json() : null;
     } catch (_) { return null; }
   }
 
-  function officialSet(data, division) {
-    const list = Array.isArray(data?.[division]) ? data[division] : [];
-    return new Set(list.map(x => key(typeof x === 'string' ? x : (x?.driverName ?? x?.name))).filter(Boolean));
+  async function loadSessions(division) {
+    const jobs = [];
+    for (let round = 1; round <= TOTAL_ROUNDS; round++) {
+      for (const type of ['sprint','race']) {
+        const suffix = type === 'sprint' ? '_sprint' : '';
+        jobs.push((async () => {
+          const data = await getJSON(`/data/${division}_r${round}${suffix}.json`);
+          return data?.session && Array.isArray(data.session.drivers) ? {division,round,type,data} : null;
+        })());
+      }
+    }
+    return (await Promise.all(jobs)).filter(Boolean).sort((a,b)=>a.round-b.round || (a.type==='sprint'?-1:1));
   }
 
-  function driversTable(data, officials) {
-    const list = Array.isArray(data?.seasonStatistics?.driverStandings) ? data.seasonStatistics.driverStandings : [];
-    return list.filter(d => !officials.size || officials.has(key(d.driverName))).sort((a,b)=>num(a.position)-num(b.position)).map((d,i)=>({...d,dashboardPosition:i+1}));
-  }
-
-  function teamsTable(data) {
-    const list = Array.isArray(data?.seasonStatistics?.teamStandings) ? data.seasonStatistics.teamStandings : [];
-    return [...list].sort((a,b)=>num(a.position)-num(b.position)).map((t,i)=>({...t,dashboardPosition:i+1}));
-  }
-
-  function superTable(hyperdrive, academy) {
+  function officialMap(data, division) {
     const map = new Map();
-    [['hyperdrive',hyperdrive],['academy',academy]].forEach(([division,data]) => {
-      teamsTable(data).forEach(t => {
-        const k = key(t.teamName);
-        if (!k) return;
-        if (!map.has(k)) map.set(k,{teamName:t.teamName,hyperdrive:0,academy:0,total:0});
-        const row = map.get(k);
-        row[division] = num(t.points);
-        row.total = row.hyperdrive + row.academy;
+    const list = Array.isArray(data?.[division]) ? data[division] : [];
+    list.forEach(x => {
+      const driverName = String(typeof x === 'string' ? x : (x?.driverName ?? x?.name ?? '')).trim();
+      if (!driverName) return;
+      map.set(key(driverName), { driverName, teamName:String(x?.teamName ?? x?.team ?? '').trim() });
+    });
+    return map;
+  }
+
+  function buildModel(division, sessions, officialData) {
+    const official = officialMap(officialData, division);
+    const drivers = new Map();
+    const teams = new Map();
+    const rounds = new Map();
+
+    official.forEach((o,k) => {
+      drivers.set(k,{driverName:o.driverName,teamName:o.teamName,points:0,wins:0,podiums:0,poles:0,fastestLaps:0,races:0,finished:0,racePositions:[],gridPositions:[],events:new Map()});
+      if (o.teamName && !teams.has(key(o.teamName))) teams.set(key(o.teamName),{teamName:o.teamName,points:0});
+    });
+
+    sessions.forEach(session => {
+      const main = session.type === 'race';
+      const event = session.data?.event || {};
+      const fastestKey = key(session.data?.session?.fastestLap?.driverName);
+      const eventRound = rounds.get(session.round) || {round:session.round,teamPoints:new Map(),main:null,sprint:null};
+      eventRound[session.type] = session;
+      rounds.set(session.round,eventRound);
+
+      (session.data?.session?.drivers || []).forEach(raw => {
+        const name = String(raw?.driverName ?? '').trim();
+        if (!name) return;
+        const dk = key(name);
+        const teamName = String(raw?.team?.name ?? '').trim() || 'Sin equipo';
+        const tk = key(teamName);
+        const awarded = sessionPoints(session,raw);
+
+        if (!teams.has(tk)) teams.set(tk,{teamName,points:0});
+        teams.get(tk).points += awarded;
+        eventRound.teamPoints.set(tk,(eventRound.teamPoints.get(tk)||0)+awarded);
+
+        if (!official.has(dk)) return;
+        const d = drivers.get(dk);
+        d.points += awarded;
+        d.teamName = teamName || d.teamName;
+        let ev = d.events.get(session.round);
+        if (!ev) {
+          ev={roundNumber:session.round,eventName:event?.track?.trackName || `Ronda ${session.round}`,eventDate:event.eventDateTime || event.eventDate || null,pointsEarned:0,race:null,sprint:null};
+          d.events.set(session.round,ev);
+        }
+        ev.pointsEarned += awarded;
+        ev[session.type]={raw,position:classificationPosition(raw),gridPosition:num(raw.gridPosition)||null,positionChange:Number.isFinite(Number(raw.positionChange))?Number(raw.positionChange):null,status:raw.status||'',isFinished:isFinished(raw),points:awarded,isFastestLap:fastestKey===dk};
+
+        if (main) {
+          d.races += 1;
+          if (isFinished(raw)) d.finished += 1;
+          const p = classificationPosition(raw);
+          if (p) d.racePositions.push(p);
+          if (num(raw.gridPosition)>0) d.gridPositions.push(num(raw.gridPosition));
+          if (p === 1) d.wins += 1;
+          if (p && p <= 3) d.podiums += 1;
+          if (num(raw.gridPosition) === 1) d.poles += 1;
+          if (fastestKey === dk) d.fastestLaps += 1;
+        }
       });
     });
-    return [...map.values()].sort((a,b)=>b.total-a.total || String(a.teamName).localeCompare(String(b.teamName),'es')).map((t,i)=>({...t,position:i+1}));
+
+    const driverStandings=[...drivers.values()].sort((a,b)=>b.points-a.points || a.driverName.localeCompare(b.driverName,'es')).map((d,i)=>({...d,position:i+1,events:[...d.events.values()].sort((a,b)=>a.roundNumber-b.roundNumber)}));
+    const teamStandings=[...teams.values()].sort((a,b)=>b.points-a.points || a.teamName.localeCompare(b.teamName,'es')).map((t,i)=>({...t,position:i+1}));
+    return {division,sessions,official,driverStandings,teamStandings,rounds,completedRounds:[...rounds.values()].filter(r=>r.main).length,isCompleted:[...rounds.values()].filter(r=>r.main).length>=TOTAL_ROUNDS};
   }
 
-  function renderChampionships(driverName, teamName, division, current, other, officials) {
-    const dl = driversTable(current,officials);
-    const tl = teamsTable(current);
-    const driver = dl.find(d=>key(d.driverName)===key(driverName));
-    const team = tl.find(t=>key(t.teamName)===key(teamName));
-    const supers = superTable(division==='hyperdrive'?current:other,division==='academy'?current:other);
-    const superTeam = supers.find(t=>key(t.teamName)===key(teamName));
-    const label = division==='academy'?'ACADEMY':'HYPERDRIVE';
-    document.getElementById('pilotChampionshipCards').innerHTML = `
-      <article class="pilot-standing-card"><span>MUNDIAL DE PILOTOS</span><strong>${driver?pos(driver.dashboardPosition):'—'}</strong><small>${driver?`${pts(driver.points)} pts · ${esc(driverName)}`:'Sin datos'}</small></article>
-      <article class="pilot-standing-card"><span>CONSTRUCTORES · ${label}</span><strong>${team?pos(team.dashboardPosition):'—'}</strong><small>${team?`${pts(team.points)} pts · ${esc(teamName)}`:'Sin datos'}</small></article>
-      <article class="pilot-standing-card featured"><span>SUPERCONSTRUCTORES</span><strong>${superTeam?pos(superTeam.position):'—'}</strong><small>${superTeam?`${pts(superTeam.total)} pts · ${pts(superTeam.hyperdrive)} HD + ${pts(superTeam.academy)} AC`:'Sin datos'}</small></article>`;
-    return {driver,team};
+  function superStandings(hyperdrive,academy) {
+    const map=new Map();
+    [['hyperdrive',hyperdrive],['academy',academy]].forEach(([division,model])=>model.teamStandings.forEach(t=>{
+      const k=key(t.teamName);
+      if(!map.has(k)) map.set(k,{teamName:t.teamName,hyperdrive:0,academy:0,total:0});
+      const row=map.get(k); row[division]=t.points; row.total=row.hyperdrive+row.academy;
+    }));
+    return [...map.values()].sort((a,b)=>b.total-a.total || a.teamName.localeCompare(b.teamName,'es')).map((t,i)=>({...t,position:i+1}));
   }
 
-  function renderSeason(driver) {
-    const target = document.getElementById('pilotSeasonStats');
-    if (!driver) { target.innerHTML='<div class="pilot-dashboard-empty">No hay estadísticas de temporada.</div>'; return; }
-    const p=driver.positions||{}, part=driver.participation||{}, rd=driver.raceDetails||{};
-    const rows=[
-      ['PUNTOS',pts(driver.points)],['VICTORIAS',num(p.wins)],['PODIOS',num(p.podiums)],['POLES',num(p.polePositions)],['V. RÁPIDAS',num(p.fastestLaps)],
-      ['MEDIA CARRERA',p.averageRacePosition?Number(p.averageRacePosition).toLocaleString('es-ES',{maximumFractionDigits:2}):'—'],
-      ['MEDIA QUALY',p.averageQualPosition?Number(p.averageQualPosition).toLocaleString('es-ES',{maximumFractionDigits:2}):'—'],
-      ['FINALIZADAS',part.racesParticipated?`${num(part.racesFinished)}/${num(part.racesParticipated)}`:'—'],['VUELTAS LIDERADAS',num(rd.totalLeadLaps)]
-    ];
+  function renderChampionships(driverName,teamName,division,current,other) {
+    const d=current.driverStandings.find(x=>key(x.driverName)===key(driverName));
+    const t=current.teamStandings.find(x=>key(x.teamName)===key(teamName));
+    const supers=superStandings(division==='hyperdrive'?current:other,division==='academy'?current:other);
+    const s=supers.find(x=>key(x.teamName)===key(teamName));
+    const label=division==='academy'?'ACADEMY':'HYPERDRIVE';
+    document.getElementById('pilotChampionshipCards').innerHTML=`
+      <article class="pilot-standing-card"><span>MUNDIAL DE PILOTOS</span><strong>${d?pos(d.position):'—'}</strong><small>${d?`${pts(d.points)} pts · ${esc(d.driverName)}`:'Sin datos'}</small></article>
+      <article class="pilot-standing-card"><span>CONSTRUCTORES · ${label}</span><strong>${t?pos(t.position):'—'}</strong><small>${t?`${pts(t.points)} pts · ${esc(t.teamName)}`:'Sin datos'}</small></article>
+      <article class="pilot-standing-card featured"><span>SUPERCONSTRUCTORES</span><strong>${s?pos(s.position):'—'}</strong><small>${s?`${pts(s.total)} pts · ${pts(s.hyperdrive)} HD + ${pts(s.academy)} AC`:'Sin datos'}</small></article>`;
+    return {driver:d,team:t};
+  }
+
+  function average(list) { return list.length ? list.reduce((a,b)=>a+b,0)/list.length : null; }
+  function renderSeason(d) {
+    const target=document.getElementById('pilotSeasonStats');
+    if(!d){target.innerHTML='<div class="pilot-dashboard-empty">No hay estadísticas de temporada.</div>';return;}
+    const avgRace=average(d.racePositions), avgGrid=average(d.gridPositions);
+    const rows=[['PUNTOS',pts(d.points)],['VICTORIAS',d.wins],['PODIOS',d.podiums],['POLES',d.poles],['V. RÁPIDAS',d.fastestLaps],['MEDIA CARRERA',avgRace?avgRace.toLocaleString('es-ES',{maximumFractionDigits:2}):'—'],['MEDIA PARRILLA',avgGrid?avgGrid.toLocaleString('es-ES',{maximumFractionDigits:2}):'—'],['FINALIZADAS',`${d.finished}/${d.races}`],['CARRERAS',d.races]];
     target.innerHTML=rows.map(([l,v])=>`<article class="pilot-stat-card"><span>${esc(l)}</span><strong>${esc(v)}</strong></article>`).join('');
-  }
-
-  const mainRace = e => { const r=Array.isArray(e?.races)?e.races:[]; return r.find(x=>!/sprint/i.test(String(x.sessionName||'')))||r[r.length-1]||null; };
-  const mainQual = e => { const q=Array.isArray(e?.qualifications)?e.qualifications:[]; return q.find(x=>!/sprint/i.test(String(x.sessionName||'')))||q[q.length-1]||null; };
-
-  function richDriver(file, driverName) {
-    const list = file?.session?.drivers;
-    return Array.isArray(list) ? list.find(d=>key(d.driverName)===key(driverName)) || null : null;
   }
 
   function penaltySeconds(d) {
@@ -125,29 +188,37 @@
     if (p.totalPenaltyTimeSeconds != null) return num(p.totalPenaltyTimeSeconds);
     return num(p.inGamePenaltySeconds)+num(p.stewardPenaltySeconds);
   }
-
+  function ratingText(r) {
+    if (r?.rating == null) return '—';
+    const rank=num(r?.position)>0 ? ` · P${num(r.position)}` : '';
+    return `${r.rating}/10${rank}`;
+  }
   function raceDetail(label,value) { return `<div><span>${esc(label)}</span><strong>${esc(value ?? '—')}</strong></div>`; }
 
-  function renderRecent(driver, division, raceFiles) {
+  function renderRecent(d,division) {
     const target=document.getElementById('pilotRecentRaces');
     document.getElementById('pilotResultsDivision').textContent=division==='academy'?'ACADEMY':'HYPERDRIVE';
-    const events=Array.isArray(driver?.events)?[...driver.events].sort((a,b)=>num(b.roundNumber)-num(a.roundNumber)).slice(0,5):[];
+    const events=d?.events ? [...d.events].sort((a,b)=>b.roundNumber-a.roundNumber).slice(0,5) : [];
     if(!events.length){target.innerHTML='<div class="pilot-dashboard-empty">Todavía no hay carreras registradas.</div>';return;}
     target.innerHTML=events.map(e=>{
-      const race=mainRace(e), qual=mainQual(e), rich=richDriver(raceFiles.get(num(e.roundNumber)),driver.driverName);
-      const gain=race?num(race.positionChange):0;
-      const fastest=(e.races||[]).some(x=>x.isFastestLap);
-      const sprint=(e.races||[]).find(x=>/sprint/i.test(String(x.sessionName||'')));
-      const status=race?.isFinished===false?(race.status||'No finalizó'):(race?.status||'Finalizada');
-      const richStats=[
-        ['QUALY',qual?pos(qual.position):'—'],['PARRILLA',race?pos(race.gridPosition):'—'],['POSICIONES',race?(gain>0?`+${gain}`:String(gain)):'—'],['PUNTOS',pts(e.pointsEarned)],
-        ['V. RÁPIDA',rich?.fastestLapTime||'—'],['VEL. MÁX.',rich?.raceDetails?.maxSpeed?`${rich.raceDetails.maxSpeed} km/h`:'—'],['RITMO',rich?.ratings?.pace?.rating||'—'],['CONSISTENCIA',rich?.ratings?.consistency?.rating||'—'],
-        ['VUELTAS',rich?.lapsCompleted ?? '—'],['PENALIZACIÓN',penaltySeconds(rich)?`${penaltySeconds(rich)} s`:'0 s']
+      const race=e.race, sprint=e.sprint, raw=race?.raw;
+      const gain=race?.positionChange;
+      const stats=[
+        ['PARRILLA',race?.gridPosition?pos(race.gridPosition):'—'],
+        ['POSICIONES',gain==null?'—':gain>0?`+${gain}`:String(gain)],
+        ['PUNTOS',pts(e.pointsEarned)],
+        ['V. RÁPIDA',raw?.fastestLapTime||'—'],
+        ['VEL. MÁX.',raw?.raceDetails?.maxSpeed?`${raw.raceDetails.maxSpeed} km/h`:'—'],
+        ['RITMO RLT',ratingText(raw?.ratings?.pace)],
+        ['CONSISTENCIA',ratingText(raw?.ratings?.consistency)],
+        ['VUELTAS',raw?.lapsCompleted ?? '—'],
+        ['PENALIZACIÓN',penaltySeconds(raw)?`${penaltySeconds(raw)} s`:'0 s']
       ];
+      const status=race?.isFinished===false?(race.status||'No finalizó'):(race?.status||'Finalizada');
       return `<article class="pilot-race-card">
-        <div class="pilot-race-head"><div><span>R${esc(e.roundNumber??'—')} · ${esc(dateShort(e.eventDate))}</span><h3>${esc(e.eventName||e.trackName||'Gran Premio')}</h3></div><strong class="pilot-race-position">${race?pos(race.position):'—'}</strong></div>
-        <div class="pilot-race-stats pilot-race-stats-rich">${richStats.map(([l,v])=>raceDetail(l,v)).join('')}</div>
-        <div class="pilot-race-tags"><span>${esc(status)}</span>${race&&num(race.gridPosition)===1?'<span class="accent">POLE +1</span>':''}${fastest?'<span class="purple">VUELTA RÁPIDA</span>':''}${sprint?`<span>SPRINT ${pos(sprint.position)}</span>`:''}</div>
+        <div class="pilot-race-head"><div><span>R${esc(e.roundNumber)} · ${esc(dateShort(e.eventDate))}</span><h3>${esc(e.eventName)}</h3></div><strong class="pilot-race-position">${race?.position?pos(race.position):'—'}</strong></div>
+        <div class="pilot-race-stats pilot-race-stats-rich">${stats.map(([l,v])=>raceDetail(l,v)).join('')}</div>
+        <div class="pilot-race-tags"><span>${esc(status)}</span>${race?.gridPosition===1?'<span class="accent">POLE +1</span>':''}${race?.isFastestLap?'<span class="purple">VUELTA RÁPIDA</span>':''}${sprint?`<span>SPRINT ${sprint.position?pos(sprint.position):'—'}</span>`:''}</div>
       </article>`;
     }).join('');
   }
@@ -159,7 +230,6 @@
     const h=num(c.half_seasons_remaining);
     if(h===0)return'Finaliza ahora'; if(h===1)return'½ temporada'; if(h%2===0)return`${h/2} temporada${h===2?'':'s'}`; return`${Math.floor(h/2)}½ temporadas`;
   }
-
   function renderContract(c,teamName){
     const t=document.getElementById('pilotContractCard');
     if(!c){t.innerHTML='<div class="pilot-dashboard-empty">No hay contrato activo registrado.</div>';return;}
@@ -168,80 +238,58 @@
     t.innerHTML=`<div class="pilot-contract-team"><span>ESCUDERÍA</span><strong>${esc(teamName||'—')}</strong></div><div class="pilot-contract-main"><span>CONTRATO RESTANTE</span><strong>${esc(remaining(c))}</strong></div><div class="pilot-contract-grid"><div><span>VALOR DEL PILOTO</span><strong>${money(c.driver_value_m)}</strong></div><div><span>CLÁUSULA</span><strong>${money(c.buyout_clause_m)}</strong></div><div><span>INICIO</span><strong>${esc(start)}</strong></div><div><span>FIN</span><strong>${esc(end)}</strong></div></div>${c.is_team_principal_contract?'<div class="pilot-contract-note">Contrato asociado a Team Principal.</div>':''}`;
   }
 
-  const teamDrivers=(s,t)=>(s?.seasonStatistics?.driverStandings||[]).filter(d=>key(d.teamName)===key(t));
-  const maxDriver=(list,fn)=>list.reduce((m,d)=>Math.max(m,num(fn(d))),0);
-  function roundsFor(list){const m=new Map();list.forEach(d=>(d.events||[]).forEach(e=>{const r=num(e.roundNumber);if(!r)return;if(!m.has(r))m.set(r,[]);m.get(r).push({d,e,race:mainRace(e),qual:mainQual(e)});}));return[...m.entries()].sort((a,b)=>a[0]-b[0]);}
-  function driverStreak(list,pred){let best=0;list.forEach(d=>{let s=0;[...(d.events||[])].sort((a,b)=>num(a.roundNumber)-num(b.roundNumber)).forEach(e=>{s=pred(e,d)?s+1:0;best=Math.max(best,s);});});return best;}
-  function roundStreak(rounds,pred){let best=0,s=0,last=null;rounds.forEach(([r,rows])=>{if(last!=null&&r!==last+1)s=0;s=pred(rows)?s+1:0;best=Math.max(best,s);last=r;});return best;}
-
-  function evalObjective(text,dbDone,standings,teamName,teamStanding){
+  function maxDriver(model,teamName,fn){return model.driverStandings.filter(d=>key(d.teamName)===key(teamName)).reduce((m,d)=>Math.max(m,num(fn(d))),0);}
+  function teamRoundPoints(model,teamName){const tk=key(teamName);return [...model.rounds.values()].map(r=>({round:r.round,points:num(r.teamPoints.get(tk))}));}
+  function bestStreak(values,pred){let best=0,s=0;values.forEach(v=>{s=pred(v)?s+1:0;best=Math.max(best,s);});return best;}
+  function evalObjective(text,dbDone,model,teamName,teamStanding){
     if(dbDone)return{status:'completed',label:'CUMPLIDO',progress:'Marcado como cumplido en Race Control'};
-    const q=String(text||'').toLowerCase(), list=teamDrivers(standings,teamName), rounds=roundsFor(list), ended=!!standings?.seasonStatistics?.status?.isCompleted, teamPos=num(teamStanding?.dashboardPosition||teamStanding?.position);
-    const progress=(cur,target,prefix='')=>({status:cur>=target?'completed':'pending',label:cur>=target?'CUMPLIDO':'PENDIENTE',progress:`${prefix}${cur}/${target}`});
+    const q=String(text||'').toLowerCase(); const teamPos=num(teamStanding?.position); const ended=model.isCompleted; const rounds=teamRoundPoints(model,teamName); let m;
+    const progress=(cur,target,label='')=>({status:cur>=target?'completed':'pending',label:cur>=target?'CUMPLIDO':'PENDIENTE',progress:`${label}${cur}/${target}`});
     const final=(ok,p)=>({status:ended&&ok?'completed':'pending',label:ended&&ok?'CUMPLIDO':'PENDIENTE',progress:p});
-    let m;
     if(/ganar el campeonato de constructores/.test(q))return final(teamPos===1,teamPos?`Posición actual: P${teamPos}`:'Sin clasificación');
     if((m=q.match(/entre los (\d+) primeros.*constructores/)))return final(teamPos>0&&teamPos<=num(m[1]),teamPos?`Posición actual: P${teamPos} · objetivo Top ${m[1]}`:'Sin clasificación');
-    if((m=q.match(/entre los (\d+) primeros del campeonato de constructores/)))return final(teamPos>0&&teamPos<=num(m[1]),teamPos?`Posición actual: P${teamPos} · objetivo Top ${m[1]}`:'Sin clasificación');
-    if((m=q.match(/sumar más de (\d+) puntos en un mismo gp/))){const best=rounds.reduce((mx,[,rows])=>Math.max(mx,rows.reduce((s,x)=>s+num(x.e.pointsEarned),0)),0);return progress(best,num(m[1])+1,'Mejor GP: ');}
-    if((m=q.match(/sumar (?:más de|al menos) (\d+) puntos en la temporada.*piloto/))){const target=/más de/.test(q)?num(m[1])+1:num(m[1]);return progress(maxDriver(list,d=>d.points),target,'Mejor piloto: ');}
-    if((m=q.match(/(?:ganar|lograr al menos) (\d+) (?:carreras|victorias).*piloto/)))return progress(maxDriver(list,d=>d.positions?.wins),num(m[1]),'Mejor piloto: ');
-    if((m=q.match(/(?:conseguir|al menos) (?:al menos )?(\d+) podios.*piloto/)))return progress(maxDriver(list,d=>d.positions?.podiums),num(m[1]),'Mejor piloto: ');
-    if((m=q.match(/(?:conseguir|al menos) (?:al menos )?(\d+) poles.*piloto/)))return progress(maxDriver(list,d=>d.positions?.polePositions),num(m[1]),'Mejor piloto: ');
-    if(/al menos una pole/.test(q))return progress(maxDriver(list,d=>d.positions?.polePositions),1,'Poles: ');
-    if((m=q.match(/top (\d+) en al menos (\d+) carreras.*piloto/))){const best=list.reduce((mx,d)=>Math.max(mx,(d.events||[]).filter(e=>num(mainRace(e)?.position)<=num(m[1])&&mainRace(e)).length),0);return progress(best,num(m[2]),'Mejor piloto: ');}
-    if(/al menos 1 top 8/.test(q)){const best=list.reduce((mx,d)=>Math.max(mx,(d.events||[]).filter(e=>mainRace(e)&&num(mainRace(e).position)<=8).length),0);return progress(best,1,'Top 8: ');}
-    if((m=q.match(/racha de (\d+) carreras seguidas en puntos.*piloto/)))return progress(driverStreak(list,e=>num(e.pointsEarned)>0),num(m[1]),'Mejor racha: ');
-    if((m=q.match(/puntos en (\d+) carreras consecutivas.*piloto/)))return progress(driverStreak(list,e=>num(e.pointsEarned)>0),num(m[1]),'Mejor racha: ');
-    if((m=q.match(/ganar (\d+) carreras consecutivas.*piloto/)))return progress(driverStreak(list,e=>num(mainRace(e)?.position)===1),num(m[1]),'Mejor racha: ');
-    if((m=q.match(/conseguir (\d+) vueltas rápidas/)))return progress(maxDriver(list,d=>d.positions?.fastestLaps),num(m[1]),'Mejor piloto: ');
-    if(/vuelta rápida$/.test(q))return progress(maxDriver(list,d=>d.positions?.fastestLaps),1,'Vueltas rápidas: ');
-    if(/hacer dos doble podio/.test(q)){const c=rounds.filter(([,r])=>r.filter(x=>x.race&&num(x.race.position)<=3).length>=2).length;return progress(c,2,'Dobles podios: ');}
-    if(/lograr un podio con ambos pilotos/.test(q))return progress(list.filter(d=>num(d.positions?.podiums)>0).length,2,'Pilotos con podio: ');
-    if((m=q.match(/al menos (\d+) doble top (\d+)/))){const c=rounds.filter(([,r])=>r.filter(x=>x.race&&num(x.race.position)<=num(m[2])).length>=2).length;return progress(c,num(m[1]),`Dobles Top ${m[2]}: `);}
-    if((m=q.match(/puntos con ambos coches en (\d+) carreras/))){const c=rounds.filter(([,r])=>r.filter(x=>num(x.e.pointsEarned)>0).length>=2).length;return progress(c,num(m[1]),'Dobles puntuaciones: ');}
-    if((m=q.match(/puntos en al menos (\d+) carreras.*equipo/))){const c=rounds.filter(([,r])=>r.some(x=>num(x.e.pointsEarned)>0)).length;return progress(c,num(m[1]),'GP puntuando: ');}
-    if((m=q.match(/primera fila al menos (\d+) veces/))){const c=rounds.reduce((s,[,r])=>s+r.filter(x=>x.qual&&num(x.qual.position)<=2).length,0);return progress(c,num(m[1]),'Primeras filas: ');}
-    if((m=q.match(/clasificar al menos (\d+) veces en el top (\d+)/))){const c=rounds.reduce((s,[,r])=>s+r.filter(x=>x.qual&&num(x.qual.position)<=num(m[2])).length,0);return progress(c,num(m[1]),`Qualys Top ${m[2]}: `);}
-    if(/clasificar en el top 10 una vez/.test(q)){const c=rounds.reduce((s,[,r])=>s+r.filter(x=>x.qual&&num(x.qual.position)<=10).length,0);return progress(c,1,'Top 10 en qualy: ');}
-    if((m=q.match(/top (\d+) en clasificación en (\d+) (?:gp|carreras)/))){const c=rounds.filter(([,r])=>r.some(x=>x.qual&&num(x.qual.position)<=num(m[1]))).length;return progress(c,num(m[2]),`GP con Top ${m[1]} en qualy: `);}
-    if((m=q.match(/mejorar posición de salida en al menos (\d+) carreras/))){const best=list.reduce((mx,d)=>Math.max(mx,(d.events||[]).filter(e=>num(mainRace(e)?.positionChange)>0).length),0);return progress(best,num(m[1]),'Mejor piloto: ');}
-    if((m=q.match(/racha de (\d+) carreras consecutivas sumando puntos/)))return progress(roundStreak(rounds,r=>r.some(x=>num(x.e.pointsEarned)>0)),num(m[1]),'Racha del equipo: ');
-    const completed=num(standings?.season?.completedRounds||rounds.length);
-    if(/todas las carreras con al menos un coche en puntos/.test(q)){const c=rounds.filter(([,r])=>r.some(x=>num(x.e.pointsEarned)>0)).length;return final(ended&&c===completed,`Cumplidas hasta ahora: ${c}/${completed}`);}
-    if(/todas las carreras con al menos un coche en meta/.test(q)){const c=rounds.filter(([,r])=>r.some(x=>x.race?.isFinished!==false)).length;return final(ended&&c===completed,`Cumplidas hasta ahora: ${c}/${completed}`);}
-    if(/sin doble abandono/.test(q)){const c=rounds.filter(([,r])=>r.filter(x=>x.race?.isFinished===false).length>=2).length;return final(ended&&c===0,`Dobles abandonos: ${c}`);}
-    if((m=q.match(/no abandonar más de (\d+) carreras/))){const d=list.reduce((s,x)=>s+num(x.penalties?.dnfCount),0);return final(ended&&d<=num(m[1]),`Abandonos: ${d}/${m[1]} máx.`);}
-    if((m=q.match(/terminar (?:al menos )?(\d+)% de las carreras con ambos coches/))){const c=rounds.filter(([,r])=>r.filter(x=>x.race?.isFinished!==false).length>=2).length,pct=completed?Math.round(c/completed*100):0;return final(ended&&pct>=num(m[1]),`Actual: ${pct}% · objetivo ${m[1]}%`);}
+    if(/campeonato de pilotos/.test(q)){const best=Math.min(...model.driverStandings.filter(d=>key(d.teamName)===key(teamName)).map(d=>d.position));return final(best===1,Number.isFinite(best)?`Mejor piloto del equipo: P${best}`:'Sin clasificación');}
+    if((m=q.match(/sumar más de (\d+) puntos en un mismo gp.*equipo/))){const best=Math.max(0,...rounds.map(r=>r.points)),threshold=num(m[1]);return{status:best>threshold?'completed':'pending',label:best>threshold?'CUMPLIDO':'PENDIENTE',progress:`Mejor GP: ${pts(best)} pts · objetivo >${threshold}`};}
+    if((m=q.match(/(?:más de|al menos) (\d+) puntos en la temporada.*piloto/))){const best=maxDriver(model,teamName,d=>d.points),threshold=num(m[1]);if(/más de/.test(q))return{status:best>threshold?'completed':'pending',label:best>threshold?'CUMPLIDO':'PENDIENTE',progress:`Mejor piloto: ${pts(best)} pts · objetivo >${threshold}`};return progress(best,threshold,'Mejor piloto: ');}
+    if((m=q.match(/(?:conseguir|lograr).*?(\d+) victorias.*piloto/)))return progress(maxDriver(model,teamName,d=>d.wins),num(m[1]),'Mejor piloto: ');
+    if((m=q.match(/(?:conseguir|al menos|lograr).*?(\d+) podios.*piloto/)))return progress(maxDriver(model,teamName,d=>d.podiums),num(m[1]),'Mejor piloto: ');
+    if((m=q.match(/(?:conseguir|al menos).*?(\d+) poles.*piloto/)))return progress(maxDriver(model,teamName,d=>d.poles),num(m[1]),'Mejor piloto: ');
+    if((m=q.match(/racha de (\d+) carreras seguidas en puntos.*piloto/))){const best=model.driverStandings.filter(d=>key(d.teamName)===key(teamName)).reduce((mx,d)=>Math.max(mx,bestStreak(d.events,e=>num(e.pointsEarned)>0)),0);return progress(best,num(m[1]),'Mejor racha: ');}
+    if((m=q.match(/racha de (\d+) carreras consecutivas sumando puntos/)))return progress(bestStreak(rounds,r=>r.points>0),num(m[1]),'Racha del equipo: ');
+    if((m=q.match(/top (\d+) en al menos (\d+) carreras/))){const best=model.driverStandings.filter(d=>key(d.teamName)===key(teamName)).reduce((mx,d)=>Math.max(mx,d.events.filter(e=>e.race?.position&&e.race.position<=num(m[1])).length),0);return progress(best,num(m[2]),'Mejor piloto: ');}
     return{status:'pending',label:'PENDIENTE',progress:'Seguimiento manual / cierre de temporada'};
   }
-
-  function renderObjectives(items,standings,teamName,teamStanding){
+  function renderObjectives(items,model,teamName,teamStanding){
     const t=document.getElementById('pilotObjectives');
     if(!Array.isArray(items)||!items.length){t.innerHTML='<div class="pilot-dashboard-empty">No hay objetivos activos para esta división.</div>';return;}
-    t.innerHTML=items.map(x=>{const e=evalObjective(x.objective,x.is_completed,standings,teamName,teamStanding);return`<article class="pilot-objective-card ${e.status}"><div class="pilot-objective-top"><div><span>#${esc(x.sponsor_number)} · ${esc(x.name)}</span><strong>${money(x.effective_reward_m)}</strong></div><span class="pilot-objective-state">${esc(e.label)}</span></div><p>${esc(x.objective)}</p><small>${esc(e.progress)}</small></article>`;}).join('');
+    t.innerHTML=items.map(x=>{const e=evalObjective(x.objective,x.is_completed,model,teamName,teamStanding);return`<article class="pilot-objective-card ${e.status}"><div class="pilot-objective-top"><div><span>#${esc(x.sponsor_number)} · ${esc(x.name)}</span><strong>${money(x.effective_reward_m)}</strong></div><span class="pilot-objective-state">${esc(e.label)}</span></div><p>${esc(x.objective)}</p><small>${esc(e.progress)}</small></article>`;}).join('');
   }
 
   async function load(){
     if(loading||pilotView.classList.contains('is-hidden'))return;
-    loading=true;buildShell();const state=document.getElementById('pilotDataState');if(state){state.textContent='CARGANDO';state.classList.remove('ok');}
+    loading=true; buildShell();
+    const state=document.getElementById('pilotDataState'); if(state){state.textContent='CARGANDO';state.classList.remove('ok');}
     try{
-      const {data:{session}}=await client.auth.getSession();if(!session)return;
-      const pr=await client.from('profiles').select('driver_id,drivers:driver_id(id,nickname,race_number)').eq('id',session.user.id).maybeSingle();if(pr.error)throw pr.error;
-      const d=pr.data?.drivers;if(!d?.id)throw new Error('No hay piloto vinculado.');if(loadedDriver===d.id&&document.getElementById('pilotChampionshipCards')?.dataset.loaded==='1')return;
-      const priv=await client.rpc('pilot_dashboard_private',{p_season_number:config.currentSeason});if(priv.error)throw priv.error;const pd=priv.data||{};
-      const division=String(pd.division||'').toLowerCase(), teamName=pd.team_name||'';if(!['academy','hyperdrive'].includes(division))throw new Error('Sin división activa.');const other=division==='academy'?'hyperdrive':'academy';
-      const [standings,otherStandings,officials]=await Promise.all([getJSON(`/data/${division}-standings.json`),getJSON(`/data/${other}-standings.json`),getJSON('/data/official-drivers.json')]);if(!standings)throw new Error('No se pudo cargar la clasificación.');
-      const champ=renderChampionships(d.nickname,teamName,division,standings,otherStandings,officialSet(officials,division));renderSeason(champ.driver);
-      const recent=Array.isArray(champ.driver?.events)?[...champ.driver.events].sort((a,b)=>num(b.roundNumber)-num(a.roundNumber)).slice(0,5):[];
-      const files=new Map();await Promise.all(recent.map(async e=>{const round=num(e.roundNumber);const f=await getJSON(`/data/${division}_r${round}.json`);if(f)files.set(round,f);}));
-      renderRecent(champ.driver,division,files);renderContract(pd.contract,teamName);renderObjectives(pd.objectives,standings,teamName,champ.team);
-      const cards=document.getElementById('pilotChampionshipCards');if(cards)cards.dataset.loaded='1';loadedDriver=d.id;if(state){state.textContent='ACTUALIZADO';state.classList.add('ok');}
-    }catch(error){console.error('Pilot dashboard error:',error);if(state){state.textContent='REVISAR';state.classList.remove('ok');}['pilotChampionshipCards','pilotSeasonStats','pilotRecentRaces','pilotContractCard','pilotObjectives'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="pilot-dashboard-empty">No se pudieron cargar estos datos.</div>';});}
-    finally{loading=false;}
+      const {data:{session}}=await client.auth.getSession(); if(!session)return;
+      const pr=await client.from('profiles').select('driver_id,drivers:driver_id(id,nickname,race_number)').eq('id',session.user.id).maybeSingle(); if(pr.error)throw pr.error;
+      const d=pr.data?.drivers; if(!d?.id)throw new Error('No hay piloto vinculado.');
+      if(loadedDriver===d.id&&document.getElementById('pilotChampionshipCards')?.dataset.loaded==='1')return;
+      const priv=await client.rpc('pilot_dashboard_private',{p_season_number:config.currentSeason}); if(priv.error)throw priv.error; const pd=priv.data||{};
+      const division=String(pd.division||'').toLowerCase(), teamName=pd.team_name||''; if(!['academy','hyperdrive'].includes(division))throw new Error('Sin división activa.');
+      const [officials,academySessions,hyperdriveSessions]=await Promise.all([getJSON('/data/official-drivers.json'),loadSessions('academy'),loadSessions('hyperdrive')]);
+      if(!officials)throw new Error('No se pudo cargar la lista de pilotos oficiales.');
+      const academy=buildModel('academy',academySessions,officials), hyperdrive=buildModel('hyperdrive',hyperdriveSessions,officials);
+      const current=division==='academy'?academy:hyperdrive, other=division==='academy'?hyperdrive:academy;
+      const champ=renderChampionships(d.nickname,teamName,division,current,other);
+      renderSeason(champ.driver); renderRecent(champ.driver,division); renderContract(pd.contract,teamName); renderObjectives(pd.objectives,current,teamName,champ.team);
+      const cards=document.getElementById('pilotChampionshipCards'); if(cards)cards.dataset.loaded='1'; loadedDriver=d.id; if(state){state.textContent='ACTUALIZADO';state.classList.add('ok');}
+    }catch(error){
+      console.error('Pilot dashboard error:',error); if(state){state.textContent='REVISAR';state.classList.remove('ok');}
+      ['pilotChampionshipCards','pilotSeasonStats','pilotRecentRaces','pilotContractCard','pilotObjectives'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="pilot-dashboard-empty">No se pudieron cargar estos datos.</div>';});
+    }finally{loading=false;}
   }
 
-  buildShell();
-  new MutationObserver(()=>{if(!pilotView.classList.contains('is-hidden'))setTimeout(load,30);}).observe(pilotView,{attributes:true,attributeFilter:['class']});
+  const observer=new MutationObserver(()=>{if(!pilotView.classList.contains('is-hidden'))window.setTimeout(load,30);});
+  observer.observe(pilotView,{attributes:true,attributeFilter:['class']});
   if(!pilotView.classList.contains('is-hidden'))load();
 })();
