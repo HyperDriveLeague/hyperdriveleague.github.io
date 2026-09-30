@@ -1,4 +1,7 @@
 (() => {
+    const MAX_ROUNDS = 12;
+    const DIVISIONS = ['hyperdrive', 'academy'];
+
     const circuitSelect = document.getElementById('qualy-circuit-select');
     const driverSelect = document.getElementById('qualy-driver-select');
     const rankingList = document.getElementById('qualy-ranking-list');
@@ -31,14 +34,20 @@
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
-    const driverKey = record => String(
+    const normalizeDriverKey = value => String(value ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
+
+    const driverKey = record => normalizeDriverKey(
         record.driverId ||
         record.driverSlug ||
         record.driverKey ||
         record.driver ||
         record.driverName ||
         ''
-    ).trim().toLowerCase();
+    );
 
     const trackId = record => String(
         record.trackId ||
@@ -96,6 +105,11 @@
         return value || '';
     };
 
+    const seasonNumber = value => {
+        const match = String(value ?? '').match(/(\d+)/);
+        return match ? Number(match[1]) : null;
+    };
+
     function normaliseRecord(raw) {
         const timeMs = parseTimeMs(raw);
         return {
@@ -108,7 +122,39 @@
             season: Number(raw.season ?? raw.seasonNumber) || null,
             round: Number(raw.round ?? raw.roundNumber) || null,
             division: divisionLabel(raw.division || raw.league || ''),
-            date: raw.date || raw.eventDate || null
+            date: raw.date || raw.eventDate || null,
+            sessionPosition: Number(raw.sessionPosition ?? raw.qualyPosition ?? raw.position) || null
+        };
+    }
+
+    function recordFromQualyDriver(data, driver, division) {
+        const track = data?.event?.track || {};
+        const info = data?.session?.sessionInfo || {};
+        const type = String(info.sessionType || '').toLowerCase();
+
+        if (!type.includes('qual')) return null;
+
+        const timeMs = Number(driver?.fastestLapTimeMs);
+        if (!Number.isFinite(timeMs) || timeMs <= 0) return null;
+
+        const name = driver?.driverInfo?.displayName || driver?.driverName || 'Piloto';
+        const trackName = track.trackName || 'Circuito';
+
+        return {
+            trackId: slug(trackName),
+            trackName,
+            country: track.country || '',
+            driverName: name,
+            driverKey: normalizeDriverKey(name),
+            timeMs,
+            time: driver.fastestLapTime || formatLap(timeMs),
+            season: seasonNumber(data?.season?.seasonName),
+            round: Number(data?.event?.round) || null,
+            division: divisionLabel(data?.metadata?.leagueName || division),
+            date: data?.event?.eventDate || null,
+            sessionPosition: Number(driver?.classificationPosition ?? driver?.position) || null,
+            teamName: driver?.team?.name || '',
+            source: 'rlt-qualy'
         };
     }
 
@@ -131,7 +177,7 @@
         }
 
         return [...bestByDriver.values()]
-            .sort((a, b) => a.timeMs - b.timeMs)
+            .sort((a, b) => a.timeMs - b.timeMs || a.driverName.localeCompare(b.driverName, 'es', { sensitivity: 'base' }))
             .map((record, index) => ({ ...record, historicalPosition: index + 1 }));
     }
 
@@ -140,21 +186,22 @@
         if (record.season) bits.push(`Season ${record.season}`);
         if (record.division) bits.push(record.division);
         if (record.round) bits.push(`R${record.round}`);
+        if (record.sessionPosition) bits.push(`Qualy P${record.sessionPosition}`);
         if (record.date) bits.push(formatDate(record.date));
         return bits.join(' · ');
     }
 
     function renderStats() {
-        const driverKeys = new Set(
-            state.records
-                .map(normaliseRecord)
-                .filter(r => Number.isFinite(r.timeMs) && r.timeMs > 0 && r.driverKey)
-                .map(r => r.driverKey)
-        );
+        const validRecords = state.records
+            .map(normaliseRecord)
+            .filter(r => Number.isFinite(r.timeMs) && r.timeMs > 0 && r.driverKey);
 
-        circuitCount.textContent = String(state.circuits.length);
+        const driverKeys = new Set(validRecords.map(r => r.driverKey));
+        const representedCircuits = new Set(validRecords.map(r => r.trackId));
+
+        circuitCount.textContent = String(representedCircuits.size || state.circuits.length);
         driverCount.textContent = String(driverKeys.size);
-        recordCount.textContent = String(state.records.length);
+        recordCount.textContent = String(validRecords.length);
     }
 
     function renderCircuitSelect() {
@@ -191,9 +238,7 @@
 
     function renderRecordCard(ranking) {
         if (!ranking.length) {
-            recordContent.innerHTML = `
-                <span class="qualy-muted">Aún no se han importado tiempos de clasificación de este circuito.</span>
-            `;
+            recordContent.innerHTML = '<span class="qualy-muted">Aún no se han importado tiempos de clasificación de este circuito.</span>';
             return;
         }
 
@@ -212,16 +257,12 @@
 
     function renderDriverCard(ranking) {
         if (!ranking.length) {
-            driverContent.innerHTML = `
-                <span class="qualy-muted">Cuando se carguen los tiempos de qualy podrás consultar aquí el mejor registro histórico de cada piloto.</span>
-            `;
+            driverContent.innerHTML = '<span class="qualy-muted">Cuando se carguen los tiempos de qualy podrás consultar aquí el mejor registro histórico de cada piloto.</span>';
             return;
         }
 
         if (!state.selectedDriverKey) {
-            driverContent.innerHTML = `
-                <span class="qualy-muted">Selecciona un piloto para ver su mejor vuelta y su posición histórica en este circuito.</span>
-            `;
+            driverContent.innerHTML = '<span class="qualy-muted">Selecciona un piloto para ver su mejor vuelta y su posición histórica en este circuito.</span>';
             return;
         }
 
@@ -251,11 +292,7 @@
 
     function renderRankingRows(ranking) {
         if (!ranking.length) {
-            rankingList.innerHTML = `
-                <div class="qualy-empty">
-                    TODAVÍA NO HAY TIEMPOS DE QUALY ARCHIVADOS PARA ESTE CIRCUITO
-                </div>
-            `;
+            rankingList.innerHTML = '<div class="qualy-empty">TODAVÍA NO HAY TIEMPOS DE QUALY ARCHIVADOS PARA ESTE CIRCUITO</div>';
             return;
         }
 
@@ -304,31 +341,150 @@
         renderRankingRows(ranking);
     }
 
-    async function loadHistory() {
+    async function fetchJsonIfExists(path) {
         try {
-            const response = await fetch(`data/qualy-history.json?v=${Date.now()}`, { cache: 'no-store' });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
+            const response = await fetch(`${path}?v=${Date.now()}`, { cache: 'no-store' });
+            if (response.status === 404) return null;
+            if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.warn('No se pudo cargar', path, error);
+            return null;
+        }
+    }
 
-            const circuitMap = new Map();
-            for (const circuit of Array.isArray(data.circuits) ? data.circuits : []) {
-                const id = String(circuit.id || slug(circuit.name)).toLowerCase();
-                if (!id) continue;
-                circuitMap.set(id, { ...circuit, id });
+    async function loadQualyFiles() {
+        const jobs = [];
+
+        for (const division of DIVISIONS) {
+            for (let round = 1; round <= MAX_ROUNDS; round += 1) {
+                jobs.push(
+                    fetchJsonIfExists(`data/${division}_qr${round}.json`)
+                        .then(data => ({ data, division, round }))
+                );
             }
+        }
 
-            state.records = Array.isArray(data.records) ? data.records : [];
-            for (const rawRecord of state.records) {
-                const record = normaliseRecord(rawRecord);
-                if (!record.trackId || circuitMap.has(record.trackId)) continue;
-                circuitMap.set(record.trackId, {
-                    id: record.trackId,
-                    name: rawRecord.trackName || rawRecord.track || rawRecord.circuit || record.trackId,
-                    country: rawRecord.country || ''
+        const files = await Promise.all(jobs);
+        const records = [];
+        const circuits = [];
+
+        for (const file of files) {
+            const data = file.data;
+            if (!data) continue;
+
+            const sessionType = String(data?.session?.sessionInfo?.sessionType || '').toLowerCase();
+            if (!sessionType.includes('qual')) continue;
+
+            const track = data?.event?.track || {};
+            const id = slug(track.trackName || '');
+            if (id) {
+                circuits.push({
+                    id,
+                    name: track.trackName || id,
+                    country: track.country || '',
+                    firstSeason: seasonNumber(data?.season?.seasonName),
+                    lastSeason: seasonNumber(data?.season?.seasonName),
+                    round: Number(data?.event?.round) || file.round
                 });
             }
 
-            state.circuits = [...circuitMap.values()];
+            const drivers = Array.isArray(data?.session?.drivers) ? data.session.drivers : [];
+            for (const driver of drivers) {
+                const record = recordFromQualyDriver(data, driver, file.division);
+                if (record) records.push(record);
+            }
+        }
+
+        return { records, circuits };
+    }
+
+    function mergeCircuits(archiveCircuits, liveCircuits, records) {
+        const map = new Map();
+
+        const add = circuit => {
+            const id = String(circuit?.id || slug(circuit?.name || '')).toLowerCase();
+            if (!id) return;
+
+            const existing = map.get(id);
+            if (!existing) {
+                map.set(id, { ...circuit, id });
+                return;
+            }
+
+            map.set(id, {
+                ...existing,
+                ...circuit,
+                id,
+                firstSeason: Math.min(
+                    Number(existing.firstSeason) || Number(circuit.firstSeason) || 999,
+                    Number(circuit.firstSeason) || Number(existing.firstSeason) || 999
+                ),
+                lastSeason: Math.max(Number(existing.lastSeason) || 0, Number(circuit.lastSeason) || 0),
+                round: Math.max(Number(existing.round) || 0, Number(circuit.round) || 0)
+            });
+        };
+
+        archiveCircuits.forEach(add);
+        liveCircuits.forEach(add);
+
+        for (const rawRecord of records) {
+            const record = normaliseRecord(rawRecord);
+            if (!record.trackId) continue;
+            add({
+                id: record.trackId,
+                name: rawRecord.trackName || rawRecord.track || rawRecord.circuit || record.trackId,
+                country: rawRecord.country || '',
+                firstSeason: record.season,
+                lastSeason: record.season,
+                round: record.round
+            });
+        }
+
+        return [...map.values()].sort((a, b) => {
+            const seasonDiff = (Number(a.lastSeason) || 0) - (Number(b.lastSeason) || 0);
+            if (seasonDiff !== 0) return seasonDiff;
+            const roundDiff = (Number(a.round) || 0) - (Number(b.round) || 0);
+            if (roundDiff !== 0) return roundDiff;
+            return String(a.name).localeCompare(String(b.name), 'es', { sensitivity: 'base' });
+        });
+    }
+
+    function dedupeRecords(records) {
+        const map = new Map();
+
+        for (const raw of records) {
+            const record = normaliseRecord(raw);
+            if (!record.trackId || !record.driverKey || !Number.isFinite(record.timeMs) || record.timeMs <= 0) continue;
+
+            const key = [
+                record.trackId,
+                record.driverKey,
+                record.season || '',
+                record.division || '',
+                record.round || '',
+                record.timeMs
+            ].join('|');
+
+            if (!map.has(key)) map.set(key, record);
+        }
+
+        return [...map.values()];
+    }
+
+    async function loadHistory() {
+        try {
+            const [archive, live] = await Promise.all([
+                fetchJsonIfExists('data/qualy-history.json'),
+                loadQualyFiles()
+            ]);
+
+            const archiveRecords = Array.isArray(archive?.records) ? archive.records : [];
+            const archiveCircuits = Array.isArray(archive?.circuits) ? archive.circuits : [];
+
+            state.records = dedupeRecords([...archiveRecords, ...live.records]);
+            state.circuits = mergeCircuits(archiveCircuits, live.circuits, state.records)
+                .filter(circuit => state.records.some(raw => normaliseRecord(raw).trackId === circuit.id));
 
             renderStats();
             renderCircuitSelect();
