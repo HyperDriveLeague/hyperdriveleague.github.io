@@ -43,6 +43,7 @@
         <section class="module-section-heading"><div><span class="eyebrow">OPERACIONES</span><h2>Sanciones y economía</h2></div><span class="season-badge">STAFF / ADMIN</span></section>
         <div class="operations-tabs">
           <button class="operation-tab active" type="button" data-operation-tab="sanctions">SANCIONES</button>
+          <button class="operation-tab" type="button" data-operation-tab="bans">NQ / RB</button>
           <button class="operation-tab" type="button" data-operation-tab="fines">MULTAS</button>
           <button class="operation-tab" type="button" data-operation-tab="manual">MOVIMIENTO MANUAL</button>
         </div>
@@ -64,6 +65,12 @@
             <div class="operation-note">Si el piloto tiene asiento oficial, su escudería queda fijada automáticamente. Si es reserva o no tiene asiento oficial para esa ronda, podrás seleccionarla manualmente.</div>
             <div class="operation-footer"><p id="sanctionStatus" class="operation-status" aria-live="polite"></p><div class="operation-buttons"><button id="cancelSanctionEdit" class="secondary-button cancel-edit is-hidden" type="button">CANCELAR EDICIÓN</button><button id="sanctionSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR SANCIÓN</span></button></div></div>
           </form>
+        </article>
+
+        <article class="operation-panel pending-sanctions-section is-hidden" data-operation-panel="bans">
+          <span class="panel-label">SUPERLICENCIA</span><h3>NQ / Race Ban pendientes de cumplir</h3>
+          <p class="operation-help">Aquí aparecen únicamente los NO QUALY y RACE BAN pendientes. Pulsa <strong>Marcar como cumplida</strong> cuando el piloto haya servido la sanción. Al hacerlo dejará de aparecer en pendientes y quedará registrada como cumplida en el histórico. Si es un RACE BAN y el piloto estaba a 0 puntos, recuperará 6 puntos automáticamente.</p>
+          <div id="pendingSanctionsList" class="pending-sanctions"><div class="empty-sanctions">Cargando sanciones pendientes…</div></div>
         </article>
 
         <article class="operation-panel is-hidden" data-operation-panel="fines">
@@ -93,12 +100,6 @@
             <div class="operation-footer"><p id="manualStatus" class="operation-status" aria-live="polite"></p><button id="manualSubmit" class="primary-button op-submit" type="submit"><span>AÑADIR MOVIMIENTO</span></button></div>
           </form>
         </article>
-
-        <article class="operation-panel pending-sanctions-section">
-          <span class="panel-label">SUPERLICENCIA</span><h3>NQ / Race Ban pendientes</h3>
-          <p class="operation-help">Los genera automáticamente el sistema al alcanzar los umbrales de superlicencia. Aquí solo se marcan como cumplidos.</p>
-          <div id="pendingSanctionsList" class="pending-sanctions"><div class="empty-sanctions">Cargando sanciones pendientes…</div></div>
-        </article>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">PILOTOS</span><h2>Control de superlicencias</h2></div></section>
@@ -120,6 +121,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=2"></script>
-  <script src="js/staff-operations.js?v=2"></script>
+  <script src="js/staff-operations.js?v=3"></script>
 </body>
 </html>
