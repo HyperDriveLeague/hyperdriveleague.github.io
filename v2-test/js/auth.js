@@ -23,6 +23,30 @@
     message.className = `account-message${type ? ` ${type}` : ''}`;
   }
 
+  function authErrorMessage(error, context = 'signup') {
+    const code = String(error?.code || '').toLowerCase();
+    const status = Number(error?.status || 0);
+    const raw = String(error?.message || '').toLowerCase();
+
+    if (code === 'over_email_send_rate_limit' || status === 429 || raw.includes('email rate limit')) {
+      return 'El sistema de correo de HyperDrive ha alcanzado temporalmente su límite de envíos. Tu correo no es el problema. No sigas reintentando ahora; vuelve a probar más tarde.';
+    }
+
+    if (code === 'email_address_invalid' || raw.includes('invalid email')) {
+      return 'La dirección de correo no parece válida. Revísala e inténtalo de nuevo.';
+    }
+
+    if (code === 'user_already_exists' || raw.includes('already registered')) {
+      return 'Ya existe una cuenta con ese correo. Vuelve a iniciar sesión o utiliza “He olvidado mi contraseña”.';
+    }
+
+    if (context === 'recovery') {
+      return 'No se pudo enviar ahora el correo de recuperación. Vuelve a intentarlo más tarde.';
+    }
+
+    return 'No se pudo crear la cuenta en este momento. Vuelve a intentarlo más tarde.';
+  }
+
   function showMode(mode) {
     registerForm.classList.toggle('is-hidden', mode !== 'register');
     forgotForm.classList.toggle('is-hidden', mode !== 'forgot');
@@ -80,7 +104,7 @@
 
     if (error) {
       console.error('Signup error:', error);
-      return setMessage('No se pudo crear la cuenta. Comprueba el correo y vuelve a intentarlo.', 'error');
+      return setMessage(authErrorMessage(error, 'signup'), 'error');
     }
 
     registerForm.reset();
@@ -98,7 +122,10 @@
     await setButtonBusy(forgotForm, true, 'ENVIANDO…', 'ENVIAR ENLACE');
     const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: changePasswordUrl });
     await setButtonBusy(forgotForm, false, 'ENVIANDO…', 'ENVIAR ENLACE');
-    if (error) console.error('Password recovery error:', error);
+    if (error) {
+      console.error('Password recovery error:', error);
+      return setMessage(authErrorMessage(error, 'recovery'), 'error');
+    }
     forgotForm.reset();
     setMessage('Si ese correo pertenece a una cuenta, recibirás un enlace para cambiar la contraseña.', 'success');
   });
