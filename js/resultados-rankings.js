@@ -66,7 +66,8 @@
 
                     const base = value.textContent.replace(/\s*·\s*P\d+\s*$/, '').trim();
                     if (!base || base === '—') return;
-                    value.textContent = `${base} · P${rank}`;
+                    const next = `${base} · P${rank}`;
+                    if (value.textContent.trim() !== next) value.textContent = next;
                 });
             });
         }));
