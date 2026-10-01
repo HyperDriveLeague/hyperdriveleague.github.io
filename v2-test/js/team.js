@@ -86,8 +86,8 @@
 
     const charges = Number(finance.fair_play_charge_m || 0) + Number(finance.luxury_tax_m || 0);
     messages.push(charges > 0
-      ? { ok: false, html: `<strong>Cargos económicos activos.</strong> Fair Play + impuesto de lujo suman ${money(charges)} M.` }
-      : { ok: true, html: '<strong>Sin cargos adicionales.</strong> No hay Fair Play ni impuesto de lujo aplicados actualmente.' }
+      ? { ok: false, html: `<strong>Cargos económicos activos.</strong> Fair Play + Luxury Tax suman ${money(charges)} M.` }
+      : { ok: true, html: '<strong>Sin cargos adicionales.</strong> No hay Fair Play ni Luxury Tax aplicados actualmente.' }
     );
 
     alerts.innerHTML = messages.map(item => `<div class="management-alert${item.ok ? ' ok' : ''}"><span class="management-alert-dot"></span><div>${item.html}</div></div>`).join('');
@@ -220,7 +220,7 @@
     document.getElementById('teamStatus').textContent = account.is_active ? 'ACTIVA' : 'INACTIVA';
     configurePreviewUi(teamName);
 
-    document.getElementById('currentBalance').textContent = money(finance.current_balance_m);
+    document.getElementById('currentBalance').textContent = money(finance.net_balance_m ?? finance.current_balance_m);
     document.getElementById('totalIncome').textContent = money(finance.total_income_m);
     document.getElementById('totalExpense').textContent = money(finance.total_expense_m);
     document.getElementById('seasonProfit').textContent = money(finance.season_profit_m);
