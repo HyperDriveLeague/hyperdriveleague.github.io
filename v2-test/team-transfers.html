@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b"><meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Transferencias | Team Principal</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5"><link rel="stylesheet" href="css/transfers.css?v=1">
+</head>
+<body>
+<div class="background-grid" aria-hidden="true"></div>
+<main class="app-shell transfer-shell">
+<header class="module-header">
+  <div><span class="eyebrow">TEAM PRINCIPAL · BANCO</span><h1>Transferencias a pilotos</h1></div>
+  <div class="topbar-actions"><a class="secondary-button link-button" href="team.html">← Mi escudería</a><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+</header>
+<section id="loadingPanel" class="transfer-message">Cargando transferencias…</section>
+<section id="errorPanel" class="transfer-message error is-hidden"></section>
+<div id="transferContent" class="is-hidden">
+  <section class="transfer-hero">
+    <div><span class="panel-label">ESCUDERÍA</span><h2 id="teamName">—</h2><p>Los envíos a pilotos requieren aprobación de Administración antes de ejecutarse.</p></div>
+    <div class="transfer-balance"><span>DISPONIBLE PARA TRANSFERIR</span><strong id="availableBalance">—</strong><small>M</small></div>
+  </section>
+  <section class="transfer-stats">
+    <article><span>SALDO ACTUAL</span><strong id="currentBalance">—</strong><small>M</small></article>
+    <article><span>RESERVADO</span><strong id="reservedBalance">—</strong><small>M en solicitudes pendientes</small></article>
+  </section>
+  <section class="transfer-grid">
+    <article class="transfer-card">
+      <span class="panel-label">NUEVA SOLICITUD</span><h3>Enviar dinero a un piloto</h3>
+      <form id="teamTransferForm" class="transfer-form">
+        <label><span>Piloto</span><select id="driverSelect" required></select></label>
+        <label><span>Importe (M)</span><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="Ej.: 3.00" required></label>
+        <label><span>Concepto · opcional</span><input id="noteInput" maxlength="180" placeholder="Motivo del traspaso"></label>
+        <button id="submitButton" class="primary-button" type="submit"><span>SOLICITAR TRANSFERENCIA</span></button>
+        <p id="formMessage" class="transfer-form-message"></p>
+      </form>
+    </article>
+    <article class="transfer-card">
+      <span class="panel-label">PILOTOS</span><h3>Plantilla con Banco del Piloto</h3>
+      <div id="driversList" class="transfer-list"></div>
+    </article>
+  </section>
+  <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Solicitudes de la escudería</h2></div></section>
+  <section class="transfer-card"><div id="historyList" class="transfer-list"></div></section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js?v=5"></script><script src="js/team-transfers.js?v=1"></script>
+</body></html>
