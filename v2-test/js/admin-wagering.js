@@ -34,7 +34,7 @@
       const vals=[
         dt(item.activity_at),
         '#'+(item.race_number??'--')+' '+item.driver_name,
-        'R'+item.round_number+' · '+item.grand_prix,
+        'T'+item.season_number+' · R'+item.round_number+' · '+item.grand_prix,
         division(item.division),
         item.detail||'—'
       ];
