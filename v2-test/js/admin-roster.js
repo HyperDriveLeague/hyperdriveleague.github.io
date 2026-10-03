@@ -129,7 +129,8 @@
       });
       if(error){setFormStatus(create,error.message||'No se pudo crear el piloto.','error');btn.disabled=false;btn.querySelector('span').textContent='CREAR PILOTO';return;}
       setFormStatus(create,'Piloto creado con Banco del Piloto, 5 M, Superlicencia y alineación.','success');
-      setTimeout(()=>window.location.reload(),700);
+      await client.rpc('admin_refresh_wagering_cycle');
+      setTimeout(()=>window.location.reload(),900);
     });
 
     const assign=panel.querySelector('#assignRosterForm');
@@ -141,7 +142,9 @@
         p_division:fd.get('division'),p_roster_status:fd.get('roster_status'),p_start_round:Number(fd.get('start_round'))
       });
       if(error){setFormStatus(assign,error.message||'No se pudo guardar el fichaje.','error');btn.disabled=false;btn.querySelector('span').textContent='GUARDAR FICHAJE';return;}
-      setFormStatus(assign,'Asignación actualizada correctamente.','success'); setTimeout(()=>window.location.reload(),650);
+      setFormStatus(assign,'Asignación actualizada correctamente.','success');
+      await client.rpc('admin_refresh_wagering_cycle');
+      setTimeout(()=>window.location.reload(),850);
     });
   }
 
@@ -158,7 +161,8 @@
       p_is_active:item.is_active
     });
     if(error){window.alert(error.message||'No se pudo guardar.');btn.disabled=false;return;}
-    window.location.reload();
+    await client.rpc('admin_refresh_wagering_cycle');
+    setTimeout(()=>window.location.reload(),700);
   }
 
   async function endRow(tr,item){
@@ -166,7 +170,8 @@
     if(!proposed) return;
     const {error}=await client.rpc('admin_end_roster_assignment',{p_roster_id:item.roster_id,p_end_round:Number(proposed)});
     if(error){window.alert(error.message||'No se pudo finalizar la asignación.');return;}
-    window.location.reload();
+    await client.rpc('admin_refresh_wagering_cycle');
+    setTimeout(()=>window.location.reload(),700);
   }
 
   async function init(){
