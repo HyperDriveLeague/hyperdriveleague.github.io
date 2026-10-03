@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b"><meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperLoto | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5"><link rel="stylesheet" href="css/wagering.css?v=1">
+</head>
+<body>
+<div class="background-grid" aria-hidden="true"></div>
+<main class="app-shell wagering-shell loto-shell">
+<header class="module-header">
+  <div><span class="eyebrow">HYPERDRIVE LEAGUE · QUINIELA</span><h1 class="brand-title loto-title">Hyper<span>Loto</span></h1></div>
+  <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><a class="secondary-button link-button" href="bank.html">Banco</a><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+</header>
+<section id="loadingPanel" class="wager-message">Cargando HyperLoto…</section>
+<section id="errorPanel" class="wager-message error is-hidden"></section>
+<div id="lotoContent" class="is-hidden">
+  <nav class="division-tabs" aria-label="División"><button class="division-tab active" data-division="academy" type="button">ACADEMY</button><button class="division-tab" data-division="hyperdrive" type="button">HYPERDRIVE</button></nav>
+  <section class="jackpot-hero">
+    <div><span class="jackpot-label">JACKPOT <span id="jackpotDivision">ACADEMY</span></span><strong id="jackpotAmount">40,00 M</strong><p id="drawTiming">—</p></div>
+    <div class="jackpot-rule"><span>PLENO</span><strong>POLE + TOP 10 EXACTO + VUELTA RÁPIDA</strong><small>Si hay varios boletos ganadores, el bote se reparte entre los boletos.</small></div>
+  </section>
+  <section class="loto-summary-grid">
+    <article><span>PRECIO BOLETO</span><strong id="ticketPrice">0,50 M</strong><small>boletos ilimitados</small></article>
+    <article><span>REINTEGRO</span><strong>POLE</strong><small>recuperas el precio del boleto</small></article>
+    <article><span>BOLETOS VENDIDOS</span><strong id="ticketCount">0</strong><small id="grossSales">0,00 M recaudados</small></article>
+    <article><span>BOTE PROYECTADO</span><strong id="projectedJackpot">40,00 M</strong><small>mínimo con la recaudación actual</small></article>
+  </section>
+  <section class="loto-layout">
+    <article class="loto-builder-card">
+      <div class="wager-section-head"><div><span>CREAR BOLETO</span><h2 id="lotoEventTitle">—</h2></div><span id="lotoStatus" class="loto-status">—</span></div>
+      <form id="lotoForm" class="loto-form">
+        <label class="loto-special"><span>POLE · REINTEGRO</span><select id="poleSelect" required></select></label>
+        <div id="top10Builder" class="top10-builder"></div>
+        <label class="loto-special"><span>VUELTA RÁPIDA</span><select id="fastestSelect" required></select></label>
+        <button id="buyTicketButton" class="loto-buy-button" type="submit">COMPRAR BOLETO · 0,50 M</button>
+        <p id="lotoMessage" class="bet-message" aria-live="polite"></p>
+      </form>
+      <p class="sportsbook-note">HyperLoto solo utiliza pilotos oficiales. Los reservas se eliminan del resultado y los oficiales situados detrás suben posiciones.</p>
+    </article>
+    <aside class="prize-board">
+      <div class="prize-board-head"><span>PREMIOS DE ESTA RONDA</span><strong>Bolsa provisional</strong></div>
+      <div id="prizeBands" class="prize-bands"></div>
+      <p class="sportsbook-note">Las bolsas cambian con la recaudación. Se ajustan al liquidar por los reintegros de Pole; toda categoría sin acertantes pasa al Jackpot.</p>
+    </aside>
+  </section>
+  <section class="my-bets-section"><div class="wager-section-head"><div><span>MIS BOLETOS</span><h2>HyperLoto</h2></div></div><div id="myTickets" class="my-bets"><div class="wager-empty">Todavía no hay boletos.</div></div></section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js?v=5"></script><script src="js/hyperloto.js?v=1"></script>
+</body></html>
