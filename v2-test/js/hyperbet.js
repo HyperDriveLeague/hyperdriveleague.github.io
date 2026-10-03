@@ -250,6 +250,53 @@
     });
   }
 
+  function renderPrizeHistory(items) {
+    const target = $('hyperbetPrizeHistory');
+    if (!target) return;
+    target.innerHTML = '';
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'wager-empty';
+      empty.textContent = 'Todavía no se han entregado premios.';
+      target.appendChild(empty);
+      return;
+    }
+
+    items.forEach(item => {
+      const card = document.createElement('article');
+      card.className = 'public-prize-card';
+
+      const main = document.createElement('div');
+      main.className = 'public-prize-main';
+      const name = document.createElement('strong');
+      name.textContent = '#' + (item.race_number ?? '--') + ' ' + item.driver_name;
+      const meta = document.createElement('span');
+      meta.textContent = 'R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix;
+      main.append(name, meta);
+
+      const amount = document.createElement('div');
+      amount.className = 'public-prize-amount';
+      const value = document.createElement('strong');
+      value.textContent = money(item.payout_m) + ' M';
+      const label = document.createElement('span');
+      label.textContent = 'PREMIO RECIBIDO';
+      amount.append(value, label);
+
+      card.append(main, amount);
+      target.appendChild(card);
+    });
+  }
+
+  async function loadPrizeHistory() {
+    const response = await client.rpc('hyperbet_prize_history', { p_limit: 100 });
+    if (response.error) {
+      console.error('Error al cargar premios HyperBet:', response.error);
+      renderPrizeHistory([]);
+      return;
+    }
+    renderPrizeHistory(response.data || []);
+  }
+
   function renderAll() {
     updateEventHeader();
     renderMarketTabs();
@@ -304,6 +351,7 @@
       settings = settingsResponse.data;
       await refreshBank();
       await loadMarketsAndBets();
+      await loadPrizeHistory();
 
       $('loadingPanel').classList.add('is-hidden');
       $('errorPanel').classList.add('is-hidden');
