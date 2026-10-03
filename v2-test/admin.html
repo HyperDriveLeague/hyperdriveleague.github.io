@@ -13,7 +13,9 @@
   <link rel="stylesheet" href="css/app.css?v=5">
   <link rel="stylesheet" href="css/admin.css?v=1">
   <link rel="stylesheet" href="css/admin-onboarding.css?v=2">
-  <link rel="stylesheet" href="css/admin-role-editor.css?v=1">\n  <link rel="stylesheet" href="css/admin-roster.css?v=1">
+  <link rel="stylesheet" href="css/admin-role-editor.css?v=1">
+  <link rel="stylesheet" href="css/admin-roster.css?v=1">
+  <link rel="stylesheet" href="css/admin-bank.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -42,6 +44,29 @@
         <article class="admin-summary-card"><span>ROLES ASIGNADOS</span><strong id="roleCount">—</strong><small>permisos totales</small></article>
       </section>
 
+      <section class="module-section-heading"><div><span class="eyebrow">BANCO DEL PILOTO</span><h2>Consultar bancos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
+      <section class="admin-panel admin-bank-panel">
+        <div class="admin-bank-layout">
+          <div class="admin-bank-picker">
+            <h3>Selecciona un piloto</h3>
+            <label><span>PILOTO</span><select id="adminBankDriverSelect"><option value="">Cargando pilotos…</option></select></label>
+            <div class="admin-bank-pilot-meta"><strong>Consulta administrativa</strong><span>Selecciona cualquier piloto para consultar su saldo, dinero reservado e historial completo de movimientos.</span></div>
+          </div>
+          <div class="admin-bank-view">
+            <div id="adminBankEmpty" class="admin-bank-empty">Selecciona un piloto para ver su Banco del Piloto.</div>
+            <div id="adminBankContent" class="is-hidden">
+              <h3 id="adminBankPilotName">—</h3><p id="adminBankPilotContext" class="admin-note">—</p>
+              <div class="admin-bank-balances">
+                <article class="admin-bank-stat featured"><span>DISPONIBLE</span><strong id="adminBankAvailable">—</strong></article>
+                <article class="admin-bank-stat"><span>SALDO TOTAL</span><strong id="adminBankCurrent">—</strong></article>
+                <article class="admin-bank-stat"><span>RESERVADO</span><strong id="adminBankReserved">—</strong></article>
+              </div>
+              <div class="admin-bank-history"><h4>Movimientos</h4><div class="admin-bank-table-wrap"><table class="admin-bank-table"><thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Movimiento</th></tr></thead><tbody id="adminBankHistoryBody"></tbody></table></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="module-section-heading"><div><span class="eyebrow">CUENTAS</span><h2>Usuarios configurados</h2></div><input id="accountSearch" class="admin-search" type="search" placeholder="Buscar usuario, piloto, equipo o rol…"></section>
       <section class="admin-panel table-panel">
         <div class="table-wrap"><table class="admin-table"><thead><tr><th>Perfil</th><th>Piloto</th><th>Roles</th><th>Team Principal</th><th>Estado</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
@@ -63,6 +88,8 @@
   <script src="js/admin.js?v=3"></script>
   <script src="js/admin-onboarding.js?v=4"></script>
   <script src="js/admin-role-editor.js?v=2"></script>
-  <script src="js/admin-team-preview.js?v=1"></script>\n  <script src="js/admin-roster.js?v=2"></script>
+  <script src="js/admin-team-preview.js?v=1"></script>
+  <script src="js/admin-roster.js?v=2"></script>
+  <script src="js/admin-bank.js?v=1"></script>
 </body>
 </html>
