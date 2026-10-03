@@ -6,8 +6,8 @@
 
   const $ = id => document.getElementById(id);
   const money = value => Number(value || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const marketLabels = { winner:'Ganador', pole:'Pole', podium:'Podio', top5:'Top 5', top10:'Top 10', fastest_lap:'Vuelta rápida', head_to_head:'Head to Head' };
-  const marketOrder = ['winner','pole','podium','top5','top10','fastest_lap','head_to_head'];
+  const marketLabels = { winner:'Ganador', pole:'Pole', podium:'Podio', top5:'Top 5', top10:'Top 10', fastest_lap:'Vuelta rápida' };
+  const marketOrder = ['winner','pole','podium','top5','top10','fastest_lap'];
   const statusLabels = { pending:'PENDIENTE', won:'GANADA', lost:'PERDIDA', void:'ANULADA' };
 
   let activeDivision = 'academy';
