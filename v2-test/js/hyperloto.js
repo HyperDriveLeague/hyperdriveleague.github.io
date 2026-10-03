@@ -199,7 +199,7 @@
       const name = document.createElement('strong');
       name.textContent = '#' + (item.race_number ?? '--') + ' ' + item.driver_name;
       const meta = document.createElement('span');
-      meta.textContent = 'R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix + ' · ' + (item.exact_position_hits ?? 0) + '/10 aciertos';
+      meta.textContent = 'T' + item.season_number + ' · R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix + ' · ' + (item.exact_position_hits ?? 0) + '/10 aciertos';
       main.append(name, meta);
 
       if (item.prize_type === 'JACKPOT' || item.prize_type === 'REINTEGRO') {
