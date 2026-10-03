@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b"><meta name="robots" content="noindex,nofollow,noarchive">
+  <title>HyperBet | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5"><link rel="stylesheet" href="css/wagering.css?v=1">
+</head>
+<body>
+<div class="background-grid" aria-hidden="true"></div>
+<main class="app-shell wagering-shell">
+<header class="module-header">
+  <div><span class="eyebrow">HYPERDRIVE LEAGUE · SPORTSBOOK</span><h1 class="brand-title">Hyper<span>Bet</span></h1></div>
+  <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><a class="secondary-button link-button" href="bank.html">Banco</a><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+</header>
+<section id="loadingPanel" class="wager-message">Cargando mercados…</section>
+<section id="errorPanel" class="wager-message error is-hidden"></section>
+<div id="wagerContent" class="is-hidden">
+  <section class="sportsbook-top">
+    <div><span class="sportsbook-live-dot"></span><span id="marketState">MERCADOS</span><h2 id="eventTitle">—</h2><p id="eventTiming">—</p></div>
+    <div class="wallet-chip"><span>SALDO DISPONIBLE</span><strong id="walletBalance">—</strong><small>M</small></div>
+  </section>
+  <nav class="division-tabs" aria-label="División"><button class="division-tab active" data-division="academy" type="button">ACADEMY</button><button class="division-tab" data-division="hyperdrive" type="button">HYPERDRIVE</button></nav>
+  <div class="sportsbook-layout">
+    <section class="market-column">
+      <div id="marketTabs" class="market-tabs"></div><div id="marketsContainer" class="markets-container"></div>
+      <section class="my-bets-section"><div class="wager-section-head"><div><span>MIS APUESTAS</span><h2>Boletos registrados</h2></div></div><div id="myBets" class="my-bets"><div class="wager-empty">Todavía no hay apuestas.</div></div></section>
+    </section>
+    <aside class="bet-slip">
+      <div class="bet-slip-head"><span>BET SLIP</span><strong id="slipCount">0 selecciones</strong></div>
+      <div id="slipItems" class="slip-items"><div class="wager-empty">Pulsa una cuota para añadirla.</div></div>
+      <div class="slip-totals">
+        <div><span>CUOTA</span><strong id="combinedOdds">—</strong></div>
+        <label><span>APUESTA (M)</span><input id="stakeInput" type="number" min="0.10" step="0.10" placeholder="0,50"></label>
+        <div><span>RETORNO POTENCIAL</span><strong id="potentialReturn">0,00 M</strong></div>
+        <div><span>BENEFICIO POTENCIAL</span><strong id="potentialProfit">0,00 M</strong></div>
+      </div>
+      <button id="placeBetButton" class="place-bet-button" type="button" disabled>CONFIRMAR APUESTA</button>
+      <p id="betMessage" class="bet-message" aria-live="polite"></p>
+      <p class="sportsbook-note">La cuota queda fijada al confirmar. Los premios se liquidan el martes a las 03:00 tras el resultado definitivo.</p>
+    </aside>
+  </div>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js?v=5"></script><script src="js/hyperbet.js?v=1"></script>
+</body></html>
