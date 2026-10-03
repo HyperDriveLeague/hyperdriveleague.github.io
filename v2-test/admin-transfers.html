@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b"><meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Transferencias | Administración</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5"><link rel="stylesheet" href="css/transfers.css?v=1">
+</head>
+<body>
+<div class="background-grid" aria-hidden="true"></div>
+<main class="app-shell transfer-shell">
+<header class="module-header">
+  <div><span class="eyebrow">ADMINISTRACIÓN · ECONOMÍA</span><h1>Transferencias</h1></div>
+  <div class="topbar-actions"><a class="secondary-button link-button" href="admin.html">← Administración</a><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+</header>
+<section id="loadingPanel" class="transfer-message">Cargando solicitudes…</section>
+<section id="errorPanel" class="transfer-message error is-hidden"></section>
+<div id="transferContent" class="is-hidden">
+  <section class="transfer-hero">
+    <div><span class="panel-label">VERIFICACIÓN ADMIN</span><h2>Movimientos pendientes</h2><p>El dinero no se mueve hasta que una solicitud sea aprobada. Las cantidades de origen permanecen reservadas mientras están pendientes.</p></div>
+    <div class="transfer-balance"><span>PENDIENTES</span><strong id="pendingCount">0</strong><small>solicitudes</small></div>
+  </section>
+  <section class="module-section-heading"><div><span class="eyebrow">REVISIÓN</span><h2>Solicitudes pendientes</h2></div></section>
+  <section class="transfer-card"><div id="pendingList" class="transfer-list"></div></section>
+  <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Últimas solicitudes revisadas</h2></div></section>
+  <section class="transfer-card"><div id="historyList" class="transfer-list"></div></section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js?v=5"></script><script src="js/admin-transfers.js?v=1"></script>
+</body></html>
