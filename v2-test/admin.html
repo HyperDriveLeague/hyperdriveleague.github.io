@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/admin-role-editor.css?v=1">
   <link rel="stylesheet" href="css/admin-roster.css?v=1">
   <link rel="stylesheet" href="css/admin-bank.css?v=1">
+  <link rel="stylesheet" href="css/admin-wagering.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -42,6 +43,28 @@
         <article class="admin-summary-card featured"><span>PENDIENTES</span><strong id="pendingCount">—</strong><small>cuentas por configurar</small></article>
         <article class="admin-summary-card"><span>TEAM PRINCIPALS</span><strong id="principalCount">—</strong><small>activos en T8</small></article>
         <article class="admin-summary-card"><span>ROLES ASIGNADOS</span><strong id="roleCount">—</strong><small>permisos totales</small></article>
+      </section>
+
+      <section class="module-section-heading"><div><span class="eyebrow">HYPERBET · HYPERLOTO</span><h2>Historial de actividad</h2></div><span class="season-badge">CONTROL ECONÓMICO</span></section>
+      <section id="adminWageringPanel" class="admin-panel admin-wagering-panel">
+        <div class="admin-wagering-summary">
+          <article class="admin-wagering-stat featured"><span>TOTAL JUGADO</span><strong id="adminWageringTotal">0,00 M</strong><small>HyperBet + HyperLoto</small></article>
+          <article class="admin-wagering-stat"><span>HYPERBET</span><strong id="adminWageringBetStake">0,00 M</strong><small id="adminWageringBetCount">0 apuestas</small></article>
+          <article class="admin-wagering-stat"><span>HYPERLOTO</span><strong id="adminWageringLotoSales">0,00 M</strong><small id="adminWageringLotoCount">0 boletos</small></article>
+          <article class="admin-wagering-stat"><span>PREMIOS PAGADOS</span><strong id="adminWageringPaid">0,00 M</strong><small>total liquidado</small></article>
+        </div>
+        <div class="admin-wagering-filters">
+          <label><span>SISTEMA</span><select id="adminWageringProduct"><option value="all">Todos</option><option value="hyperbet">HyperBet</option><option value="hyperloto">HyperLoto</option></select></label>
+          <label><span>DIVISIÓN</span><select id="adminWageringDivision"><option value="all">Todas</option><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
+          <label><span>RONDA</span><input id="adminWageringRound" type="number" min="1" placeholder="Todas"></label>
+          <button id="adminWageringRefresh" class="admin-wagering-refresh" type="button">ACTUALIZAR</button>
+        </div>
+        <div class="admin-wagering-table-wrap">
+          <table class="admin-wagering-table">
+            <thead><tr><th>Sistema</th><th>Fecha</th><th>Piloto</th><th>Ronda</th><th>División</th><th>Tipo</th><th>Jugado</th><th>Retorno pot.</th><th>Premio</th><th>Estado</th></tr></thead>
+            <tbody id="adminWageringBody"><tr><td colspan="10" class="admin-wagering-empty">Cargando actividad…</td></tr></tbody>
+          </table>
+        </div>
       </section>
 
       <section class="module-section-heading"><div><span class="eyebrow">BANCO DEL PILOTO</span><h2>Consultar bancos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
@@ -91,5 +114,6 @@
   <script src="js/admin-team-preview.js?v=1"></script>
   <script src="js/admin-roster.js?v=2"></script>
   <script src="js/admin-bank.js?v=2"></script>
+  <script src="js/admin-wagering.js?v=1"></script>
 </body>
 </html>
