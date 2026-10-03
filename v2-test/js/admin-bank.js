@@ -60,12 +60,12 @@
     const {data:{session}}=await client.auth.getSession();if(!session)return;
     const [adminRes,driversRes]=await Promise.all([
       client.from('user_roles').select('role').eq('user_id',session.user.id).eq('role','admin').maybeSingle(),
-      client.from('drivers').select('id,nickname,race_number,is_active').eq('is_active',true).order('nickname')
+      client.from('drivers').select('id,nickname,race_number,is_active').order('nickname')
     ]);
     if(!adminRes.data||driversRes.error)return;
     select.innerHTML='<option value="">Selecciona un piloto</option>';
     (driversRes.data||[]).forEach(d=>{
-      const o=document.createElement('option');o.value=d.id;o.textContent='#'+(d.race_number??'--')+' · '+d.nickname;select.appendChild(o);
+      const o=document.createElement('option');o.value=d.id;o.textContent='#'+(d.race_number??'--')+' · '+d.nickname+(d.is_active?'':' · INACTIVO');select.appendChild(o);
     });
   }
 
