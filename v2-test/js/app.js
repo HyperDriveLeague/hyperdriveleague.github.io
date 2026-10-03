@@ -15,6 +15,7 @@
   const backToDashboard = document.getElementById('backToDashboard');
   const displayName = document.getElementById('displayName');
   const userEmail = document.getElementById('userEmail');
+  const driverBalance = document.getElementById('driverBalance');
   const driverNumber = document.getElementById('driverNumber');
   const rolesContainer = document.getElementById('rolesContainer');
   const teamPrincipalText = document.getElementById('teamPrincipalText');
@@ -53,6 +54,7 @@
   function resetDashboard() {
     displayName.textContent = 'Cargando…';
     userEmail.textContent = '';
+    if (driverBalance) { driverBalance.textContent = 'Saldo disponible: —'; driverBalance.classList.add('is-hidden'); }
     driverNumber.textContent = '--';
     rolesContainer.innerHTML = '';
     teamPrincipalText.textContent = 'Gestión deportiva y económica de la escudería.';
@@ -61,6 +63,7 @@
     systemIndicator.classList.remove('ok');
     document.querySelectorAll('[data-role-card]').forEach(card => {
       card.classList.remove('has-access');
+      card.classList.add('is-hidden');
       card.querySelector('.access-state').textContent = 'Sin acceso';
     });
   }
@@ -70,6 +73,7 @@
       const role = card.dataset.roleCard;
       const active = roles.includes(role);
       card.classList.toggle('has-access', active);
+      card.classList.toggle('is-hidden', !active);
       card.querySelector('.access-state').textContent = active ? 'Acceso activo' : 'Sin acceso';
     });
   }
@@ -111,6 +115,20 @@
       });
 
       if (principal?.teams?.name) teamPrincipalText.textContent = `Gestión deportiva y económica de ${principal.teams.name}.`;
+
+      if (driverBalance && currentDriver && currentRoles.includes('pilot')) {
+        const bankResponse = await client.rpc('driver_bank_dashboard');
+        if (!bankResponse.error) {
+          const bank = Array.isArray(bankResponse.data) ? bankResponse.data[0] : bankResponse.data;
+          if (bank) {
+            const balance = Number(bank.available_balance_m || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            driverBalance.textContent = `Saldo disponible: ${balance} M`;
+            driverBalance.classList.remove('is-hidden');
+          }
+        } else {
+          console.error('Error al cargar el saldo del piloto:', bankResponse.error);
+        }
+      }
 
       activateRoleCards(currentRoles);
       systemStatus.textContent = `${currentRoles.length} permisos cargados correctamente`;
