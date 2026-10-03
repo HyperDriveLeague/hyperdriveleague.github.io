@@ -128,3 +128,4 @@ button { cursor: pointer; }
   .license-score strong { font-size: 54px; }
   .history-row { gap: 10px; }
 }
+.identity-balance{margin:7px 0 0;color:var(--yellow);font-size:12px;font-weight:900;letter-spacing:.03em}
