@@ -178,6 +178,60 @@
     });
   }
 
+  function renderPrizeHistory(items) {
+    const target = $('hyperlotoPrizeHistory');
+    if (!target) return;
+    target.innerHTML = '';
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'wager-empty';
+      empty.textContent = 'Todavía no se han entregado premios.';
+      target.appendChild(empty);
+      return;
+    }
+
+    items.forEach(item => {
+      const card = document.createElement('article');
+      card.className = 'public-prize-card';
+
+      const main = document.createElement('div');
+      main.className = 'public-prize-main';
+      const name = document.createElement('strong');
+      name.textContent = '#' + (item.race_number ?? '--') + ' ' + item.driver_name;
+      const meta = document.createElement('span');
+      meta.textContent = 'R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix + ' · ' + (item.exact_position_hits ?? 0) + '/10 aciertos';
+      main.append(name, meta);
+
+      if (item.prize_type === 'JACKPOT' || item.prize_type === 'REINTEGRO') {
+        const badge = document.createElement('span');
+        badge.className = 'public-prize-badge ' + (item.prize_type === 'JACKPOT' ? 'jackpot' : 'refund');
+        badge.textContent = item.prize_type;
+        main.appendChild(badge);
+      }
+
+      const amount = document.createElement('div');
+      amount.className = 'public-prize-amount';
+      const value = document.createElement('strong');
+      value.textContent = money(item.payout_m) + ' M';
+      const label = document.createElement('span');
+      label.textContent = 'PREMIO RECIBIDO';
+      amount.append(value, label);
+
+      card.append(main, amount);
+      target.appendChild(card);
+    });
+  }
+
+  async function loadPrizeHistory() {
+    const response = await client.rpc('hyperloto_prize_history', { p_limit: 100 });
+    if (response.error) {
+      console.error('Error al cargar premios HyperLoto:', response.error);
+      renderPrizeHistory([]);
+      return;
+    }
+    renderPrizeHistory(response.data || []);
+  }
+
   async function loadDivision() {
     currentEvent = eventFor(activeDivision);
     currentDraw = null;
@@ -231,6 +285,7 @@
       if (bankResponse.error) throw bankResponse.error;
       events = eventsResponse.data || [];
       await loadDivision();
+      await loadPrizeHistory();
       $('loadingPanel').classList.add('is-hidden');
       $('errorPanel').classList.add('is-hidden');
       $('lotoContent').classList.remove('is-hidden');
