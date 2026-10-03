@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b"><meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Banco del Piloto | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=5"><link rel="stylesheet" href="css/driver-bank.css?v=1">
+</head>
+<body>
+<div class="background-grid" aria-hidden="true"></div>
+<main class="app-shell bank-shell">
+<header class="module-header">
+  <div><span class="eyebrow">ECONOMÍA PERSONAL · ATEMPORAL</span><h1>Banco del Piloto</h1></div>
+  <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+</header>
+<section id="loadingPanel" class="bank-message">Cargando tu banco…</section>
+<section id="errorPanel" class="bank-message error is-hidden"></section>
+<div id="bankContent" class="is-hidden">
+  <section class="bank-hero">
+    <div><span class="panel-label">CUENTA PERSONAL</span><h2 id="driverName">—</h2><p id="driverContext">—</p></div>
+    <div class="bank-main-balance"><span>SALDO DISPONIBLE</span><strong id="availableBalance">—</strong><small>millones</small></div>
+  </section>
+  <section class="bank-stats">
+    <article><span>SALDO TOTAL</span><strong id="currentBalance">—</strong><small>M</small></article>
+    <article><span>RESERVADO</span><strong id="reservedBalance">—</strong><small>M pendientes de aprobación</small></article>
+    <article><span>BONO HYPERDRIVE</span><strong>5,00</strong><small>M · una sola vez</small></article>
+  </section>
+  <section class="bank-grid">
+    <article class="bank-card">
+      <span class="panel-label">TRANSFERENCIAS</span><h3>Enviar a mi escudería</h3>
+      <p>La cantidad quedará reservada. El dinero solo se moverá cuando Administración apruebe la solicitud.</p>
+      <form id="transferForm" class="bank-form">
+        <label><span>Escudería actual</span><input id="teamName" type="text" readonly></label>
+        <label><span>Importe (M)</span><input id="transferAmount" type="number" min="0.01" step="0.01" placeholder="Ej.: 2.50" required></label>
+        <label><span>Concepto · opcional</span><input id="transferNote" maxlength="180" placeholder="Motivo del traspaso"></label>
+        <button class="primary-button" id="transferSubmit" type="submit"><span>SOLICITAR TRANSFERENCIA</span></button>
+        <p id="transferMessage" class="bank-form-message" aria-live="polite"></p>
+      </form>
+    </article>
+    <article class="bank-card">
+      <span class="panel-label">SOLICITUDES</span><h3>Transferencias con escudería</h3>
+      <div id="transferHistory" class="bank-list"><div class="bank-empty">Cargando…</div></div>
+    </article>
+  </section>
+  <section class="module-section-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Movimientos del Banco del Piloto</h2></div></section>
+  <section class="bank-card table-card"><div class="bank-table-wrap"><table class="bank-table">
+    <thead><tr><th>Fecha</th><th>Concepto</th><th>Categoría</th><th>Movimiento</th></tr></thead>
+    <tbody id="bankHistoryBody"><tr><td colspan="4">Cargando movimientos…</td></tr></tbody>
+  </table></div></section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js?v=5"></script><script src="js/driver-bank.js?v=1"></script>
+</body></html>
