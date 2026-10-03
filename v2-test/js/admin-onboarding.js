@@ -152,7 +152,8 @@
 
         createPilotStatus.classList.add('success');
         createPilotStatus.textContent = 'Piloto creado: ficha, Banco +5 M, Superlicencia y alineación listas.';
-        setTimeout(() => window.location.reload(), 800);
+        await client.rpc('admin_refresh_wagering_cycle');
+        setTimeout(() => window.location.reload(), 950);
       });
 
       discardButton.addEventListener('click', async () => {
