@@ -271,7 +271,7 @@
       const name = document.createElement('strong');
       name.textContent = '#' + (item.race_number ?? '--') + ' ' + item.driver_name;
       const meta = document.createElement('span');
-      meta.textContent = 'R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix;
+      meta.textContent = 'T' + item.season_number + ' · R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix;
       main.append(name, meta);
 
       const amount = document.createElement('div');
