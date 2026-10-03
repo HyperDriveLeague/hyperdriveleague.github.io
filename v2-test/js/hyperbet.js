@@ -204,18 +204,42 @@
   }
 
   function updatePotential() {
-    const stake = Number($('stakeInput').value || 0);
+    const rawStake = $('stakeInput').value;
+    const stake = Number(rawStake || 0);
     const odds = combinedOdds();
-    const returnCap = slip.length <= 1 ? Number(settings?.max_simple_return_m || 12) : Number(settings?.max_combo_return_m || 15);
+    const isSimple = slip.length <= 1;
+    const returnCap = isSimple ? Number(settings?.max_simple_return_m || 12) : Number(settings?.max_combo_return_m || 15);
     const potential = stake > 0 && odds > 0 ? Math.min(Math.round(stake * odds * 100) / 100, returnCap) : 0;
     $('potentialReturn').textContent = money(potential) + ' M';
     $('potentialProfit').textContent = money(Math.max(0, potential - stake)) + ' M';
 
-    const minStake = slip.length <= 1 ? Number(settings?.min_simple_stake_m || .1) : Number(settings?.min_combo_stake_m || .1);
-    const maxStake = slip.length <= 1 ? Number(settings?.max_simple_stake_m || 2) : Number(settings?.max_combo_stake_m || 1);
+    const minStake = isSimple ? Number(settings?.min_simple_stake_m || .1) : Number(settings?.min_combo_stake_m || .1);
+    const maxStake = isSimple ? Number(settings?.max_simple_stake_m || 2) : Number(settings?.max_combo_stake_m || 1);
+    const available = Number(bank?.available_balance_m || 0);
     $('stakeInput').min = minStake;
     $('stakeInput').max = maxStake;
-    $('placeBetButton').disabled = !slip.length || currentEvent?.status !== 'open' || !(stake >= minStake && stake <= maxStake);
+
+    let reason = '';
+    if (slip.length && rawStake !== '') {
+      if (!Number.isFinite(stake) || stake <= 0) {
+        reason = 'Introduce un importe válido.';
+      } else if (stake < minStake) {
+        reason = 'La apuesta mínima ' + (isSimple ? 'simple' : 'combinada') + ' es de ' + money(minStake) + ' M.';
+      } else if (stake > maxStake) {
+        reason = 'Límite de apuesta ' + (isSimple ? 'simple' : 'combinada') + ': ' + money(maxStake) + ' M. Has introducido ' + money(stake) + ' M, por eso no puedes confirmar la apuesta.';
+      } else if (stake > available) {
+        reason = 'Saldo insuficiente: tienes ' + money(available) + ' M disponibles y estás intentando apostar ' + money(stake) + ' M.';
+      }
+    }
+
+    const validStake = stake >= minStake && stake <= maxStake && stake <= available;
+    $('placeBetButton').disabled = !slip.length || currentEvent?.status !== 'open' || !validStake;
+
+    if (reason) {
+      setBetMessage(reason, 'error');
+    } else if ($('betMessage').classList.contains('error')) {
+      setBetMessage('');
+    }
   }
 
   function renderBets(items) {
