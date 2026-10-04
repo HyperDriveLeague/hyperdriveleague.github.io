@@ -19,7 +19,7 @@
     const link = document.createElement('link');
     link.id = 'staffObjectivesCss';
     link.rel = 'stylesheet';
-    link.href = 'css/staff-objectives.css?v=1';
+    link.href = 'css/staff-objectives.css?v=2';
     document.head.appendChild(link);
   }
 
@@ -48,7 +48,13 @@
       setMessage(error.message || 'No se pudieron cargar los objetivos.', 'error');
       return false;
     }
-    dashboard = data || { teams: [], catalog: [] };
+    dashboard = data || { teams: [], catalog: [], pending_review_count: 0 };
+    const badge = document.querySelector('#staffObjectivesHubCard .staff-hub-badge');
+    if (badge) {
+      const pending = Number(dashboard.pending_review_count || 0);
+      badge.textContent = pending ? `${pending} EN REVISIÓN` : 'SIN PENDIENTES';
+      badge.classList.toggle('has-pending', pending > 0);
+    }
     setMessage('');
     return true;
   }
@@ -98,7 +104,8 @@
     const rows = team.objectives || [];
     return {
       total: rows.length,
-      completed: rows.filter(row => row.is_completed).length
+      completed: rows.filter(row => row.is_completed).length,
+      pending: rows.filter(row => !row.is_completed && row.review_status === 'pending').length
     };
   }
 
@@ -115,7 +122,7 @@
         make('span', '', 'ESCUDERÍA'),
         make('strong', '', team.team_name || 'Escudería'),
         make('small', '', '5 objetivos HyperDrive + 5 objetivos Academy'),
-        make('div', 'team-progress', `${progress.completed}/${progress.total} confirmados`)
+        make('div', `team-progress${progress.pending ? ' has-pending' : ''}`, `${progress.completed}/${progress.total} confirmados${progress.pending ? ` · ${progress.pending} en revisión` : ''}`)
       );
       button.addEventListener('click', () => openTeam(team.team_id));
       grid.appendChild(button);
@@ -123,7 +130,8 @@
   }
 
   function objectiveCard(team, row) {
-    const card = make('article', `staff-objective-card${row.is_completed ? ' completed' : ''}`);
+    const underReview = !row.is_completed && row.review_status === 'pending';
+    const card = make('article', `staff-objective-card${row.is_completed ? ' completed' : ''}${underReview ? ' under-review' : ''}`);
     const top = make('div', 'staff-objective-card-top');
     const title = make('div', 'staff-objective-title');
     title.append(make('span', '', `OBJETIVO #${row.sponsor_number}`), make('strong', '', row.name || 'Objetivo'));
@@ -141,22 +149,32 @@
     input.min = '1';
     input.step = '1';
     input.value = String(row.sponsor_number || '');
-    input.disabled = !!row.is_completed;
+    input.disabled = !!row.is_completed || underReview;
     label.appendChild(input);
-    const change = make('button', 'staff-objective-change', row.is_completed ? 'BLOQUEADO' : 'CAMBIAR');
+    const change = make('button', 'staff-objective-change', row.is_completed ? 'BLOQUEADO' : underReview ? 'EN REVISIÓN' : 'CAMBIAR');
     change.type = 'button';
-    change.disabled = !!row.is_completed;
+    change.disabled = !!row.is_completed || underReview;
     numberWrap.append(label, change);
 
     const right = make('div');
     if (row.is_completed) {
       const state = make('span', 'staff-objective-state completed', 'CUMPLIDO Y PAGADO');
       right.appendChild(state);
+    } else if (underReview) {
+      const state = make('span', 'staff-objective-state reviewing', 'EN REVISIÓN');
+      const actions = make('div', 'staff-objective-review-actions');
+      const approve = make('button', 'staff-objective-confirm', 'ACEPTAR');
+      approve.type = 'button';
+      approve.addEventListener('click', () => confirmObjective(team, row, approve));
+
+      const deny = make('button', 'staff-objective-deny', 'DENEGAR');
+      deny.type = 'button';
+      deny.addEventListener('click', () => denyObjective(team, row, deny));
+
+      actions.append(approve, deny);
+      right.append(state, actions);
     } else {
-      const confirm = make('button', 'staff-objective-confirm', 'CONFIRMAR CUMPLIMIENTO');
-      confirm.type = 'button';
-      confirm.addEventListener('click', () => confirmObjective(team, row, confirm));
-      right.appendChild(confirm);
+      right.appendChild(make('span', 'staff-objective-state idle', 'SIN SOLICITUD'));
     }
     controls.append(numberWrap, right);
 
@@ -196,7 +214,7 @@
     detailView?.classList.remove('staff-objectives-hidden');
     if (name) name.textContent = team.team_name || 'Escudería';
     const progress = teamProgress(team);
-    if (subtitle) subtitle.textContent = `${progress.completed}/${progress.total} objetivos confirmados · Temporada ${config.currentSeason}`;
+    if (subtitle) subtitle.textContent = `${progress.completed}/${progress.total} objetivos confirmados${progress.pending ? ` · ${progress.pending} en revisión` : ''} · Temporada ${config.currentSeason}`;
     if (content) {
       content.textContent = '';
       content.append(divisionSection(team, 'hyperdrive'), divisionSection(team, 'academy'));
@@ -246,21 +264,47 @@
 
   async function confirmObjective(team, row, button) {
     const ok = window.confirm(
-      `¿Confirmar este objetivo como cumplido?\n\n${team.team_name} · ${divisionLabel(row.division)}\n#${row.sponsor_number} · ${row.name}\n${row.objective}\n\nSe ingresarán ${money(row.effective_reward_m)} en el banco de la escudería.\nEsta operación no se puede cobrar dos veces.`
+      `¿Aceptar este objetivo como cumplido?\n\n${team.team_name} · ${divisionLabel(row.division)}\n#${row.sponsor_number} · ${row.name}\n${row.objective}\n\nSe ingresarán ${money(row.effective_reward_m)} en el banco de la escudería y quedará marcado como CUMPLIDO.`
     );
     if (!ok) return;
+
     button.disabled = true;
-    button.textContent = 'CONFIRMANDO…';
+    button.textContent = 'ACEPTANDO…';
     const { data, error } = await client.rpc('staff_confirm_team_objective', {
       p_team_sponsor_id: row.id
     });
+
     if (error) {
       button.disabled = false;
-      button.textContent = 'CONFIRMAR CUMPLIMIENTO';
-      setMessage(error.message || 'No se pudo confirmar el objetivo.', 'error');
+      button.textContent = 'ACEPTAR';
+      setMessage(error.message || 'No se pudo aceptar el objetivo.', 'error');
       return;
     }
-    setMessage(`Objetivo confirmado. +${money(data?.amount_m ?? row.effective_reward_m)} ingresados a ${team.team_name}.`, 'success');
+
+    setMessage(`Objetivo aceptado. +${money(data?.amount_m ?? row.effective_reward_m)} ingresados a ${team.team_name}.`, 'success');
+    await refreshSelected();
+  }
+
+  async function denyObjective(team, row, button) {
+    const ok = window.confirm(
+      `¿Denegar esta solicitud?\n\n${team.team_name} · ${divisionLabel(row.division)}\n#${row.sponsor_number} · ${row.name}\n\nNo se ingresará dinero. El objetivo volverá a aparecer como SIN CUMPLIR y el Team Principal podrá enviarlo de nuevo más adelante.`
+    );
+    if (!ok) return;
+
+    button.disabled = true;
+    button.textContent = 'DENEGANDO…';
+    const { error } = await client.rpc('staff_deny_team_objective_review', {
+      p_team_sponsor_id: row.id
+    });
+
+    if (error) {
+      button.disabled = false;
+      button.textContent = 'DENEGAR';
+      setMessage(error.message || 'No se pudo denegar la solicitud.', 'error');
+      return;
+    }
+
+    setMessage(`Solicitud denegada para ${team.team_name}. El objetivo vuelve a quedar disponible para una futura revisión.`, 'success');
     await refreshSelected();
   }
 
@@ -287,9 +331,9 @@
     const icon = make('span', 'staff-hub-icon', '✓');
     const kicker = make('span', 'hub-kicker', 'ESCUDERÍAS');
     const title = make('h3', '', 'Objetivos de escudería');
-    const copy = make('p', '', 'Confirma objetivos, paga recompensas y modifica los objetivos asignados por número.');
+    const copy = make('p', '', 'Revisa las solicitudes enviadas por los Team Principals, acepta o deniega el cumplimiento y gestiona los objetivos asignados.');
     const footer = make('div', 'staff-hub-footer');
-    footer.append(make('span', '', 'ABRIR SECCIÓN →'), make('span', 'staff-hub-badge', '11 escuderías'));
+    footer.append(make('span', '', 'ABRIR SECCIÓN →'), make('span', 'staff-hub-badge', 'REVISIÓN MANUAL'));
     card.append(icon, kicker, title, copy, footer);
     card.addEventListener('click', openObjectives);
     grid.appendChild(card);
@@ -299,7 +343,7 @@
 
     const topbar = make('div', 'staff-objectives-topbar');
     const topcopy = make('div');
-    topcopy.append(make('span', 'eyebrow', 'STAFF · OBJETIVOS'), make('h2', '', 'Objetivos de escudería'), make('p', '', 'El cumplimiento es manual: solo al confirmarlo desde aquí se marca como cumplido y se ingresa la recompensa en el banco.'));
+    topcopy.append(make('span', 'eyebrow', 'STAFF · OBJETIVOS'), make('h2', '', 'Objetivos de escudería'), make('p', '', 'Los Team Principals envían los objetivos que creen cumplidos. Staff los revisa: al aceptar se paga la recompensa; al denegar vuelve a quedar sin cumplir y puede enviarse otra vez más adelante.'));
     const back = make('button', 'staff-objectives-back', '← VOLVER A STAFF');
     back.type = 'button';
     back.addEventListener('click', backToStaffHome);
