@@ -18,12 +18,13 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Actualizando Live Bridge desde GitHub...
+set CACHEBUST=%RANDOM%%RANDOM%%RANDOM%
+echo Descargando la version actual del Live Bridge...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$ErrorActionPreference='Stop';" ^
-  "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/bridge.js' -OutFile 'bridge.js';" ^
-  "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/package.json' -OutFile 'package.json';" ^
-  "Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/README.md' -OutFile 'README.md';"
+  "Invoke-WebRequest -UseBasicParsing -Headers @{'Cache-Control'='no-cache'} 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/bridge.js?v=%CACHEBUST%' -OutFile 'bridge.js';" ^
+  "Invoke-WebRequest -UseBasicParsing -Headers @{'Cache-Control'='no-cache'} 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/package.json?v=%CACHEBUST%' -OutFile 'package.json';" ^
+  "Invoke-WebRequest -UseBasicParsing -Headers @{'Cache-Control'='no-cache'} 'https://raw.githubusercontent.com/HyperDriveLeague/hyperdriveleague.github.io/main/tools/live-bridge/README.md?v=%CACHEBUST%' -OutFile 'README.md';"
 
 if errorlevel 1 (
   echo.
@@ -34,22 +35,20 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "node_modules" (
+echo.
+echo Actualizando dependencias...
+call npm install --no-audit --no-fund
+if errorlevel 1 (
   echo.
-  echo Instalando dependencias...
-  call npm install
-  if errorlevel 1 (
-    echo.
-    echo [ERROR] No se pudieron instalar las dependencias.
-    echo.
-    pause
-    exit /b 1
-  )
+  echo [ERROR] No se pudieron instalar o actualizar las dependencias.
+  echo.
+  pause
+  exit /b 1
 )
 
 echo.
 echo Iniciando HyperDrive Live Bridge...
-echo Mantén esta ventana abierta durante Qualy y Carrera.
+echo Manten esta ventana abierta durante Qualy y Carrera.
 echo.
 call npm start
 pause
