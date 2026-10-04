@@ -9,7 +9,7 @@ Puente **100 % efímero** entre la telemetría UDP de F1 26 y la pantalla `caste
 - Calcula en memoria los **20 microsectores**.
 - Construye en memoria el trazado del circuito con las coordenadas de los coches.
 - Conserva en RAM la Pole obtenida en Qualy para utilizarla durante la carrera.
-- Envía el estado actual a la web mediante **Supabase Realtime Broadcast** a 5 Hz.
+- Envía el estado actual a la web mediante **Supabase Realtime Broadcast** a 10 Hz.
 
 ## Qué NO hace
 
@@ -51,7 +51,7 @@ El formato 2026 utiliza hasta 24 coches.
 ```bash
 UDP_PORT=20777
 LIVE_ROOM=hyperdrive-live-v1
-PUBLISH_HZ=5
+PUBLISH_HZ=10
 ```
 
 La URL y la publishable key de Supabase son las mismas que usa la web y no son credenciales administrativas.
