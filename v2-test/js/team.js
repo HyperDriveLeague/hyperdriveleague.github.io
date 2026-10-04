@@ -10,6 +10,7 @@
   const logoutButton = document.getElementById('teamLogoutButton');
   const previewTeamId = new URLSearchParams(window.location.search).get('preview_team');
   const previewMode = !!previewTeamId;
+  let currentSponsors = [];
 
   const money = value => Number(value || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const date = value => value ? new Intl.DateTimeFormat('es-ES').format(new Date(`${value}T12:00:00`)) : '—';
@@ -122,14 +123,71 @@
     });
   }
 
+  function setSponsorReviewMessage(text = '', type = '') {
+    const el = document.getElementById('sponsorReviewMessage');
+    if (!el) return;
+    el.textContent = text;
+    el.className = `sponsor-review-message${type ? ` ${type}` : ''}`;
+  }
+
+  async function requestObjectiveReview(item, button) {
+    const ok = window.confirm(
+      `¿Enviar este objetivo a revisión?\n\n#${item.sponsor_number} · ${item.name}\n${item.objective}\n\nEl Staff comprobará si está cumplido. El dinero solo se ingresará si Staff lo aprueba.`
+    );
+    if (!ok) return;
+
+    button.disabled = true;
+    button.textContent = 'ENVIANDO…';
+    const { error } = await client.rpc('team_request_objective_review', {
+      p_team_sponsor_id: item.id
+    });
+
+    if (error) {
+      button.disabled = false;
+      button.textContent = 'ENVIAR A REVISIÓN';
+      setSponsorReviewMessage(error.message || 'No se pudo enviar el objetivo a revisión.', 'error');
+      return;
+    }
+
+    item.review_status = 'pending';
+    item.review_requested_at = new Date().toISOString();
+    setSponsorReviewMessage('Objetivo enviado a Staff. Queda marcado como EN REVISIÓN hasta que sea aceptado o denegado.', 'success');
+    renderSponsors(currentSponsors, 'hyperdrive', 'hyperdriveSponsors');
+    renderSponsors(currentSponsors, 'academy', 'academySponsors');
+  }
+
   function renderSponsors(items, division, targetId) {
     const target = document.getElementById(targetId);
     const rows = items.filter(item => item.division === division);
     target.innerHTML = rows.length ? '' : '<div class="empty-line">No hay sponsors activos.</div>';
+
     rows.forEach(item => {
+      const underReview = !item.is_completed && item.review_status === 'pending';
       const el = document.createElement('div');
-      el.className = 'sponsor-item';
-      el.innerHTML = `<div class="sponsor-item-top"><h3>#${item.sponsor_number} · ${item.name}</h3><span class="sponsor-reward">${money(item.effective_reward_m)} M</span></div><p>${item.objective}</p><div class="sponsor-meta"><span>Dificultad ${item.difficulty}/10</span><span class="${item.is_completed ? 'sponsor-complete' : ''}">${item.is_completed ? 'COMPLETADO' : 'PENDIENTE'}</span></div>`;
+      el.className = `sponsor-item${item.is_completed ? ' completed' : ''}${underReview ? ' under-review' : ''}`;
+
+      const stateClass = item.is_completed ? 'sponsor-complete' : underReview ? 'sponsor-reviewing' : '';
+      const stateText = item.is_completed ? 'CUMPLIDO' : underReview ? 'EN REVISIÓN' : 'SIN CUMPLIR';
+
+      el.innerHTML = `<div class="sponsor-item-top"><h3>#${item.sponsor_number} · ${item.name}</h3><span class="sponsor-reward">${money(item.effective_reward_m)} M</span></div><p>${item.objective}</p><div class="sponsor-meta"><span>Dificultad ${item.difficulty}/10</span><span class="${stateClass}">${stateText}</span></div>`;
+
+      if (underReview) {
+        const hint = document.createElement('p');
+        hint.className = 'sponsor-review-hint';
+        hint.textContent = 'Staff está comprobando este objetivo. Si lo deniega, volverá a quedar disponible para enviarlo de nuevo.';
+        el.appendChild(hint);
+      } else if (!item.is_completed && !previewMode) {
+        const actions = document.createElement('div');
+        actions.className = 'sponsor-actions';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sponsor-review-button';
+        button.textContent = 'ENVIAR A REVISIÓN';
+        button.addEventListener('click', () => requestObjectiveReview(item, button));
+        actions.appendChild(button);
+        el.appendChild(actions);
+      }
+
       target.appendChild(el);
     });
   }
@@ -200,7 +258,7 @@
       client.from('team_financial_summary').select('*').eq('team_account_id', account.id).maybeSingle(),
       client.from('season_roster').select('division, roster_status, start_round, end_round, drivers:driver_id(id, nickname, race_number)').eq('team_id', teamId).eq('season_number', config.currentSeason).eq('is_active', true),
       client.from('driver_contracts').select('driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, drivers:driver_id(id, nickname, race_number)').eq('team_account_id', account.id).eq('status', 'active'),
-      client.from('team_sponsor_rewards').select('division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
+      client.from('team_sponsor_rewards').select('id, division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active, review_status, review_requested_at').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
       client.from('economic_transactions').select('transaction_date, description, category, direction, amount_m, round_number, created_at').eq('account_id', account.id).order('transaction_date', { ascending: false }).order('created_at', { ascending: false }).limit(12)
     ]);
 
@@ -214,6 +272,7 @@
     const finance = financeResponse.data || {};
     const roster = rosterResponse.data || [];
     const sponsors = sponsorsResponse.data || [];
+    currentSponsors = sponsors;
     const teamName = account.teams?.name || principal?.teams?.name || 'Escudería';
     document.getElementById('teamPageTitle').textContent = teamName;
     document.getElementById('teamName').textContent = teamName;
