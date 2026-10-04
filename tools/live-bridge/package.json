@@ -1,0 +1,18 @@
+{
+  "name": "hyperdrive-f1-live-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Puente efímero F1 26 UDP -> Supabase Realtime para el Live Timing de HyperDrive",
+  "main": "bridge.js",
+  "scripts": {
+    "start": "node bridge.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "@z0mt3c/f1-telemetry-client": "^2.1.0",
+    "ws": "^8.18.0"
+  }
+}
