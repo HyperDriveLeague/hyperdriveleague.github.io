@@ -70,8 +70,8 @@
 
   function activateRoleCards(roles) {
     document.querySelectorAll('[data-role-card]').forEach(card => {
-      const role = card.dataset.roleCard;
-      const active = roles.includes(role);
+      const allowedRoles = String(card.dataset.roleCard || '').split(',').map(value => value.trim()).filter(Boolean);
+      const active = allowedRoles.some(role => roles.includes(role));
       card.classList.toggle('has-access', active);
       card.classList.toggle('is-hidden', !active);
       card.querySelector('.access-state').textContent = active ? 'Acceso activo' : 'Sin acceso';
