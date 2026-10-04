@@ -49,6 +49,7 @@
       return false;
     }
     dashboard = data || { teams: [], catalog: [], pending_review_count: 0 };
+    renderPendingReviews();
     const badge = document.querySelector('#staffObjectivesHubCard .staff-hub-badge');
     if (badge) {
       const pending = Number(dashboard.pending_review_count || 0);
@@ -107,6 +108,60 @@
       completed: rows.filter(row => row.is_completed).length,
       pending: rows.filter(row => !row.is_completed && row.review_status === 'pending').length
     };
+  }
+
+  function pendingReviews() {
+    const rows = [];
+    (dashboard?.teams || []).forEach(team => {
+      (team.objectives || []).forEach(row => {
+        if (!row.is_completed && row.review_status === 'pending') rows.push({ team, row });
+      });
+    });
+    return rows.sort((a, b) => new Date(a.row.review_requested_at || 0).getTime() - new Date(b.row.review_requested_at || 0).getTime());
+  }
+
+  function renderPendingReviews() {
+    const root = document.getElementById('staffObjectivesPending');
+    const count = document.getElementById('staffObjectivesPendingCount');
+    if (!root || !dashboard) return;
+    const pending = pendingReviews();
+    if (count) count.textContent = String(pending.length);
+    root.textContent = '';
+
+    if (!pending.length) {
+      const empty = make('div', 'staff-objectives-pending-empty');
+      empty.append(
+        make('strong', '', 'No hay objetivos pendientes de revisión.'),
+        make('span', '', 'Cuando un Team Principal envíe uno, aparecerá aquí arriba automáticamente al volver a entrar o refrescar la sección.')
+      );
+      root.appendChild(empty);
+      return;
+    }
+
+    pending.forEach(({ team, row }) => {
+      const card = make('article', 'staff-pending-review-card');
+      const main = make('div', 'staff-pending-review-main');
+      const eyebrow = make('span', 'staff-pending-review-kicker', (team.team_name || 'Escudería') + ' · ' + divisionLabel(row.division));
+      const title = make('strong', 'staff-pending-review-title', '#' + row.sponsor_number + ' · ' + (row.name || 'Objetivo'));
+      const description = make('p', 'staff-pending-review-description', row.objective || '—');
+      const meta = make('div', 'staff-pending-review-meta');
+      meta.append(
+        make('span', '', 'Recompensa: ' + money(row.effective_reward_m)),
+        make('span', '', row.review_requested_at ? 'Enviado: ' + new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.review_requested_at)) : 'En revisión')
+      );
+      main.append(eyebrow, title, description, meta);
+
+      const actions = make('div', 'staff-pending-review-actions');
+      const approve = make('button', 'staff-objective-confirm staff-pending-approve', 'ACEPTAR');
+      approve.type = 'button';
+      approve.addEventListener('click', () => confirmObjective(team, row, approve));
+      const deny = make('button', 'staff-objective-deny staff-pending-deny', 'DENEGAR');
+      deny.type = 'button';
+      deny.addEventListener('click', () => denyObjective(team, row, deny));
+      actions.append(approve, deny);
+      card.append(main, actions);
+      root.appendChild(card);
+    });
   }
 
   function renderTeams() {
@@ -225,6 +280,7 @@
   async function refreshSelected() {
     const current = selectedTeamId;
     if (!await loadDashboard()) return;
+    renderPendingReviews();
     renderTeams();
     if (current) openTeam(current);
   }
@@ -312,7 +368,10 @@
     showObjectivesRoot();
     document.getElementById('staffObjectivesTeamsView')?.classList.remove('staff-objectives-hidden');
     document.getElementById('staffObjectivesDetailView')?.classList.add('staff-objectives-hidden');
-    if (await loadDashboard()) renderTeams();
+    if (await loadDashboard()) {
+      renderPendingReviews();
+      renderTeams();
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -352,6 +411,21 @@
     const message = make('p', 'staff-objectives-message');
     message.id = 'staffObjectivesMessage';
 
+    const pendingSection = make('section', 'staff-objectives-pending-section');
+    const pendingHead = make('div', 'staff-objectives-pending-head');
+    const pendingCopy = make('div');
+    pendingCopy.append(
+      make('span', 'panel-label', 'PRIORIDAD STAFF'),
+      make('h3', '', 'Revisiones pendientes'),
+      make('p', '', 'Solicitudes enviadas por los Team Principals. Revísalas antes de entrar al detalle de cada escudería.')
+    );
+    const pendingBadge = make('span', 'staff-objectives-pending-count', '0');
+    pendingBadge.id = 'staffObjectivesPendingCount';
+    pendingHead.append(pendingCopy, pendingBadge);
+    const pendingList = make('div', 'staff-objectives-pending-list');
+    pendingList.id = 'staffObjectivesPending';
+    pendingSection.append(pendingHead, pendingList);
+
     const teamsView = make('div');
     teamsView.id = 'staffObjectivesTeamsView';
     const teamsHead = make('div', 'staff-objectives-detail-head');
@@ -380,7 +454,7 @@
     detailContent.id = 'staffObjectivesDetailContent';
     detailView.append(detailHead, detailContent);
 
-    root.append(topbar, message, teamsView, detailView);
+    root.append(topbar, message, pendingSection, teamsView, detailView);
     hub.insertAdjacentElement('afterend', root);
   }
 
