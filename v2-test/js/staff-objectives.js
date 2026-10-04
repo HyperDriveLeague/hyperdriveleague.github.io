@@ -19,7 +19,7 @@
     const link = document.createElement('link');
     link.id = 'staffObjectivesCss';
     link.rel = 'stylesheet';
-    link.href = 'css/staff-objectives.css?v=2';
+    link.href = 'css/staff-objectives.css?v=3';
     document.head.appendChild(link);
   }
 
