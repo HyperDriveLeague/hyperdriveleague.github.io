@@ -10,7 +10,7 @@ const UDP_PORT = Number(process.env.UDP_PORT || 20777);
 const LIVE_ROOM = process.env.LIVE_ROOM || 'hyperdrive-live-v1';
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://knyxattsjimsjefydcad.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_hLAzZZF6kki1xZ0Kyx6lfA_97kzSAmf';
-const PUBLISH_HZ = Math.max(1, Math.min(10, Number(process.env.PUBLISH_HZ || 5)));
+const PUBLISH_HZ = Math.max(1, Math.min(10, Number(process.env.PUBLISH_HZ || 10)));
 const MICRO_COUNT = 20;
 const TRACE_BINS = 180;
 
