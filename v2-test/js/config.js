@@ -11,7 +11,7 @@ if (window.location.pathname.endsWith('/staff.html')) {
   document.head.appendChild(metricsScript);
 
   const objectivesScript = document.createElement('script');
-  objectivesScript.src = 'js/staff-objectives.js?v=2';
+  objectivesScript.src = 'js/staff-objectives.js?v=3';
   objectivesScript.defer = true;
   document.head.appendChild(objectivesScript);
 
