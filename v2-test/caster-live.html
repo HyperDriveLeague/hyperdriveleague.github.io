@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Caster Live | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css?v=6">
+  <link rel="stylesheet" href="css/caster-live.css?v=1">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+  <main class="app-shell caster-shell">
+    <header class="module-header">
+      <div>
+        <span class="eyebrow">HYPERDRIVE · CASTER TOOLS</span>
+        <h1>Live Timing</h1>
+      </div>
+      <div class="topbar-actions">
+        <a class="secondary-button link-button" href="index.html">← Control Center</a>
+        <button id="logoutButton" class="secondary-button" type="button">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <section id="authError" class="caster-message error is-hidden"></section>
+
+    <section id="casterContent" class="is-hidden">
+      <section class="live-toolbar">
+        <div class="live-connection">
+          <span id="liveDot" class="live-dot offline"></span>
+          <div><span>TELEMETRÍA</span><strong id="liveStatus">Esperando F1 26 UDP…</strong></div>
+        </div>
+        <div class="live-mode-badge"><span id="modeLabel">AUTO</span><strong id="sessionLabel">Sin sesión</strong></div>
+        <label><span>DIVISIÓN</span><select id="divisionSelect"><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
+        <label><span>RONDA</span><select id="roundSelect"></select></label>
+        <div class="ephemeral-note"><strong>SOLO DIRECTO</strong><span>No se guarda telemetría ni modifica resultados.</span></div>
+      </section>
+
+      <section class="live-headline">
+        <div>
+          <span id="liveContext" class="panel-label">TEMPORADA 8 · RONDA —</span>
+          <h2 id="liveTitle">Esperando sesión</h2>
+        </div>
+        <div class="live-headline-stats">
+          <div><span>POLE</span><strong id="poleDriver">—</strong></div>
+          <div><span>VUELTA RÁPIDA</span><strong id="fastestDriver">—</strong></div>
+          <div><span>TIEMPO RESTANTE</span><strong id="timeLeft">—</strong></div>
+        </div>
+      </section>
+
+      <div class="caster-grid">
+        <section class="caster-main">
+          <section id="qualyPanel" class="live-panel is-hidden">
+            <div class="live-panel-head">
+              <div><span class="eyebrow">QUALIFYING LIVE</span><h2>Timing + 20 microsectores</h2></div>
+              <div class="micro-legend"><span class="purple"></span>Mejor sesión <span class="green"></span>Mejora personal <span class="yellow"></span>Sin mejora <span class="invalid"></span>Vuelta inválida</div>
+            </div>
+            <div class="timing-table-wrap">
+              <table class="timing-table qualy-table">
+                <thead><tr><th>POS</th><th>PILOTO</th><th>MEJOR</th><th>GAP</th><th>S1</th><th>S2</th><th>S3</th><th>MICROSECTORES</th></tr></thead>
+                <tbody id="qualyTimingBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="racePanel" class="live-panel is-hidden">
+            <div class="live-panel-head">
+              <div><span class="eyebrow">RACE LIVE</span><h2>Clasificación en directo</h2></div>
+              <span id="raceLapLabel" class="race-lap-label">VUELTA —</span>
+            </div>
+            <div class="timing-table-wrap">
+              <table class="timing-table race-table">
+                <thead><tr><th>POS</th><th>PILOTO</th><th>GAP</th><th>NEUM.</th><th>ÚLTIMA</th><th>MEJOR</th><th>PIT</th><th>PEN.</th></tr></thead>
+                <tbody id="raceTimingBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="waitingPanel" class="live-panel waiting-panel">
+            <strong>Esperando datos del Live Bridge</strong>
+            <p>Abre el puente UDP en el PC que recibe la telemetría de F1 26. La pantalla cambiará automáticamente entre Qualy y Carrera.</p>
+          </section>
+        </section>
+
+        <aside class="caster-side">
+          <section class="live-panel map-panel">
+            <div class="live-panel-head">
+              <div><span class="eyebrow">TRACK MAP</span><h2>Posición de los coches</h2></div>
+              <span id="mapCoverage" class="map-coverage">0% trazado</span>
+            </div>
+            <svg id="trackMap" viewBox="0 0 800 520" role="img" aria-label="Mapa en directo del circuito">
+              <g id="trackLayer"></g>
+              <g id="carsLayer"></g>
+            </svg>
+          </section>
+
+          <section id="championshipPanel" class="live-panel championship-live-panel is-hidden">
+            <div class="live-panel-head">
+              <div><span class="eyebrow">CAMPEONATOS LIVE</span><h2>Proyección provisional</h2></div>
+              <span class="projection-badge">LIVE</span>
+            </div>
+            <div class="championship-tabs-live">
+              <button class="champ-tab active" data-champ="drivers" type="button">PILOTOS</button>
+              <button class="champ-tab" data-champ="constructors" type="button">CONSTRUCTORES</button>
+              <button class="champ-tab" data-champ="superconstructors" type="button">SUPERCONSTRUCTORES</button>
+            </div>
+            <div id="championshipLiveList" class="championship-live-list"></div>
+            <p class="projection-note">Proyección basada en el último campeonato disponible + posición actual + Pole + Vuelta Rápida provisional. No modifica el campeonato oficial.</p>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/caster-live.js?v=1"></script>
+</body>
+</html>
