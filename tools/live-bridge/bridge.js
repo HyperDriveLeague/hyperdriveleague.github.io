@@ -1,7 +1,3 @@
-const WebSocket = require('ws');
-global.WebSocket = WebSocket;
-
-const { createClient } = require('@supabase/supabase-js');
 const { F1TelemetryClient, constants } = require('@z0mt3c/f1-telemetry-client');
 
 const { PACKETS } = constants;
@@ -13,21 +9,11 @@ const SUPABASE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_hLA
 const PUBLISH_HZ = Math.max(1, Math.min(10, Number(process.env.PUBLISH_HZ || 10)));
 const MICRO_COUNT = 20;
 const TRACE_BINS = 180;
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
-  realtime: { transport: WebSocket }
-});
-
-const channel = supabase.channel(LIVE_ROOM, {
-  config: { broadcast: { self: false, ack: false } }
-});
-
-let realtimeReady = false;
-channel.subscribe(status => {
-  realtimeReady = status === 'SUBSCRIBED';
-  console.log('[Realtime]', status, 'room:', LIVE_ROOM);
-});
+const BROADCAST_URL =
+  SUPABASE_URL.replace(/\/$/, '') +
+  '/realtime/v1/api/broadcast/' +
+  encodeURIComponent(LIVE_ROOM) +
+  '/events/state';
 
 const telemetry = new F1TelemetryClient({ port: UDP_PORT, bigintEnabled: false });
 
@@ -458,26 +444,37 @@ telemetry.on('error', error => {
   console.error('[UDP parser]', error?.message || error);
 });
 
+async function broadcastState(state) {
+  const response = await fetch(BROADCAST_URL, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(state)
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error('HTTP ' + response.status + (body ? ' · ' + body.slice(0, 250) : ''));
+  }
+}
+
 setInterval(async () => {
-  if (!realtimeReady || publishing || !lastPacketAt) return;
+  if (publishing || !lastPacketAt) return;
   publishing = true;
   try {
-    await channel.send({
-      type: 'broadcast',
-      event: 'state',
-      payload: buildState()
-    });
+    await broadcastState(buildState());
   } catch (error) {
-    console.error('[Realtime send]', error?.message || error);
+    console.error('[Broadcast HTTP]', error?.message || error);
   } finally {
     publishing = false;
   }
 }, Math.round(1000 / PUBLISH_HZ));
 
-process.on('SIGINT', async () => {
+process.on('SIGINT', () => {
   console.log('\nCerrando HyperDrive Live Bridge…');
   try { telemetry.stop(); } catch {}
-  try { await supabase.removeChannel(channel); } catch {}
   process.exit(0);
 });
 
@@ -486,9 +483,11 @@ console.log('==============================================');
 console.log(' HYPERDRIVE LIVE BRIDGE · F1 26');
 console.log('==============================================');
 console.log(' UDP:', UDP_PORT);
-console.log(' Realtime room:', LIVE_ROOM);
+console.log(' Broadcast room:', LIVE_ROOM);
 console.log(' Frecuencia web:', PUBLISH_HZ, 'Hz');
+console.log(' Transporte: HTTP Broadcast -> WebSocket web');
 console.log(' Persistencia: NINGUNA · datos efímeros');
 console.log('==============================================');
+console.log(' Broadcast HTTP: listo');
 console.log('');
 telemetry.start();
