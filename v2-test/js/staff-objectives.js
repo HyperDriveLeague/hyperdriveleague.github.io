@@ -31,10 +31,14 @@
   }
 
   function setMessage(text = '', type = '') {
-    const el = document.getElementById('staffObjectivesMessage');
-    if (!el) return;
-    el.textContent = text;
-    el.className = `staff-objectives-message${type ? ` ${type}` : ''}`;
+    const targets = [
+      document.getElementById('staffObjectivesMessage'),
+      document.getElementById('staffNotificationsMessage')
+    ].filter(Boolean);
+    targets.forEach(el => {
+      el.textContent = text;
+      el.className = `staff-objectives-message${type ? ` ${type}` : ''}`;
+    });
   }
 
   function catalogByNumber() {
@@ -50,11 +54,18 @@
     }
     dashboard = data || { teams: [], catalog: [], pending_review_count: 0 };
     renderPendingReviews();
+    renderNotifications();
     const badge = document.querySelector('#staffObjectivesHubCard .staff-hub-badge');
     if (badge) {
       const pending = Number(dashboard.pending_review_count || 0);
       badge.textContent = pending ? `${pending} EN REVISIÓN` : 'SIN PENDIENTES';
       badge.classList.toggle('has-pending', pending > 0);
+    }
+    const notificationBadge = document.querySelector('#staffNotificationsHubCard .staff-hub-badge');
+    if (notificationBadge) {
+      const pending = Number(dashboard.pending_review_count || 0);
+      notificationBadge.textContent = pending ? `${pending} PENDIENTE${pending === 1 ? '' : 'S'}` : 'SIN PENDIENTES';
+      notificationBadge.classList.toggle('has-pending', pending > 0);
     }
     setMessage('');
     return true;
@@ -83,11 +94,21 @@
     hideRaceControlRegions();
     document.getElementById('staffHub')?.classList.add('staff-nav-hidden');
     document.getElementById('staffSectionBar')?.classList.add('staff-nav-hidden');
+    document.getElementById('staffNotificationsRoot')?.classList.add('staff-objectives-hidden');
     document.getElementById('staffObjectivesRoot')?.classList.remove('staff-objectives-hidden');
+  }
+
+  function showNotificationsRoot() {
+    hideRaceControlRegions();
+    document.getElementById('staffHub')?.classList.add('staff-nav-hidden');
+    document.getElementById('staffSectionBar')?.classList.add('staff-nav-hidden');
+    document.getElementById('staffObjectivesRoot')?.classList.add('staff-objectives-hidden');
+    document.getElementById('staffNotificationsRoot')?.classList.remove('staff-objectives-hidden');
   }
 
   function backToStaffHome() {
     document.getElementById('staffObjectivesRoot')?.classList.add('staff-objectives-hidden');
+    document.getElementById('staffNotificationsRoot')?.classList.add('staff-objectives-hidden');
     document.getElementById('staffSectionBar')?.classList.add('staff-nav-hidden');
     document.getElementById('staffHub')?.classList.remove('staff-nav-hidden');
     selectedTeamId = null;
@@ -161,6 +182,55 @@
       actions.append(approve, deny);
       card.append(main, actions);
       root.appendChild(card);
+    });
+  }
+
+  function renderNotifications() {
+    const list = document.getElementById('staffNotificationsList');
+    const count = document.getElementById('staffNotificationsCount');
+    if (!list || !dashboard) return;
+
+    const pending = pendingReviews();
+    if (count) count.textContent = String(pending.length);
+    list.textContent = '';
+
+    if (!pending.length) {
+      const empty = make('div', 'staff-notifications-empty');
+      empty.append(
+        make('strong', '', 'No tienes notificaciones pendientes.'),
+        make('span', '', 'Las solicitudes desaparecen de aquí automáticamente cuando Staff las acepta o deniega.')
+      );
+      list.appendChild(empty);
+      return;
+    }
+
+    pending.forEach(({ team, row }) => {
+      const item = make('article', 'staff-notification-item');
+      const icon = make('div', 'staff-notification-icon', '!');
+      const body = make('div', 'staff-notification-body');
+      const kicker = make('span', 'staff-notification-kicker', 'SOLICITUD DE REVISIÓN · ' + divisionLabel(row.division));
+      const title = make('strong', 'staff-notification-title', (team.team_name || 'Escudería') + ' · #' + row.sponsor_number + ' ' + (row.name || 'Objetivo'));
+      const description = make('p', 'staff-notification-description', row.objective || '—');
+      const meta = make('div', 'staff-notification-meta');
+      meta.append(
+        make('span', '', 'Recompensa: ' + money(row.effective_reward_m)),
+        make('span', '', row.review_requested_at
+          ? 'Recibida: ' + new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.review_requested_at))
+          : 'Pendiente de revisión')
+      );
+      body.append(kicker, title, description, meta);
+
+      const actions = make('div', 'staff-notification-actions');
+      const approve = make('button', 'staff-objective-confirm', 'ACEPTAR');
+      approve.type = 'button';
+      approve.addEventListener('click', () => confirmObjective(team, row, approve));
+      const deny = make('button', 'staff-objective-deny', 'DENEGAR');
+      deny.type = 'button';
+      deny.addEventListener('click', () => denyObjective(team, row, deny));
+      actions.append(approve, deny);
+
+      item.append(icon, body, actions);
+      list.appendChild(item);
     });
   }
 
@@ -364,6 +434,12 @@
     await refreshSelected();
   }
 
+  async function openNotifications() {
+    showNotificationsRoot();
+    if (await loadDashboard()) renderNotifications();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   async function openObjectives() {
     showObjectivesRoot();
     document.getElementById('staffObjectivesTeamsView')?.classList.remove('staff-objectives-hidden');
@@ -384,6 +460,19 @@
     mounted = true;
     addStyles();
 
+    const notificationsCard = make('button', 'staff-hub-card staff-notifications-hub-card');
+    notificationsCard.id = 'staffNotificationsHubCard';
+    notificationsCard.type = 'button';
+    const notificationsIcon = make('span', 'staff-hub-icon', '!');
+    const notificationsKicker = make('span', 'hub-kicker', 'AVISOS');
+    const notificationsTitle = make('h3', '', 'Notificaciones');
+    const notificationsCopy = make('p', '', 'Solicitudes de revisión de objetivos pendientes de aceptar o denegar.');
+    const notificationsFooter = make('div', 'staff-hub-footer');
+    notificationsFooter.append(make('span', '', 'VER NOTIFICACIONES →'), make('span', 'staff-hub-badge', 'COMPROBANDO…'));
+    notificationsCard.append(notificationsIcon, notificationsKicker, notificationsTitle, notificationsCopy, notificationsFooter);
+    notificationsCard.addEventListener('click', openNotifications);
+    grid.prepend(notificationsCard);
+
     const card = make('button', 'staff-hub-card');
     card.id = 'staffObjectivesHubCard';
     card.type = 'button';
@@ -396,6 +485,41 @@
     card.append(icon, kicker, title, copy, footer);
     card.addEventListener('click', openObjectives);
     grid.appendChild(card);
+
+    const notificationsRoot = make('section', 'staff-objectives-root staff-objectives-hidden');
+    notificationsRoot.id = 'staffNotificationsRoot';
+
+    const notificationsTopbar = make('div', 'staff-objectives-topbar');
+    const notificationsTopcopy = make('div');
+    notificationsTopcopy.append(
+      make('span', 'eyebrow', 'STAFF · NOTIFICACIONES'),
+      make('h2', '', 'Notificaciones'),
+      make('p', '', 'Aquí aparecen únicamente las solicitudes de revisión de objetivos que siguen pendientes. Al aceptar o denegar una solicitud, desaparece de esta lista.')
+    );
+    const notificationsBack = make('button', 'staff-objectives-back', '← VOLVER A STAFF');
+    notificationsBack.type = 'button';
+    notificationsBack.addEventListener('click', backToStaffHome);
+    notificationsTopbar.append(notificationsTopcopy, notificationsBack);
+
+    const notificationsMessage = make('p', 'staff-objectives-message');
+    notificationsMessage.id = 'staffNotificationsMessage';
+
+    const notificationsPanel = make('section', 'staff-notifications-panel');
+    const notificationsHead = make('div', 'staff-notifications-head');
+    const notificationsHeadCopy = make('div');
+    notificationsHeadCopy.append(
+      make('span', 'panel-label', 'PENDIENTES'),
+      make('h3', '', 'Solicitudes de objetivos'),
+      make('p', '', 'Comprueba el objetivo y decide si corresponde pagar la recompensa.')
+    );
+    const notificationsCount = make('span', 'staff-notifications-count', '0');
+    notificationsCount.id = 'staffNotificationsCount';
+    notificationsHead.append(notificationsHeadCopy, notificationsCount);
+
+    const notificationsList = make('div', 'staff-notifications-list');
+    notificationsList.id = 'staffNotificationsList';
+    notificationsPanel.append(notificationsHead, notificationsList);
+    notificationsRoot.append(notificationsTopbar, notificationsMessage, notificationsPanel);
 
     const root = make('section', 'staff-objectives-root staff-objectives-hidden');
     root.id = 'staffObjectivesRoot';
@@ -456,6 +580,9 @@
 
     root.append(topbar, message, pendingSection, teamsView, detailView);
     hub.insertAdjacentElement('afterend', root);
+    hub.insertAdjacentElement('afterend', notificationsRoot);
+
+    loadDashboard().catch(() => {});
   }
 
   const observer = new MutationObserver(() => {
