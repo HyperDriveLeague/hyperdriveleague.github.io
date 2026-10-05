@@ -119,7 +119,7 @@
   function kindMeta(entry) {
     if (entry.kind === 'fine') return { label: 'MULTA', cls: 'fine' };
     if (entry.kind === 'manual') return { label: 'MANUAL', cls: 'manual' };
-    if (entry.source_type === 'staff_sporting_sanction') {
+    if (entry.kind === 'sanction' || entry.source_type === 'staff_sporting_sanction') {
       return { label: entry.direction === 'income' ? 'SANCIÓN · RECIBE' : 'SANCIÓN · PAGA', cls: 'sanction' };
     }
     if (entry.source_type === 'team_objective_reward') return { label: 'OBJETIVO', cls: 'objective' };
@@ -151,14 +151,6 @@
 
     sorted.forEach(entry => {
       const tr = document.createElement('tr');
-      const values = [
-        formatDate(entry.date),
-        entry.round_number ? `R${entry.round_number}` : '—',
-        entry.driver_name || '—',
-        entry.team_name || '—',
-        entry.description || '—'
-      ];
-
       const kindTd = document.createElement('td');
       const kind = document.createElement('span');
       const kindInfo = kindMeta(entry);
@@ -167,14 +159,21 @@
       kindTd.appendChild(kind);
       tr.appendChild(kindTd);
 
-      values.forEach((value, index) => {
+      const cols = [
+        formatDate(entry.date),
+        entry.round_number ? `R${entry.round_number}` : '—',
+        entry.driver_name || '—',
+        entry.team_name || '—',
+        entry.description || '—'
+      ];
+      cols.forEach((value, index) => {
         const td = document.createElement('td');
-        td.textContent = value;
         if (index === 2 || index === 3) {
           const strong = document.createElement('strong');
           strong.textContent = value;
-          td.textContent = '';
           td.appendChild(strong);
+        } else {
+          td.textContent = value;
         }
         tr.appendChild(td);
       });
@@ -276,16 +275,17 @@
     const roles = await client.from('user_roles').select('role').eq('user_id', session.user.id).in('role', ['staff','admin']);
     if (roles.error || !(roles.data || []).length) return;
 
-    const [fines, manuals, accountsResponse, teamsResponse, driversResponse, rosterResponse] = await Promise.all([
+    const [fines, manuals, sanctionsResponse, accountsResponse, teamsResponse, driversResponse, rosterResponse] = await Promise.all([
       client.from('staff_team_fines').select('id,season_number,round_number,fine_date,driver_id,team_id,description,amount_m,transaction_id,created_at,drivers:driver_id(id,nickname,race_number),teams:team_id(id,name)').eq('season_number', config.currentSeason),
       client.from('staff_manual_movements').select('id,season_number,round_number,movement_date,team_id,description,direction,amount_m,transaction_id,created_at,teams:team_id(id,name)').eq('season_number', config.currentSeason),
+      client.from('staff_sporting_sanctions').select('id,season_number,round_number,article_code,driver_id,team_id,beneficiary_team_id,team_expense_transaction_id,beneficiary_income_transaction_id,created_at,drivers:driver_id(id,nickname,race_number)').eq('season_number', config.currentSeason),
       client.from('team_accounts').select('id,team_id,season_number,teams:team_id(id,name)').eq('season_number', config.currentSeason),
       client.from('teams').select('id,name').eq('is_active', true).order('name'),
       client.from('drivers').select('id,nickname,race_number').eq('is_active', true).order('nickname'),
       client.from('season_roster').select('driver_id,team_id,roster_status,start_round,end_round,is_active').eq('season_number', config.currentSeason)
     ]);
 
-    if (fines.error || manuals.error || accountsResponse.error || teamsResponse.error || driversResponse.error || rosterResponse.error) {
+    if (fines.error || manuals.error || sanctionsResponse.error || accountsResponse.error || teamsResponse.error || driversResponse.error || rosterResponse.error) {
       setMessage('No se pudo cargar el histórico económico completo.', 'error');
       return;
     }
@@ -316,10 +316,16 @@
 
     const fineByTransaction = new Map((fines.data || []).filter(item => item.transaction_id).map(item => [item.transaction_id, item]));
     const manualByTransaction = new Map((manuals.data || []).filter(item => item.transaction_id).map(item => [item.transaction_id, item]));
+    const sanctionByTransaction = new Map();
+    (sanctionsResponse.data || []).forEach(item => {
+      if (item.team_expense_transaction_id) sanctionByTransaction.set(item.team_expense_transaction_id, item);
+      if (item.beneficiary_income_transaction_id) sanctionByTransaction.set(item.beneficiary_income_transaction_id, item);
+    });
 
     entries = (transactions.data || []).map(tx => {
       const fine = fineByTransaction.get(tx.id);
       const manual = manualByTransaction.get(tx.id);
+      const sanction = sanctionByTransaction.get(tx.id);
       const account = accountById.get(tx.account_id);
       const team = account?.teams || {};
 
@@ -360,6 +366,28 @@
           amount_m: tx.amount_m,
           direction: tx.direction,
           created_at: tx.created_at
+        };
+      }
+
+      if (sanction) {
+        return {
+          kind: 'sanction',
+          id: sanction.id,
+          transaction_id: tx.id,
+          source_type: tx.source_type,
+          category: tx.category,
+          date: tx.transaction_date,
+          round_number: tx.round_number ?? sanction.round_number,
+          driver_id: sanction.driver_id,
+          driver_name: sanction.drivers?.nickname || 'Piloto',
+          team_id: account?.team_id || null,
+          team_name: team.name || '—',
+          description: tx.description || ('Sanción ' + (sanction.article_code || 'deportiva')),
+          amount_m: tx.amount_m,
+          direction: tx.direction,
+          created_at: tx.created_at,
+          sanction_id: sanction.id,
+          article_code: sanction.article_code
         };
       }
 
