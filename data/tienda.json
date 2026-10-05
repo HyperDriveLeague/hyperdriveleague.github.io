@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-10-05",
+  "provider": "print-on-demand",
+  "products": [
+    {
+      "id": "camiseta-hyperdrive",
+      "name": "Camiseta HyperDrive League",
+      "category": "ropa",
+      "description": "Camiseta oficial de la liga con identidad HyperDrive.",
+      "badge": "OFICIAL",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    },
+    {
+      "id": "sudadera-hyperdrive",
+      "name": "Sudadera HyperDrive League",
+      "category": "ropa",
+      "description": "Sudadera de la colección oficial HyperDrive para la comunidad.",
+      "badge": "OFICIAL",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    },
+    {
+      "id": "gorra-hyperdrive",
+      "name": "Gorra HyperDrive",
+      "category": "accesorios",
+      "description": "Accesorio oficial con la imagen de HyperDrive League.",
+      "badge": "PRÓXIMAMENTE",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    },
+    {
+      "id": "taza-hyperdrive",
+      "name": "Taza HyperDrive",
+      "category": "accesorios",
+      "description": "Taza de la liga pensada para escritorio, paddock o setup.",
+      "badge": "PRÓXIMAMENTE",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    },
+    {
+      "id": "poster-season-8",
+      "name": "Póster Season 8",
+      "category": "colecciones",
+      "description": "Pieza gráfica dedicada a la Temporada 8 de HyperDrive League.",
+      "badge": "SEASON 8",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    },
+    {
+      "id": "collection-hyperdrive",
+      "name": "Colección HyperDrive",
+      "category": "colecciones",
+      "description": "Primera colección completa de merchandising de la liga.",
+      "badge": "NUEVO",
+      "price": "",
+      "image": "",
+      "buyUrl": "",
+      "available": false
+    }
+  ]
+}
