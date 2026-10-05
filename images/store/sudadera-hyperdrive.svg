@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+  <linearGradient id="bg" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#16d9ff"/>
+    <stop offset=".45" stop-color="#7257ff"/>
+    <stop offset="1" stop-color="#3526a8"/>
+  </linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="30" stdDeviation="34" flood-opacity=".38"/></filter>
+</defs>
+<rect width="1200" height="1200" fill="url(#bg)"/>
+<g opacity=".13" fill="#fff">
+  <circle cx="130" cy="170" r="70"/><circle cx="1090" cy="990" r="115"/>
+</g>
+<g filter="url(#shadow)">
+  <path d="M415 250C440 150 505 115 600 115C695 115 760 150 785 250L905 330L1040 555L875 650L815 555V1030H385V555L325 650L160 555L295 330Z" fill="#111118" stroke="#08080b" stroke-width="16"/>
+  <path d="M455 240C480 185 520 160 600 160C680 160 720 185 745 240L695 360H505Z" fill="#24242c"/>
+  <path d="M505 360L480 610M695 360L720 610" stroke="#c9c9d0" stroke-width="12" stroke-linecap="round"/>
+  <rect x="470" y="700" width="260" height="125" rx="38" fill="#0b0b10" stroke="#2d2d35" stroke-width="8"/>
+  <image href="../logo/hyperdrive-logo.png" x="420" y="435" width="360" height="160" preserveAspectRatio="xMidYMid meet"/>
+</g>
+<text x="80" y="108" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="29" fill="#fff" letter-spacing="5">PADDOCK / 2026</text>
+<rect x="850" y="72" width="260" height="74" fill="#ffd500" stroke="#08080b" stroke-width="8"/>
+<text x="980" y="121" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="25" fill="#08080b">OFFICIAL</text>
+</svg>
