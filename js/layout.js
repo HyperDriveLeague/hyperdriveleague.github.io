@@ -17,7 +17,8 @@
         ['resultados.html', 'RESULTADOS'],
         ['calendario.html', 'CALENDARIO'],
         ['pilotos.html', 'PILOTOS'],
-        ['equipos.html', 'EQUIPOS']
+        ['equipos.html', 'EQUIPOS'],
+        ['tienda.html', 'TIENDA']
     ];
 
     const moreLinks = [
@@ -105,6 +106,7 @@
                         <a href="equipos.html">Equipos</a>
                         <a href="hall-of-fame.html">Hall of Fame</a>
                         <a href="quienes-somos.html">Quiénes Somos</a>
+                        <a href="tienda.html">Tienda</a>
                     </div>
 
                     <div class="footer-column">
