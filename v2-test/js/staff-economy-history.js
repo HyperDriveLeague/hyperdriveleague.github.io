@@ -116,6 +116,25 @@
     window.location.reload();
   }
 
+  function kindMeta(entry) {
+    if (entry.kind === 'fine') return { label: 'MULTA', cls: 'fine' };
+    if (entry.kind === 'manual') return { label: 'MANUAL', cls: 'manual' };
+    if (entry.source_type === 'staff_sporting_sanction') {
+      return { label: entry.direction === 'income' ? 'SANCIÓN · RECIBE' : 'SANCIÓN · PAGA', cls: 'sanction' };
+    }
+    if (entry.source_type === 'team_objective_reward') return { label: 'OBJETIVO', cls: 'objective' };
+    if (entry.source_type === 'team_objective_reward_reversal') return { label: 'REVERSIÓN OBJ.', cls: 'reversal' };
+    if (entry.source_type === 'driver_team_transfer') return { label: 'TRANSFERENCIA', cls: 'transfer' };
+    if (String(entry.source_type || '').startsWith('excel_import')) return { label: 'IMPORTADO', cls: 'imported' };
+    return { label: String(entry.category || entry.source_type || 'MOVIMIENTO').toUpperCase(), cls: 'generic' };
+  }
+
+  function readOnlyLabel(entry) {
+    if (entry.source_type === 'staff_sporting_sanction') return 'EDITAR DESDE SANCIÓN';
+    if (entry.source_type === 'team_objective_reward' || entry.source_type === 'team_objective_reward_reversal') return 'GESTIONADO EN OBJETIVOS';
+    return 'SOLO LECTURA';
+  }
+
   function render() {
     body.innerHTML = '';
     const sorted = [...entries].sort((a,b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
@@ -124,7 +143,7 @@
       const td = document.createElement('td');
       td.colSpan = 8;
       td.className = 'economy-history-empty';
-      td.textContent = 'Todavía no hay multas ni movimientos manuales creados desde Race Control.';
+      td.textContent = 'Todavía no hay movimientos económicos registrados en esta temporada.';
       tr.appendChild(td);
       body.appendChild(tr);
       return;
@@ -135,15 +154,16 @@
       const values = [
         formatDate(entry.date),
         entry.round_number ? `R${entry.round_number}` : '—',
-        entry.kind === 'fine' ? (entry.driver_name || 'Piloto') : '—',
+        entry.driver_name || '—',
         entry.team_name || '—',
         entry.description || '—'
       ];
 
       const kindTd = document.createElement('td');
       const kind = document.createElement('span');
-      kind.className = `economy-history-kind ${entry.kind}`;
-      kind.textContent = entry.kind === 'fine' ? 'MULTA' : 'MANUAL';
+      const kindInfo = kindMeta(entry);
+      kind.className = `economy-history-kind ${kindInfo.cls}`;
+      kind.textContent = kindInfo.label;
       kindTd.appendChild(kind);
       tr.appendChild(kindTd);
 
@@ -168,17 +188,27 @@
       const actionsTd = document.createElement('td');
       const actions = document.createElement('div');
       actions.className = 'economy-actions';
-      const edit = document.createElement('button');
-      edit.type = 'button';
-      edit.className = 'economy-action edit';
-      edit.textContent = 'EDITAR';
-      edit.addEventListener('click', () => openEdit(entry));
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'economy-action delete';
-      remove.textContent = 'ELIMINAR';
-      remove.addEventListener('click', () => removeEntry(entry, [edit, remove]));
-      actions.append(edit, remove);
+
+      if (entry.kind === 'fine' || entry.kind === 'manual') {
+        const edit = document.createElement('button');
+        edit.type = 'button';
+        edit.className = 'economy-action edit';
+        edit.textContent = 'EDITAR';
+        edit.addEventListener('click', () => openEdit(entry));
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'economy-action delete';
+        remove.textContent = 'ELIMINAR';
+        remove.addEventListener('click', () => removeEntry(entry, [edit, remove]));
+        actions.append(edit, remove);
+      } else {
+        const readonly = document.createElement('span');
+        readonly.className = 'economy-readonly';
+        readonly.textContent = readOnlyLabel(entry);
+        actions.appendChild(readonly);
+      }
+
       actionsTd.appendChild(actions);
       tr.appendChild(actionsTd);
       body.appendChild(tr);
@@ -246,16 +276,35 @@
     const roles = await client.from('user_roles').select('role').eq('user_id', session.user.id).in('role', ['staff','admin']);
     if (roles.error || !(roles.data || []).length) return;
 
-    const [fines, manuals, teamsResponse, driversResponse, rosterResponse] = await Promise.all([
+    const [fines, manuals, accountsResponse, teamsResponse, driversResponse, rosterResponse] = await Promise.all([
       client.from('staff_team_fines').select('id,season_number,round_number,fine_date,driver_id,team_id,description,amount_m,transaction_id,created_at,drivers:driver_id(id,nickname,race_number),teams:team_id(id,name)').eq('season_number', config.currentSeason),
       client.from('staff_manual_movements').select('id,season_number,round_number,movement_date,team_id,description,direction,amount_m,transaction_id,created_at,teams:team_id(id,name)').eq('season_number', config.currentSeason),
+      client.from('team_accounts').select('id,team_id,season_number,teams:team_id(id,name)').eq('season_number', config.currentSeason),
       client.from('teams').select('id,name').eq('is_active', true).order('name'),
       client.from('drivers').select('id,nickname,race_number').eq('is_active', true).order('nickname'),
       client.from('season_roster').select('driver_id,team_id,roster_status,start_round,end_round,is_active').eq('season_number', config.currentSeason)
     ]);
 
-    if (fines.error || manuals.error || teamsResponse.error || driversResponse.error || rosterResponse.error) {
-      setMessage('No se pudo cargar el histórico económico de Race Control.', 'error');
+    if (fines.error || manuals.error || accountsResponse.error || teamsResponse.error || driversResponse.error || rosterResponse.error) {
+      setMessage('No se pudo cargar el histórico económico completo.', 'error');
+      return;
+    }
+
+    const accounts = accountsResponse.data || [];
+    const accountIds = accounts.map(item => item.id);
+    const accountById = new Map(accounts.map(item => [item.id, item]));
+    let transactions = { data: [], error: null };
+
+    if (accountIds.length) {
+      transactions = await client.from('economic_transactions')
+        .select('id,account_id,transaction_date,description,category,direction,amount_m,round_number,source_type,created_at,reverses_transaction_id')
+        .in('account_id', accountIds)
+        .order('transaction_date', { ascending: false })
+        .order('created_at', { ascending: false });
+    }
+
+    if (transactions.error) {
+      setMessage('No se pudieron cargar todos los movimientos económicos de la temporada.', 'error');
       return;
     }
 
@@ -265,19 +314,74 @@
     fillSelect(teamSelect, teams, 'Selecciona escudería', item => item.name);
     fillSelect(driverSelect, drivers, 'Selecciona piloto', item => `#${item.race_number ?? '--'} · ${item.nickname}`);
 
-    entries = [
-      ...(fines.data || []).map(item => ({
-        kind: 'fine', id: item.id, date: item.fine_date, round_number: item.round_number,
-        driver_id: item.driver_id, driver_name: item.drivers?.nickname || 'Piloto', team_id: item.team_id,
-        team_name: item.teams?.name || '—', description: item.description, amount_m: item.amount_m,
-        direction: 'expense', created_at: item.created_at
-      })),
-      ...(manuals.data || []).map(item => ({
-        kind: 'manual', id: item.id, date: item.movement_date, round_number: item.round_number,
-        driver_id: null, driver_name: null, team_id: item.team_id, team_name: item.teams?.name || '—',
-        description: item.description, amount_m: item.amount_m, direction: item.direction, created_at: item.created_at
-      }))
-    ];
+    const fineByTransaction = new Map((fines.data || []).filter(item => item.transaction_id).map(item => [item.transaction_id, item]));
+    const manualByTransaction = new Map((manuals.data || []).filter(item => item.transaction_id).map(item => [item.transaction_id, item]));
+
+    entries = (transactions.data || []).map(tx => {
+      const fine = fineByTransaction.get(tx.id);
+      const manual = manualByTransaction.get(tx.id);
+      const account = accountById.get(tx.account_id);
+      const team = account?.teams || {};
+
+      if (fine) {
+        return {
+          kind: 'fine',
+          id: fine.id,
+          transaction_id: tx.id,
+          source_type: tx.source_type,
+          category: tx.category,
+          date: tx.transaction_date,
+          round_number: tx.round_number,
+          driver_id: fine.driver_id,
+          driver_name: fine.drivers?.nickname || 'Piloto',
+          team_id: account?.team_id || fine.team_id,
+          team_name: team.name || fine.teams?.name || '—',
+          description: tx.description,
+          amount_m: tx.amount_m,
+          direction: tx.direction,
+          created_at: tx.created_at
+        };
+      }
+
+      if (manual) {
+        return {
+          kind: 'manual',
+          id: manual.id,
+          transaction_id: tx.id,
+          source_type: tx.source_type,
+          category: tx.category,
+          date: tx.transaction_date,
+          round_number: tx.round_number,
+          driver_id: null,
+          driver_name: null,
+          team_id: account?.team_id || manual.team_id,
+          team_name: team.name || manual.teams?.name || '—',
+          description: tx.description,
+          amount_m: tx.amount_m,
+          direction: tx.direction,
+          created_at: tx.created_at
+        };
+      }
+
+      return {
+        kind: 'transaction',
+        id: tx.id,
+        transaction_id: tx.id,
+        source_type: tx.source_type,
+        category: tx.category,
+        date: tx.transaction_date,
+        round_number: tx.round_number,
+        driver_id: null,
+        driver_name: null,
+        team_id: account?.team_id || null,
+        team_name: team.name || '—',
+        description: tx.description,
+        amount_m: tx.amount_m,
+        direction: tx.direction,
+        created_at: tx.created_at,
+        reverses_transaction_id: tx.reverses_transaction_id
+      };
+    });
     render();
   }
 
