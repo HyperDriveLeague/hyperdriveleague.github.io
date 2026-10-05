@@ -12,14 +12,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="images/logo/apple-touch-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
 
-    <meta name="theme-color" content="#080808">
+    <meta name="theme-color" content="#7257ff">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="HyperDrive">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/tienda.css">
+    <link rel="stylesheet" href="css/tienda.css?v=3">
 </head>
 
 <body>
@@ -29,53 +29,106 @@
     <main class="store-page">
 
         <section class="store-hero">
-            <div class="store-hero-glow" aria-hidden="true"></div>
+            <div class="store-noise" aria-hidden="true"></div>
+            <div class="store-orb store-orb-purple" aria-hidden="true"></div>
+            <div class="store-orb store-orb-blue" aria-hidden="true"></div>
+            <div class="store-orb store-orb-pink" aria-hidden="true"></div>
 
-            <div class="store-hero-content">
-                <span class="store-kicker">MERCHANDISING OFICIAL</span>
+            <div class="store-hero-copy">
+                <div class="store-drop-label">
+                    <span>DROP 01</span>
+                    <b>SEASON 8</b>
+                </div>
+
+                <p class="store-overline">HYPERDRIVE LEAGUE · OFFICIAL MERCH</p>
 
                 <h1>
-                    HYPERDRIVE<br>
-                    <span>STORE.</span>
+                    WEAR<br>
+                    THE <span>GRID.</span>
                 </h1>
 
-                <p>
-                    Lleva HyperDrive fuera de la pista. Ropa, accesorios y
-                    colecciones creadas para la comunidad de la liga.
+                <p class="store-hero-text">
+                    La tienda oficial de HyperDrive cambia de marcha:
+                    ropa, accesorios y colecciones diseñadas para llevar
+                    la identidad de la liga fuera del circuito.
                 </p>
 
                 <div class="store-hero-actions">
-                    <a href="#catalogo" class="store-primary-button">VER PRODUCTOS</a>
-                    <span class="store-production-pill">PRODUCCIÓN BAJO DEMANDA</span>
+                    <a href="#catalogo" class="store-cta">EXPLORAR EL DROP <span>↘</span></a>
+                    <span class="store-small-note">PRINT ON DEMAND · SIN STOCK</span>
                 </div>
             </div>
 
-            <div class="store-hero-panel" aria-label="Información de la tienda">
-                <span>HYPERDRIVE LEAGUE</span>
-                <strong>OFFICIAL MERCH</strong>
-
-                <div class="store-hero-panel-grid">
-                    <div>
-                        <small>COLECCIÓN</small>
-                        <b>SEASON 8</b>
-                    </div>
-
-                    <div>
-                        <small>ENVÍOS</small>
-                        <b>GESTIÓN EXTERNA</b>
-                    </div>
+            <div class="store-hero-art" aria-hidden="true">
+                <div class="hero-card hero-card-yellow">
+                    <span>01</span>
+                    <strong>RACE<br>WEAR</strong>
                 </div>
+
+                <div class="hero-card hero-card-purple">
+                    <span>02</span>
+                    <strong>PADDOCK<br>STYLE</strong>
+                </div>
+
+                <div class="hero-card hero-card-pink">
+                    <span>03</span>
+                    <strong>LIMITED<br>DROPS</strong>
+                </div>
+
+                <div class="store-sticker">HYPER<br>DRIVE</div>
+                <div class="store-ring"></div>
+                <div class="store-checker"></div>
             </div>
         </section>
 
-        <section class="store-catalogue" id="catalogo">
-            <div class="store-section-heading">
+        <section class="store-marquee" aria-label="Categorías de tienda">
+            <div class="store-marquee-track">
+                <span>OFFICIAL MERCH</span><i>✦</i>
+                <span>RACE CULTURE</span><i>✦</i>
+                <span>SEASON 8</span><i>✦</i>
+                <span>PADDOCK STYLE</span><i>✦</i>
+                <span>HYPERDRIVE</span><i>✦</i>
+                <span>OFFICIAL MERCH</span><i>✦</i>
+                <span>RACE CULTURE</span><i>✦</i>
+                <span>SEASON 8</span><i>✦</i>
+            </div>
+        </section>
+
+        <section class="store-feature-strip">
+            <article class="feature-card feature-purple">
+                <span>01</span>
                 <div>
-                    <span>CATÁLOGO</span>
-                    <h2>ELIGE TU EQUIPACIÓN.</h2>
+                    <small>COLECCIÓN</small>
+                    <strong>HYPERDRIVE CORE</strong>
+                </div>
+            </article>
+
+            <article class="feature-card feature-blue">
+                <span>02</span>
+                <div>
+                    <small>EDICIONES</small>
+                    <strong>SEASON DROPS</strong>
+                </div>
+            </article>
+
+            <article class="feature-card feature-pink">
+                <span>03</span>
+                <div>
+                    <small>PRODUCCIÓN</small>
+                    <strong>BAJO DEMANDA</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="store-catalogue" id="catalogo">
+            <div class="store-catalogue-top">
+                <div>
+                    <span class="store-section-number">01 / SHOP</span>
+                    <h2>SHOP THE <em>DROP.</em></h2>
                     <p>
-                        La primera colección está en preparación. Los productos
-                        se activarán aquí en cuanto estén disponibles para compra.
+                        Esta primera colección está en preparación. Cuando publiquemos
+                        los productos reales aparecerán aquí sus fotos, precios y acceso
+                        directo a compra.
                     </p>
                 </div>
 
@@ -83,7 +136,7 @@
                     <button class="store-filter active" type="button" data-filter="all">TODO</button>
                     <button class="store-filter" type="button" data-filter="ropa">ROPA</button>
                     <button class="store-filter" type="button" data-filter="accesorios">ACCESORIOS</button>
-                    <button class="store-filter" type="button" data-filter="colecciones">COLECCIONES</button>
+                    <button class="store-filter" type="button" data-filter="colecciones">DROPS</button>
                 </div>
             </div>
 
@@ -92,50 +145,55 @@
             </div>
         </section>
 
+        <section class="store-color-break">
+            <div class="color-break-copy">
+                <span>HYPERDRIVE / 2026</span>
+                <h2>NOT JUST<br><strong>MERCH.</strong></h2>
+            </div>
+
+            <p>
+                Una extensión visual de la liga. Diseños inspirados en el paddock,
+                el simracing, las noches de carrera y la cultura de HyperDrive.
+            </p>
+        </section>
+
         <section class="store-process">
-            <div class="store-process-heading">
-                <span>DE HYPERDRIVE A TU CASA</span>
-                <h2>CÓMO FUNCIONA.</h2>
+            <div class="store-process-title">
+                <span class="store-section-number">02 / HOW IT WORKS</span>
+                <h2>DE LA PARRILLA<br>A TU <em>CASA.</em></h2>
             </div>
 
             <div class="store-process-grid">
-                <article>
+                <article class="process-yellow">
                     <span>01</span>
                     <h3>ELIGE</h3>
-                    <p>Selecciona el producto de la colección oficial que quieras.</p>
+                    <p>Encuentra tu pieza favorita dentro del drop disponible.</p>
                 </article>
 
-                <article>
+                <article class="process-purple">
                     <span>02</span>
                     <h3>COMPRA</h3>
-                    <p>La compra se completa de forma segura en la plataforma del proveedor.</p>
+                    <p>Finaliza el pedido de forma segura en la plataforma del proveedor.</p>
                 </article>
 
-                <article>
+                <article class="process-blue">
                     <span>03</span>
-                    <h3>PRODUCCIÓN</h3>
-                    <p>El artículo se fabrica bajo demanda, sin necesidad de stock previo.</p>
+                    <h3>SE PRODUCE</h3>
+                    <p>Tu artículo se fabrica bajo demanda especialmente para el pedido.</p>
                 </article>
 
-                <article>
+                <article class="process-pink">
                     <span>04</span>
-                    <h3>ENTREGA</h3>
-                    <p>El proveedor prepara el pedido y gestiona directamente el envío.</p>
+                    <h3>LO RECIBES</h3>
+                    <p>El proveedor prepara y gestiona directamente el envío.</p>
                 </article>
             </div>
         </section>
 
-        <section class="store-note">
-            <div>
-                <span>HYPERDRIVE STORE</span>
-                <h2>MERCH DE LA COMUNIDAD.</h2>
-            </div>
-
-            <p>
-                HyperDrive League muestra el catálogo oficial. La fabricación,
-                el cobro y el envío de los productos se realizan mediante un
-                proveedor externo de impresión bajo demanda.
-            </p>
+        <section class="store-final-banner">
+            <span class="final-mini">HYPERDRIVE OFFICIAL STORE</span>
+            <h2>SEE YOU ON<br>THE <strong>GRID.</strong></h2>
+            <div class="final-badge">96<br><small>HD</small></div>
         </section>
 
     </main>
@@ -145,7 +203,7 @@
     <script src="js/layout.js"></script>
     <script src="js/public-account.js?v=2"></script>
     <script src="js/main.js"></script>
-    <script src="js/tienda.js"></script>
+    <script src="js/tienda.js?v=2"></script>
 
 </body>
 </html>
