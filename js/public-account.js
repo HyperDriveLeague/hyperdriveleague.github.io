@@ -32,10 +32,15 @@
     .public-account-link{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 13px;border:1px solid rgba(255,255,255,.14);border-radius:3px;background:rgba(255,255,255,.035);color:#fff;text-decoration:none;font-size:10px;font-weight:900;letter-spacing:.65px;white-space:nowrap;transition:border-color .2s ease,color .2s ease,background .2s ease,transform .2s ease}
     .public-account-link:hover{border-color:rgba(255,213,0,.6);color:#ffd500;background:rgba(255,213,0,.05);transform:translateY(-1px)}
     .public-account-avatar{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#ffd500;color:#08090b;font-size:10px;font-weight:950;letter-spacing:0}
-    .public-account-mobile{display:none;margin-top:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
-    .public-account-mobile .public-account-link{width:100%;min-height:48px;justify-content:flex-start;padding:0 14px}
+    .public-account-mobile{display:none;align-items:center;justify-content:center;margin-left:auto;margin-right:10px;flex-shrink:0}
+    .public-account-mobile .public-account-link{width:42px;height:42px;min-width:42px;padding:0;border-radius:50%;gap:0;border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.045)}
+    .public-account-mobile .public-account-link:hover{transform:none}
+    .public-account-mobile .public-account-avatar{width:34px;height:34px;font-size:10px}
+    .public-account-mobile .public-account-label{display:none}
+    .public-account-mobile .public-account-guest{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,213,0,.10);color:#ffd500}
+    .public-account-mobile .public-account-guest svg{width:18px;height:18px;display:block}
     @media(max-width:1240px) and (min-width:1025px){.main-nav{gap:16px}.logo{margin-right:28px}.discord-button{padding-left:14px;padding-right:14px}.public-account-link{padding-left:10px;padding-right:10px}}
-    @media(max-width:1024px){.public-account-desktop{display:none}.public-account-mobile{display:block}}
+    @media(max-width:1024px){.public-account-desktop{display:none}.public-account-mobile{display:flex}}
   `;
   document.head.appendChild(style);
 
@@ -48,18 +53,30 @@
     return (compact.slice(0, 2) || 'HD').toUpperCase();
   }
 
-  function makeLink(session, name) {
+  function makeLink(session, name, compact = false) {
     const link = document.createElement('a');
     link.className = 'public-account-link';
     link.href = session ? PRIVATE_URL : LOGIN_URL;
+    link.setAttribute('aria-label', session ? 'Abrir Área Personal' : 'Iniciar sesión');
+    link.title = session ? 'Área Personal' : 'Iniciar sesión';
+
     if (!session) {
-      link.textContent = 'INICIAR SESIÓN';
+      if (compact) {
+        const guest = document.createElement('span');
+        guest.className = 'public-account-guest';
+        guest.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"/></svg>';
+        link.appendChild(guest);
+      } else {
+        link.textContent = 'INICIAR SESIÓN';
+      }
       return link;
     }
+
     const avatar = document.createElement('span');
     avatar.className = 'public-account-avatar';
     avatar.textContent = initials(name);
     const label = document.createElement('span');
+    label.className = 'public-account-label';
     label.textContent = 'ÁREA PERSONAL';
     link.append(avatar, label);
     return link;
@@ -84,10 +101,9 @@
       mobile = document.createElement('div');
       mobile.id = 'publicAccountMobile';
       mobile.className = 'public-account-mobile';
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileNav = mobileMenu?.querySelector('.mobile-menu-nav');
-      if (mobileNav) mobileNav.insertAdjacentElement('afterend', mobile);
-      else mobileMenu?.appendChild(mobile);
+      const mobileToggle = document.getElementById('mobile-menu-toggle');
+      if (mobileToggle?.parentNode) mobileToggle.parentNode.insertBefore(mobile, mobileToggle);
+      else header.appendChild(mobile);
     }
     return { desktop, mobile };
   }
@@ -95,8 +111,8 @@
   function render(slots, session, name) {
     slots.desktop.textContent = '';
     slots.mobile.textContent = '';
-    slots.desktop.appendChild(makeLink(session, name));
-    slots.mobile.appendChild(makeLink(session, name));
+    slots.desktop.appendChild(makeLink(session, name, false));
+    slots.mobile.appendChild(makeLink(session, name, true));
   }
 
   function loadSupabase() {
