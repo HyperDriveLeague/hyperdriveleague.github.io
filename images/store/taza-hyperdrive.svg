@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+  <linearGradient id="bg" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#7257ff"/>
+    <stop offset=".5" stop-color="#4a36da"/>
+    <stop offset="1" stop-color="#16d9ff"/>
+  </linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="28" stdDeviation="34" flood-opacity=".34"/></filter>
+</defs>
+<rect width="1200" height="1200" fill="url(#bg)"/>
+<g opacity=".17">
+  <path d="M0 220H1200M0 420H1200M0 620H1200M0 820H1200M0 1020H1200" stroke="#fff" stroke-width="5"/>
+  <path d="M220 0V1200M420 0V1200M620 0V1200M820 0V1200M1020 0V1200" stroke="#fff" stroke-width="5"/>
+</g>
+<g filter="url(#shadow)">
+  <rect x="300" y="300" width="510" height="600" rx="56" fill="#f8f7f2" stroke="#08080b" stroke-width="16"/>
+  <path d="M805 420C1035 405 1040 790 807 785" fill="none" stroke="#f8f7f2" stroke-width="105"/>
+  <path d="M805 420C1035 405 1040 790 807 785" fill="none" stroke="#08080b" stroke-width="16"/>
+  <rect x="355" y="420" width="400" height="245" rx="18" fill="#0b0b0f"/>
+  <image href="../logo/hyperdrive-logo.png" x="385" y="465" width="340" height="145" preserveAspectRatio="xMidYMid meet"/>
+  <text x="555" y="750" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="31" fill="#08080b" letter-spacing="4">RACE DAY</text>
+</g>
+<rect x="76" y="72" width="250" height="72" fill="#ff4f9a" stroke="#08080b" stroke-width="8"/>
+<text x="201" y="121" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="24" fill="#fff">PIT STOP MUG</text>
+<circle cx="1010" cy="1000" r="110" fill="#ffd500" stroke="#08080b" stroke-width="10"/>
+<text x="1010" y="1018" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="42" fill="#08080b">S8</text>
+</svg>
