@@ -1,0 +1,45 @@
+
+.admin-tabs{display:flex;gap:8px;margin:0 0 24px;padding:6px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);width:max-content;max-width:100%}
+.admin-tab{border:0;border-radius:10px;padding:11px 16px;background:transparent;color:#81858c;font:inherit;font-size:10px;font-weight:900;letter-spacing:.08em;cursor:pointer}
+.admin-tab.is-active{background:var(--yellow);color:#08090b}
+body.admin-store-active #adminContent>section:not(.admin-store-section){display:none!important}
+body.admin-store-active .admin-store-section{display:block!important}
+.admin-store-section[hidden]{display:none}
+body.admin-store-active .admin-store-section[hidden]{display:block}
+.admin-store-form-panel{padding:24px}
+.admin-store-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.admin-store-field{display:grid;gap:8px}
+.admin-store-field>span{color:#858990;font-size:9px;font-weight:900;letter-spacing:.1em}
+.admin-store-field input,.admin-store-field textarea,.admin-store-field select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:#101217;color:#fff;font:inherit;font-size:12px;outline:none}
+.admin-store-field textarea{resize:vertical;min-height:110px}
+.admin-store-field input:focus,.admin-store-field textarea:focus,.admin-store-field select:focus{border-color:rgba(255,213,0,.65)}
+.admin-store-field-wide{grid-column:1/-1}
+.admin-store-upload{position:relative;display:grid;place-items:center;min-height:120px;padding:20px;border:1px dashed rgba(255,213,0,.38);border-radius:12px;background:rgba(255,213,0,.035);text-align:center;cursor:pointer}
+.admin-store-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.admin-store-upload strong{color:var(--yellow);font-size:12px;letter-spacing:.06em}
+.admin-store-upload small{margin-top:5px;color:#777b82;font-size:10px}
+.admin-store-image-preview{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.admin-store-image-chip{position:relative;width:104px;height:104px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b0d11}
+.admin-store-image-chip img{width:100%;height:100%;object-fit:cover}
+.admin-store-image-chip button{position:absolute;top:5px;right:5px;width:25px;height:25px;border:0;border-radius:50%;background:rgba(0,0,0,.78);color:#fff;cursor:pointer}
+.admin-store-image-chip small{position:absolute;left:5px;bottom:5px;padding:3px 5px;border-radius:5px;background:rgba(0,0,0,.72);color:#ddd;font-size:8px}
+.admin-store-form-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-store-status{font-size:10px;color:#8f939a}
+.admin-store-status.ok{color:var(--green)}
+.admin-store-status.error{color:var(--red)}
+.admin-store-list{display:grid;gap:10px}
+.admin-store-item{display:grid;grid-template-columns:auto 82px minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.018)}
+.admin-store-item.is-dragging{opacity:.45}
+.admin-store-drag{font-size:22px;color:#777b82;cursor:grab;user-select:none}
+.admin-store-thumb{width:82px;height:82px;border-radius:9px;overflow:hidden;background:#111318}
+.admin-store-thumb img{width:100%;height:100%;object-fit:cover}
+.admin-store-info strong{display:block;font-size:13px}
+.admin-store-info p{margin:6px 0 0;color:#80848b;font-size:10px;line-height:1.45}
+.admin-store-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.admin-store-meta span{padding:4px 7px;border-radius:999px;border:1px solid var(--line);color:#a4a8af;font-size:8px;font-weight:800;text-transform:uppercase}
+.admin-store-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.admin-store-actions button{min-height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:#14171c;color:#d4d6da;font:inherit;font-size:9px;font-weight:900;cursor:pointer}
+.admin-store-actions button:hover{border-color:rgba(255,213,0,.5)}
+.admin-store-actions .danger{color:#fb7185;border-color:rgba(251,113,133,.25)}
+.admin-store-order-buttons{display:flex;gap:5px}
+@media(max-width:760px){.admin-tabs{width:100%}.admin-tab{flex:1}.admin-store-form{grid-template-columns:1fr}.admin-store-field-wide{grid-column:auto}.admin-store-item{grid-template-columns:auto 64px 1fr}.admin-store-thumb{width:64px;height:64px}.admin-store-actions{grid-column:1/-1;justify-content:flex-start;padding-left:38px}}

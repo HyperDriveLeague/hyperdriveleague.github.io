@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/admin-roster.css?v=1">
   <link rel="stylesheet" href="css/admin-bank.css?v=1">
   <link rel="stylesheet" href="css/admin-wagering.css?v=1">
+  <link rel="stylesheet" href="css/admin-store.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -30,6 +31,10 @@
     <section id="errorPanel" class="admin-message-card error is-hidden"></section>
 
     <div id="adminContent" class="is-hidden">
+      <nav class="admin-tabs" aria-label="Secciones de administración">
+        <button class="admin-tab is-active" type="button" data-admin-tab="control">ADMINISTRACIÓN</button>
+        <button class="admin-tab" type="button" data-admin-tab="store">TIENDA</button>
+      </nav>
       <section class="admin-hero">
         <div class="admin-mark">A</div>
         <div><span class="panel-label">CONTROL DE ACCESO</span><h2>Administración</h2><p>Estado de cuentas, perfiles, permisos y Team Principals.</p></div>
@@ -103,6 +108,86 @@
 
       <section class="module-section-heading"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
       <section id="roleDistribution" class="role-distribution"></section>
+
+      <section id="adminStoreSection" class="admin-store-section" hidden>
+        <section class="admin-hero admin-store-hero">
+          <div class="admin-mark">S</div>
+          <div>
+            <span class="panel-label">MERCHANDISING · TIENDA</span>
+            <h2>Gestión de productos</h2>
+            <p>Crea, edita, elimina y ordena los productos que aparecen en la tienda pública.</p>
+          </div>
+          <span class="system-indicator ok">PUBLICACIÓN DIRECTA</span>
+        </section>
+
+        <section class="module-section-heading">
+          <div><span class="eyebrow">NUEVO PRODUCTO</span><h2 id="storeFormTitle">Crear producto</h2></div>
+          <span class="season-badge">SOLO ADMIN</span>
+        </section>
+
+        <section class="admin-panel admin-store-form-panel">
+          <form id="storeProductForm" class="admin-store-form">
+            <input id="storeProductId" type="hidden">
+
+            <label class="admin-store-field">
+              <span>NOMBRE</span>
+              <input id="storeProductName" type="text" maxlength="120" required placeholder="Ej. Camiseta Staff HyperDrive">
+            </label>
+
+            <label class="admin-store-field">
+              <span>PRECIO</span>
+              <input id="storeProductPrice" type="text" maxlength="40" required placeholder="Ej. 24,95 €">
+            </label>
+
+            <label class="admin-store-field admin-store-field-wide">
+              <span>DESCRIPCIÓN</span>
+              <textarea id="storeProductDescription" rows="4" maxlength="600" required placeholder="Descripción del producto"></textarea>
+            </label>
+
+            <label class="admin-store-field">
+              <span>CATEGORÍA</span>
+              <select id="storeProductCategory">
+                <option value="ropa">Ropa</option>
+                <option value="accesorios">Accesorios</option>
+                <option value="colecciones">Drops / Colecciones</option>
+              </select>
+            </label>
+
+            <label class="admin-store-field">
+              <span>ENLACE DE COMPRA</span>
+              <input id="storeProductUrl" type="url" required placeholder="https://...">
+            </label>
+
+            <div class="admin-store-field admin-store-field-wide">
+              <span>FOTOS</span>
+              <label class="admin-store-upload">
+                <input id="storeProductImages" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple>
+                <strong>+ AÑADIR FOTOS</strong>
+                <small>JPG, PNG, WEBP o AVIF · máximo 10 MB por imagen</small>
+              </label>
+              <div id="storeImagePreview" class="admin-store-image-preview"></div>
+            </div>
+
+            <div class="admin-store-form-actions admin-store-field-wide">
+              <button id="storeSubmitButton" class="primary-button" type="submit">SUBIR PRODUCTO</button>
+              <button id="storeCancelEdit" class="secondary-button is-hidden" type="button">CANCELAR EDICIÓN</button>
+              <span id="storeFormStatus" class="admin-store-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </section>
+
+        <section class="module-section-heading">
+          <div><span class="eyebrow">CATÁLOGO</span><h2>Productos publicados</h2></div>
+          <span class="season-badge">ARRASTRA PARA ORDENAR</span>
+        </section>
+
+        <section class="admin-panel admin-store-list-panel">
+          <p class="admin-note">El orden de esta lista es el mismo que verán los usuarios en la tienda. Arrastra cada producto o usa las flechas para moverlo.</p>
+          <div id="storeAdminList" class="admin-store-list">
+            <div class="empty-line">Cargando productos…</div>
+          </div>
+        </section>
+      </section>
     </div>
   </main>
 
@@ -115,5 +200,6 @@
   <script src="js/admin-roster.js?v=2"></script>
   <script src="js/admin-bank.js?v=2"></script>
   <script src="js/admin-wagering.js?v=2"></script>
+  <script src="js/admin-store.js?v=1"></script>
 </body>
 </html>
