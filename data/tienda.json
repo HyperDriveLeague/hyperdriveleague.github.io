@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-10-05",
-  "provider": "print-on-demand",
+  "updatedAt": "2026-10-06",
+  "provider": "La Tostadora",
   "products": [
     {
       "id": "camiseta-hyperdrive",
-      "name": "Camiseta HyperDrive League",
+      "name": "Camiseta Staff HyperDrive",
       "category": "ropa",
-      "description": "Camiseta negra del Drop 01 con identidad oficial HyperDrive y gráfica Season 8.",
-      "badge": "DROP 01",
-      "price": "",
+      "description": "Camiseta oficial Staff de HyperDrive League. Compra y gestión del pedido directamente a través de La Tostadora.",
+      "badge": "OFICIAL",
+      "price": "VER PRECIO",
       "image": "images/store/camiseta-hyperdrive.svg",
-      "buyUrl": "",
-      "available": false
+      "buyUrl": "https://www.latostadora.com/web/camiseta-staff/20088892?shop_trk=&s=H_A1",
+      "available": true
     },
     {
       "id": "sudadera-hyperdrive",
