@@ -29,6 +29,7 @@
   let currentImages = [];
   let pendingFiles = [];
   let draggedId = null;
+  let dropTargetId = null;
   let isAdmin = false;
 
   const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
@@ -217,25 +218,34 @@
   list.addEventListener('dragend', event => {
     event.target.closest('.admin-store-item')?.classList.remove('is-dragging');
     draggedId = null;
+    dropTargetId = null;
   });
 
   list.addEventListener('dragover', event => {
     event.preventDefault();
     const targetRow = event.target.closest('.admin-store-item');
-    if (!targetRow || !draggedId || targetRow.dataset.productId === draggedId) return;
-    const from = products.findIndex(item => item.id === draggedId);
-    const to = products.findIndex(item => item.id === targetRow.dataset.productId);
-    if (from < 0 || to < 0) return;
-    const [moved] = products.splice(from, 1);
-    products.splice(to, 0, moved);
-    renderList();
+    if (!targetRow || !draggedId || targetRow.dataset.productId === draggedId) {
+      dropTargetId = null;
+      return;
+    }
+    dropTargetId = targetRow.dataset.productId;
+    event.dataTransfer.dropEffect = 'move';
   });
 
   list.addEventListener('drop', async event => {
     event.preventDefault();
-    if (!draggedId) return;
+    if (!draggedId || !dropTargetId || draggedId === dropTargetId) return;
+
+    const from = products.findIndex(item => item.id === draggedId);
+    const to = products.findIndex(item => item.id === dropTargetId);
+    if (from < 0 || to < 0) return;
+
+    const [moved] = products.splice(from, 1);
+    products.splice(to, 0, moved);
+    renderList();
     await persistOrder();
     draggedId = null;
+    dropTargetId = null;
   });
 
   async function persistOrder() {
