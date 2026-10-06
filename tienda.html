@@ -19,7 +19,7 @@
     <meta name="apple-mobile-web-app-title" content="HyperDrive">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/tienda.css?v=3">
+    <link rel="stylesheet" href="css/tienda.css?v=4">
 </head>
 
 <body>
@@ -198,12 +198,26 @@
 
     </main>
 
+
+    <div class="store-gallery-modal" id="store-gallery-modal" hidden>
+        <div class="store-gallery-overlay" data-close-gallery></div>
+        <div class="store-gallery-dialog" role="dialog" aria-modal="true" aria-label="Galería del producto">
+            <button class="store-gallery-close" type="button" data-close-gallery aria-label="Cerrar galería">×</button>
+            <button class="store-gallery-nav store-gallery-prev" type="button" id="store-gallery-prev" aria-label="Imagen anterior">‹</button>
+            <div class="store-gallery-content">
+                <img id="store-gallery-image" src="" alt="Imagen del producto">
+            </div>
+            <button class="store-gallery-nav store-gallery-next" type="button" id="store-gallery-next" aria-label="Siguiente imagen">›</button>
+            <div class="store-gallery-thumbs" id="store-gallery-thumbs"></div>
+        </div>
+    </div>
+
     <div id="site-footer"></div>
 
     <script src="js/layout.js"></script>
     <script src="js/public-account.js?v=2"></script>
     <script src="js/main.js"></script>
-    <script src="js/tienda.js?v=2"></script>
+    <script src="js/tienda.js?v=3"></script>
 
 </body>
 </html>

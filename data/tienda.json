@@ -11,7 +11,14 @@
       "price": "VER PRECIO",
       "image": "images/store/camiseta-staff.webp",
       "buyUrl": "https://www.latostadora.com/web/camiseta-staff/20088892?shop_trk=&s=H_A1",
-      "available": true
+      "available": true,
+      "hoverImage": "images/store/camiseta-staff-back.webp",
+      "gallery": [
+        "images/store/camiseta-staff.webp",
+        "images/store/camiseta-staff-back.webp",
+        "images/store/camiseta-staff-model-front.webp",
+        "images/store/camiseta-staff-model-back.webp"
+      ]
     },
     {
       "id": "sudadera-hyperdrive",
