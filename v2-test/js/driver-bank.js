@@ -55,6 +55,77 @@
     });
   }
 
+  function renderWagerDetail(item) {
+    const detail = item.wager_detail;
+    if (!detail) return null;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'bank-wager-detail';
+
+    const event = document.createElement('div');
+    event.className = 'bank-wager-event';
+    const division = detail.division === 'academy' ? 'Academy' : detail.division === 'hyperdrive' ? 'HyperDrive' : '';
+    event.textContent = [
+      detail.season_number ? 'T' + detail.season_number : '',
+      detail.round_number ? 'R' + detail.round_number : '',
+      detail.grand_prix || '',
+      division
+    ].filter(Boolean).join(' · ');
+    wrap.appendChild(event);
+
+    if (detail.kind === 'hyperbet') {
+      const legs = Array.isArray(detail.legs) ? detail.legs : [];
+      legs.forEach(leg => {
+        const line = document.createElement('div');
+        line.className = 'bank-wager-line';
+
+        const market = document.createElement('strong');
+        market.textContent = leg.market || 'Mercado';
+
+        const selection = document.createElement('span');
+        selection.textContent = ' · ' + (leg.selection || 'Selección');
+
+        const odds = document.createElement('span');
+        odds.className = 'bank-wager-odds';
+        odds.textContent = ' @' + Number(leg.odds || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        line.append(market, selection, odds);
+        wrap.appendChild(line);
+      });
+
+      if (detail.bet_type === 'combo') {
+        const total = document.createElement('div');
+        total.className = 'bank-wager-total';
+        total.textContent = 'Cuota combinada: @' + Number(detail.combined_odds || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        wrap.appendChild(total);
+      }
+    }
+
+    if (detail.kind === 'hyperloto') {
+      const special = document.createElement('div');
+      special.className = 'bank-wager-line';
+      special.textContent = 'Pole: ' + (detail.pole || '—') + ' · Vuelta rápida: ' + (detail.fastest_lap || '—');
+      wrap.appendChild(special);
+
+      const top10 = Array.isArray(detail.top10) ? detail.top10 : [];
+      const grid = document.createElement('div');
+      grid.className = 'bank-loto-grid';
+      top10.forEach(pick => {
+        const chip = document.createElement('span');
+        chip.textContent = 'P' + pick.position + ' ' + (pick.driver || '—');
+        grid.appendChild(chip);
+      });
+      wrap.appendChild(grid);
+
+      const noOdds = document.createElement('div');
+      noOdds.className = 'bank-wager-total';
+      noOdds.textContent = 'Cuota: no aplica · boleto de quiniela HyperLoto';
+      wrap.appendChild(noOdds);
+    }
+
+    return wrap;
+  }
+
   function renderHistory(items) {
     const body = $('bankHistoryBody');
     body.innerHTML = '';
@@ -67,23 +138,35 @@
       body.appendChild(tr);
       return;
     }
+
     items.forEach(item => {
       const tr = document.createElement('tr');
-      const cells = [
-        dateTime(item.transaction_at),
-        item.description || 'Movimiento',
-        item.category || '—'
-      ];
-      cells.forEach(text => {
-        const td = document.createElement('td');
-        td.textContent = text;
-        tr.appendChild(td);
-      });
+
+      const dateCell = document.createElement('td');
+      dateCell.textContent = dateTime(item.transaction_at);
+      tr.appendChild(dateCell);
+
+      const concept = document.createElement('td');
+      concept.className = 'bank-concept-cell';
+      const title = document.createElement('strong');
+      title.className = 'bank-concept-title';
+      title.textContent = item.description || 'Movimiento';
+      concept.appendChild(title);
+
+      const detail = renderWagerDetail(item);
+      if (detail) concept.appendChild(detail);
+      tr.appendChild(concept);
+
+      const category = document.createElement('td');
+      category.textContent = item.category || '—';
+      tr.appendChild(category);
+
       const amount = document.createElement('td');
       const income = item.direction === 'income';
       amount.className = income ? 'bank-positive' : 'bank-negative';
       amount.textContent = (income ? '+' : '−') + money(item.amount_m) + ' M';
       tr.appendChild(amount);
+
       body.appendChild(tr);
     });
   }
@@ -94,7 +177,7 @@
 
     const [dashboardResponse, historyResponse, transfersResponse] = await Promise.all([
       client.rpc('driver_bank_dashboard'),
-      client.rpc('driver_bank_history', { p_limit: 100 }),
+      client.rpc('driver_bank_history_v2', { p_limit: 100 }),
       client.rpc('driver_transfer_history', { p_limit: 100 })
     ]);
 
