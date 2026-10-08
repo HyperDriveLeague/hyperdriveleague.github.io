@@ -65,7 +65,7 @@
           <label><span>PAÍS</span><input name="new_country_code" maxlength="2" value="ES"></label>
           <label><span>REGIÓN</span><input name="new_region" placeholder="Murcia, Almería…"></label>
           <label class="full"><span>NOMBRE EN RESULTADOS SI ES DISTINTO</span><input name="new_result_alias" placeholder="Opcional"></label>
-          <label><span>ESCUDERÍA</span><select name="new_team"><option value="">Selecciona escudería</option>${teams.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('')}</select></label>
+          <label><span>ESCUDERÍA</span><select name="new_team"><option value="">Selecciona escudería</option><option value="__reserve__">RESERVA · Sin escudería</option>${teams.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('')}</select></label>
           <label><span>DIVISIÓN</span><select name="new_division"><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
           <label><span>TIPO</span><select name="new_roster_status"><option value="official">Oficial</option><option value="reserve">Reserva</option></select></label>
           <label><span>DESDE RONDA</span><input name="new_start_round" type="number" min="1" step="1" placeholder="Ej. 5"></label>
@@ -97,6 +97,12 @@
           : '+ CREAR PILOTO NUEVO PARA ESTA CUENTA';
       });
 
+      const newTeamSelect = card.querySelector('[name="new_team"]');
+      const newRosterStatusSelect = card.querySelector('[name="new_roster_status"]');
+      newTeamSelect.addEventListener('change', () => {
+        if (newTeamSelect.value === '__reserve__') newRosterStatusSelect.value = 'reserve';
+      });
+
       createPilotButton.addEventListener('click', async () => {
         createPilotStatus.className = 'pending-create-status';
         createPilotStatus.textContent = '';
@@ -106,15 +112,17 @@
         const countryCode = String(card.querySelector('[name="new_country_code"]').value || '').trim();
         const region = String(card.querySelector('[name="new_region"]').value || '').trim();
         const resultAlias = String(card.querySelector('[name="new_result_alias"]').value || '').trim();
-        const rosterTeamId = card.querySelector('[name="new_team"]').value || null;
+        const rosterTeamChoice = card.querySelector('[name="new_team"]').value;
+        const reserveOnly = rosterTeamChoice === '__reserve__';
+        const rosterTeamId = reserveOnly ? null : (rosterTeamChoice || null);
         const division = card.querySelector('[name="new_division"]').value;
-        const rosterStatus = card.querySelector('[name="new_roster_status"]').value;
+        const rosterStatus = reserveOnly ? 'reserve' : card.querySelector('[name="new_roster_status"]').value;
         const startRound = Number(card.querySelector('[name="new_start_round"]').value);
         const chosenRoles = [...form.querySelectorAll('input[name="roles"]:checked')].map(input => input.value);
         const principalTeamId = tp.checked ? (team.value || null) : null;
 
         if (!nickname) { createPilotStatus.classList.add('error'); createPilotStatus.textContent='Escribe el nombre/gamertag del piloto.'; return; }
-        if (!rosterTeamId) { createPilotStatus.classList.add('error'); createPilotStatus.textContent='Selecciona la escudería del piloto.'; return; }
+        if (!rosterTeamChoice) { createPilotStatus.classList.add('error'); createPilotStatus.textContent='Selecciona una escudería o RESERVA · Sin escudería.'; return; }
         if (!Number.isInteger(startRound) || startRound < 1) { createPilotStatus.classList.add('error'); createPilotStatus.textContent='Indica desde qué ronda entra en la alineación.'; return; }
         if (tp.checked && !principalTeamId) { createPilotStatus.classList.add('error'); createPilotStatus.textContent='Selecciona también la escudería como Team Principal.'; return; }
 
@@ -151,7 +159,9 @@
         }
 
         createPilotStatus.classList.add('success');
-        createPilotStatus.textContent = 'Piloto creado: ficha, Banco +5 M, Superlicencia y alineación listas.';
+        createPilotStatus.textContent = reserveOnly
+          ? 'Piloto creado como RESERVA sin escudería: ficha, Banco +5 M y Superlicencia listas.'
+          : 'Piloto creado: ficha, Banco +5 M, Superlicencia y alineación listas.';
         await client.rpc('admin_refresh_wagering_cycle');
         setTimeout(() => window.location.reload(), 950);
       });
