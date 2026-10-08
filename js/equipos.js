@@ -165,6 +165,190 @@ document.addEventListener(
 
 
         // ========================================
+        // ALINEACIÓN PÚBLICA DESDE SUPABASE
+        // ========================================
+
+        const SUPABASE_URL =
+            "https://knyxattsjimsjefydcad.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_hLAzZZF6kki1xZ0Kyx6lfA_97kzSAmf";
+
+        const CURRENT_SEASON = 8;
+
+
+        function loadSupabaseLibrary() {
+
+            if (
+                window.supabase &&
+                typeof window.supabase.createClient ===
+                    "function"
+            ) {
+                return Promise.resolve();
+            }
+
+
+            return new Promise(
+                (resolve, reject) => {
+
+                    const existing =
+                        document.querySelector(
+                            "script[data-teams-supabase]"
+                        );
+
+                    if (existing) {
+
+                        existing.addEventListener(
+                            "load",
+                            resolve,
+                            { once: true }
+                        );
+
+                        existing.addEventListener(
+                            "error",
+                            reject,
+                            { once: true }
+                        );
+
+                        return;
+                    }
+
+
+                    const script =
+                        document.createElement(
+                            "script"
+                        );
+
+                    script.src =
+                        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js";
+
+                    script.async = true;
+
+                    script.dataset.teamsSupabase =
+                        "1";
+
+                    script.onload = resolve;
+                    script.onerror = reject;
+
+                    document.head.appendChild(
+                        script
+                    );
+
+                }
+            );
+
+        }
+
+
+        async function fetchOfficialRoster() {
+
+            try {
+
+                await loadSupabaseLibrary();
+
+
+                const client =
+                    window.supabase.createClient(
+                        SUPABASE_URL,
+                        SUPABASE_KEY,
+                        {
+                            auth: {
+                                persistSession: false,
+                                autoRefreshToken: false,
+                                detectSessionInUrl: false
+                            }
+                        }
+                    );
+
+
+                const {
+                    data,
+                    error
+                } =
+                    await client.rpc(
+                        "public_official_roster",
+                        {
+                            p_season_number:
+                                CURRENT_SEASON
+                        }
+                    );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                const roster = {
+                    hyperdrive: [],
+                    academy: []
+                };
+
+
+                (data || []).forEach(
+                    item => {
+
+                        const division =
+                            String(
+                                item?.division ??
+                                ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            !DIVISIONS.includes(
+                                division
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        roster[
+                            division
+                        ].push({
+                            driverName:
+                                String(
+                                    item?.driver_name ??
+                                    ""
+                                ).trim(),
+
+                            teamName:
+                                String(
+                                    item?.team_name ??
+                                    ""
+                                ).trim()
+                        });
+
+                    }
+                );
+
+
+                return roster;
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "HyperDrive Equipos: no se pudo cargar la alineación desde Supabase; se usará el JSON de respaldo.",
+                    error
+                );
+
+
+                return fetchJSON(
+                    "data/official-drivers.json",
+                    true
+                );
+
+            }
+
+        }
+
+
+
+        // ========================================
         // FOTO PILOTO
         // ========================================
 
@@ -2421,10 +2605,7 @@ document.addEventListener(
                             true
                         ),
 
-                        fetchJSON(
-                            "data/official-drivers.json",
-                            true
-                        ),
+                        fetchOfficialRoster(),
 
                         fetchJSON(
                             "data/driver-profiles.json",
