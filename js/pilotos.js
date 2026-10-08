@@ -505,6 +505,205 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // PARRILLA OFICIAL DESDE SUPABASE
+    // ========================================
+
+    const SUPABASE_URL =
+        "https://knyxattsjimsjefydcad.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_hLAzZZF6kki1xZ0Kyx6lfA_97kzSAmf";
+
+    const CURRENT_SEASON = 8;
+
+
+    function loadSupabaseLibrary() {
+
+        if (
+            window.supabase &&
+            typeof window.supabase.createClient ===
+                "function"
+        ) {
+            return Promise.resolve();
+        }
+
+
+        return new Promise(
+            (resolve, reject) => {
+
+                const existing =
+                    document.querySelector(
+                        "script[data-drivers-supabase]"
+                    );
+
+                if (existing) {
+
+                    existing.addEventListener(
+                        "load",
+                        resolve,
+                        { once: true }
+                    );
+
+                    existing.addEventListener(
+                        "error",
+                        reject,
+                        { once: true }
+                    );
+
+                    return;
+                }
+
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+
+                script.src =
+                    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js";
+
+                script.async = true;
+
+                script.dataset.driversSupabase =
+                    "1";
+
+                script.onload = resolve;
+                script.onerror = reject;
+
+                document.head.appendChild(
+                    script
+                );
+
+            }
+        );
+
+    }
+
+
+    async function fetchOfficialDrivers() {
+
+        try {
+
+            await loadSupabaseLibrary();
+
+
+            const client =
+                window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY,
+                    {
+                        auth: {
+                            persistSession: false,
+                            autoRefreshToken: false,
+                            detectSessionInUrl: false
+                        }
+                    }
+                );
+
+
+            const {
+                data,
+                error
+            } =
+                await client.rpc(
+                    "public_driver_grid",
+                    {
+                        p_season_number:
+                            CURRENT_SEASON
+                    }
+                );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            const roster = {
+                hyperdrive: [],
+                academy: []
+            };
+
+
+            (data || []).forEach(
+                item => {
+
+                    const division =
+                        String(
+                            item?.division ??
+                            ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (
+                        !DIVISIONS.includes(
+                            division
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    roster[
+                        division
+                    ].push({
+                        driverName:
+                            String(
+                                item?.driver_name ??
+                                ""
+                            ).trim(),
+
+                        teamName:
+                            String(
+                                item?.team_name ??
+                                ""
+                            ).trim(),
+
+                        number:
+                            item?.race_number ??
+                            null,
+
+                        region:
+                            String(
+                                item?.region ??
+                                ""
+                            ).trim(),
+
+                        image:
+                            String(
+                                item?.avatar_url ??
+                                ""
+                            ).trim()
+                    });
+
+                }
+            );
+
+
+            return roster;
+
+        }
+        catch (error) {
+
+            console.warn(
+                "HyperDrive Pilotos: no se pudo cargar la parrilla desde Supabase; se usará el JSON de respaldo.",
+                error
+            );
+
+
+            return loadJSON(
+                "data/official-drivers.json"
+            );
+
+        }
+
+    }
+
+
+
+    // ========================================
     // CARGAR ARCHIVOS DE CARRERA
     // ========================================
 
@@ -1484,24 +1683,38 @@ document.addEventListener("DOMContentLoaded", () => {
             profile.number !== undefined &&
             profile.number !== ""
                 ? profile.number
-                : "—";
+                : (
+                    officialDriver.number !== null &&
+                    officialDriver.number !== undefined &&
+                    officialDriver.number !== ""
+                        ? officialDriver.number
+                        : "—"
+                );
 
 
         const region =
             profile.region
                 ? profile.region
-                : "Comunidad por definir";
+                : (
+                    officialDriver.region
+                        ? officialDriver.region
+                        : "Comunidad por definir"
+                );
 
 
         const image =
             profile.image
                 ? profile.image
                 : (
-                    "images/drivers/" +
-                    driverSlug(
-                        officialDriver.driverName
-                    ) +
-                    ".png"
+                    officialDriver.image
+                        ? officialDriver.image
+                        : (
+                            "images/drivers/" +
+                            driverSlug(
+                                officialDriver.driverName
+                            ) +
+                            ".png"
+                        )
                 );
 
 
@@ -2063,9 +2276,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ] =
                 await Promise.all([
 
-                    loadJSON(
-                        "data/official-drivers.json"
-                    ),
+                    fetchOfficialDrivers(),
 
                     loadJSON(
                         "data/driver-profiles.json"
