@@ -19,8 +19,11 @@
     teams=teamsRes.data||[]; drivers=driversRes.data||[]; roster=rosterRes.data||[];
   }
 
-  function teamOptions(selected){
-    return teams.map(t=>'<option value="'+esc(t.id)+'" '+(t.id===selected?'selected':'')+'>'+esc(t.name)+'</option>').join('');
+  function teamOptions(selected, allowReserve=false){
+    const reserve = allowReserve
+      ? '<option value="__reserve__" '+(selected===null?'selected':'')+'>RESERVA · Sin escudería</option>'
+      : '';
+    return reserve + teams.map(t=>'<option value="'+esc(t.id)+'" '+(t.id===selected?'selected':'')+'>'+esc(t.name)+'</option>').join('');
   }
   function driverOptions(selected){
     return drivers.map(d=>'<option value="'+esc(d.id)+'" '+(d.id===selected?'selected':'')+'>#'+esc(d.race_number??'--')+' · '+esc(d.nickname)+'</option>').join('');
@@ -58,7 +61,7 @@
             <label class="roster-field"><span>PAÍS</span><input name="country_code" maxlength="2" value="ES"></label>
             <label class="roster-field"><span>REGIÓN</span><input name="region" placeholder="Murcia, Almería…"></label>
             <label class="roster-field full"><span>NOMBRE EN RESULTADOS SI ES DISTINTO</span><input name="result_alias" placeholder="Déjalo vacío si coincide con el gamertag"></label>
-            <label class="roster-field"><span>ESCUDERÍA</span><select name="team_id" required><option value="">Selecciona</option>${teamOptions('')}</select></label>
+            <label class="roster-field"><span>ESCUDERÍA</span><select name="team_id" required><option value="">Selecciona</option>${teamOptions('',true)}</select></label>
             <label class="roster-field"><span>DIVISIÓN</span><select name="division">${divOptions('academy')}</select></label>
             <label class="roster-field"><span>TIPO</span><select name="roster_status">${statusOptions('official')}</select></label>
             <label class="roster-field"><span>DESDE RONDA</span><input name="start_round" type="number" min="1" value="5" required></label>
@@ -69,7 +72,7 @@
           <h3>Nueva asignación / fichaje</h3>
           <form id="assignRosterForm" class="roster-form">
             <label class="roster-field full"><span>PILOTO EXISTENTE</span><select name="driver_id" required><option value="">Selecciona</option>${driverOptions('')}</select></label>
-            <label class="roster-field"><span>ESCUDERÍA</span><select name="team_id" required><option value="">Selecciona</option>${teamOptions('')}</select></label>
+            <label class="roster-field"><span>ESCUDERÍA</span><select name="team_id" required><option value="">Selecciona</option>${teamOptions('',true)}</select></label>
             <label class="roster-field"><span>DIVISIÓN</span><select name="division">${divOptions('academy')}</select></label>
             <label class="roster-field"><span>TIPO</span><select name="roster_status">${statusOptions('official')}</select></label>
             <label class="roster-field"><span>DESDE RONDA</span><input name="start_round" type="number" min="1" value="5" required></label>
@@ -87,7 +90,7 @@
       tr.dataset.id=item.roster_id;
       tr.innerHTML=`
         <td class="roster-driver"><strong>#${esc(item.race_number??'--')} ${esc(item.nickname)}</strong><small>${esc((item.result_aliases||[]).join(' · '))} · Banco ${Number(item.bank_balance_m||0).toFixed(2)} M${item.has_user_account?' · Cuenta vinculada':' · Sin cuenta'}</small></td>
-        <td><select name="team_id">${teamOptions(item.team_id)}</select></td>
+        <td><select name="team_id">${teamOptions(item.team_id,true)}</select></td>
         <td><select name="division">${divOptions(item.division)}</select></td>
         <td><select name="roster_status">${statusOptions(item.roster_status)}</select></td>
         <td><input name="start_round" type="number" min="1" value="${esc(item.start_round)}"></td>
@@ -97,6 +100,9 @@
       `;
       body.appendChild(tr);
 
+      const rowTeam=tr.querySelector('[name="team_id"]');
+      const rowStatus=tr.querySelector('[name="roster_status"]');
+      rowTeam.addEventListener('change',()=>{ if(rowTeam.value==='__reserve__') rowStatus.value='reserve'; });
       tr.querySelector('.roster-save').addEventListener('click',()=>saveRow(tr,item));
       const endBtn=tr.querySelector('.roster-end');
       if(endBtn) endBtn.addEventListener('click',()=>endRow(tr,item));
@@ -111,9 +117,16 @@
 
   function wireForms(panel){
     const create=panel.querySelector('#standalonePilotForm');
+    const createTeam=create.elements.team_id;
+    const createStatus=create.elements.roster_status;
+    createTeam.addEventListener('change',()=>{ if(createTeam.value==='__reserve__') createStatus.value='reserve'; });
     create.addEventListener('submit',async e=>{
       e.preventDefault(); setFormStatus(create,'');
-      const fd=new FormData(create); const btn=create.querySelector('button'); btn.disabled=true; btn.querySelector('span').textContent='CREANDO…';
+      const fd=new FormData(create);
+      const teamChoice=String(fd.get('team_id')||'');
+      if(!teamChoice){setFormStatus(create,'Selecciona una escudería o RESERVA · Sin escudería.','error');return;}
+      const reserveOnly=teamChoice==='__reserve__';
+      const btn=create.querySelector('button'); btn.disabled=true; btn.querySelector('span').textContent='CREANDO…';
       const {error}=await client.rpc('admin_create_driver',{
         p_nickname:String(fd.get('nickname')||'').trim(),
         p_race_number:fd.get('race_number')?Number(fd.get('race_number')):null,
@@ -121,25 +134,32 @@
         p_region:String(fd.get('region')||'').trim()||null,
         p_result_alias:String(fd.get('result_alias')||'').trim()||null,
         p_season_number:config.currentSeason,
-        p_team_id:fd.get('team_id')||null,
+        p_team_id:reserveOnly?null:teamChoice,
         p_division:fd.get('division'),
-        p_roster_status:fd.get('roster_status'),
+        p_roster_status:reserveOnly?'reserve':fd.get('roster_status'),
         p_start_round:Number(fd.get('start_round')),
         p_user_id:null,p_roles:null,p_principal_team_id:null
       });
       if(error){setFormStatus(create,error.message||'No se pudo crear el piloto.','error');btn.disabled=false;btn.querySelector('span').textContent='CREAR PILOTO';return;}
-      setFormStatus(create,'Piloto creado con Banco del Piloto, 5 M, Superlicencia y alineación.','success');
+      setFormStatus(create,reserveOnly?'Piloto creado como RESERVA sin escudería, con Banco +5 M y Superlicencia.':'Piloto creado con Banco del Piloto, 5 M, Superlicencia y alineación.','success');
       await client.rpc('admin_refresh_wagering_cycle');
       setTimeout(()=>window.location.reload(),900);
     });
 
     const assign=panel.querySelector('#assignRosterForm');
+    const assignTeam=assign.elements.team_id;
+    const assignStatus=assign.elements.roster_status;
+    assignTeam.addEventListener('change',()=>{ if(assignTeam.value==='__reserve__') assignStatus.value='reserve'; });
     assign.addEventListener('submit',async e=>{
       e.preventDefault(); setFormStatus(assign,'');
-      const fd=new FormData(assign); const btn=assign.querySelector('button'); btn.disabled=true; btn.querySelector('span').textContent='GUARDANDO…';
+      const fd=new FormData(assign);
+      const teamChoice=String(fd.get('team_id')||'');
+      if(!teamChoice){setFormStatus(assign,'Selecciona una escudería o RESERVA · Sin escudería.','error');return;}
+      const reserveOnly=teamChoice==='__reserve__';
+      const btn=assign.querySelector('button'); btn.disabled=true; btn.querySelector('span').textContent='GUARDANDO…';
       const {error}=await client.rpc('admin_assign_driver_roster',{
-        p_driver_id:fd.get('driver_id'),p_season_number:config.currentSeason,p_team_id:fd.get('team_id'),
-        p_division:fd.get('division'),p_roster_status:fd.get('roster_status'),p_start_round:Number(fd.get('start_round'))
+        p_driver_id:fd.get('driver_id'),p_season_number:config.currentSeason,p_team_id:reserveOnly?null:teamChoice,
+        p_division:fd.get('division'),p_roster_status:reserveOnly?'reserve':fd.get('roster_status'),p_start_round:Number(fd.get('start_round'))
       });
       if(error){setFormStatus(assign,error.message||'No se pudo guardar el fichaje.','error');btn.disabled=false;btn.querySelector('span').textContent='GUARDAR FICHAJE';return;}
       setFormStatus(assign,'Asignación actualizada correctamente.','success');
@@ -153,9 +173,9 @@
     const end=tr.querySelector('[name="end_round"]').value;
     const {error}=await client.rpc('admin_update_roster_assignment',{
       p_roster_id:item.roster_id,
-      p_team_id:tr.querySelector('[name="team_id"]').value,
+      p_team_id:tr.querySelector('[name="team_id"]').value==='__reserve__'?null:tr.querySelector('[name="team_id"]').value,
       p_division:tr.querySelector('[name="division"]').value,
-      p_roster_status:tr.querySelector('[name="roster_status"]').value,
+      p_roster_status:tr.querySelector('[name="team_id"]').value==='__reserve__'?'reserve':tr.querySelector('[name="roster_status"]').value,
       p_start_round:Number(tr.querySelector('[name="start_round"]').value),
       p_end_round:end?Number(end):null,
       p_is_active:item.is_active
