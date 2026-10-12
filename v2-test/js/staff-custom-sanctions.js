@@ -16,18 +16,23 @@
      $('articleDescription').textContent=reason.value||'Escribe una descripción personalizada.';
    }
  }
- const obs=new MutationObserver(()=>{
-   const opt=[...article.options].find(x=>x.value==='PERSONALIZADO');
-   if(!opt)return;
-   const wasSelected=article.value==='PERSONALIZADO';
-   opt.remove();
-   const item=new Option('PERSONALIZADO · Introducir puntos y descripción','PERSONALIZADO');
-   article.insertBefore(item,article.options[1]||null);
-   if(wasSelected)article.value='PERSONALIZADO';
-   obs.disconnect();
-   if(wasSelected)sync();
- });
- obs.observe(article,{childList:true,subtree:true});
+ function ensureCustomOption(){
+   const found=[...article.options].find(x=>x.value==='PERSONALIZADO');
+   if(!found){
+     const option=new Option('PERSONALIZADO · Puntos y descripción manual','PERSONALIZADO');
+     article.insertBefore(option,article.children[1]||null);
+     return;
+   }
+   if(found.parentElement!==article||article.children[1]!==found){
+     const chosen=article.value;
+     found.remove();
+     article.insertBefore(found,article.children[1]||null);
+     if(chosen)article.value=chosen;
+   }
+ }
+ const observer=new MutationObserver(ensureCustomOption);
+ observer.observe(article,{childList:true,subtree:true});
+ ensureCustomOption();
  article.addEventListener('change',sync);
  points.addEventListener('input',sync);reason.addEventListener('input',sync);
  window.addEventListener('hyperdrive:edit-sanction',e=>{
