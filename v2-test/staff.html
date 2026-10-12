@@ -59,7 +59,9 @@
               <div class="article-preview-top"><span class="rule-pill">SEGUNDOS: <strong id="articleSeconds">—</strong></span><span class="rule-pill">PUNTOS: <strong id="articlePoints">—</strong></span></div>
               <p id="articleDescription">Selecciona un artículo para cargar la sanción del reglamento.</p>
             </div>
-            <label class="op-field"><span>Piloto</span><select id="sanctionDriver" class="op-select" required></select></label>
+            <label class="op-field is-hidden" id="customSanctionPointsWrap"><span>Puntos a descontar</span><input id="customSanctionPoints" class="op-input" type="number" min="0" max="99" step="1"></label>
+<label class="op-field full is-hidden" id="customSanctionDescriptionWrap"><span>Descripción personalizada</span><textarea id="customSanctionDescription" class="op-textarea" minlength="3" maxlength="500" rows="3"></textarea></label>
+<label class="op-field"><span>Piloto</span><select id="sanctionDriver" class="op-select" required></select></label>
             <label class="op-field"><span>Escudería sancionada</span><select id="sanctionTeam" class="op-select" required></select><small id="sanctionTeamMode" class="team-mode">Se rellenará al elegir piloto.</small></label>
             <label class="op-field"><span>Escudería beneficiada · opcional</span><select id="beneficiaryTeam" class="op-select"></select><small class="money-hint">Si eliges una, se transfieren automáticamente 0,50 M entre equipos.</small></label>
             <label class="op-field"><span>Ronda</span><input id="sanctionRound" class="op-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
@@ -148,7 +150,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=2"></script>
-  <script src="js/staff-operations.js?v=3"></script>
+  <script src="js/staff-operations.js?v=4"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
 </body>
 </html>
