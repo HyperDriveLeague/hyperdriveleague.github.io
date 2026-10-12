@@ -21,13 +21,14 @@
    if(principalResp.error)throw principalResp.error;
    if(rosterResp.error)throw rosterResp.error;
    const principal=principalResp.data,activeRoster=rosterResp.data;
-   if(principal?.team_id&&principal.team_id===activeRoster?.team_id){
+   const allResponse=await db.from('driver_contracts').select('id,team_account_id,driver_value_m,buyout_clause_m,contract_end_label,status,is_team_principal_contract').eq('driver_id',driverId).eq('status','active');
+   if(allResponse.error)throw allResponse.error;
+   if((allResponse.data||[]).some(c=>c.is_team_principal_contract)||(principal?.team_id&&principal.team_id===activeRoster?.team_id)){
      target.innerHTML=box('Situación','TEAM PRINCIPAL')+box('Escudería',activeRoster?.teams?.name||'Equipo propio')+
       '<p class="pilot-contract-caption"><strong>Piloto propietario de su escudería.</strong> No tienes contrato como piloto, cláusula de rescisión ni vencimiento; tampoco ocupas salary cap por contrato.</p>';
      return;
    }
-   const {data:contracts,error:ce}=await db.from('driver_contracts').select('id,team_account_id,driver_value_m,buyout_clause_m,contract_end_label,status').eq('driver_id',driverId).eq('status','active').eq('is_team_principal_contract',false);
-   if(ce)throw ce;
+   const contracts=(allResponse.data||[]).filter(c=>!c.is_team_principal_contract);
    if(!contracts?.length){target.innerHTML='<p class="muted">Ahora mismo no tienes ningún contrato vigente.</p>';return;}
    const {data:terms,error:te}=await db.from('contract_terms').select('contract_id,end_half,periods,paid_total_m,imported_legacy').in('contract_id',contracts.map(x=>x.id));
    if(te)throw te;
