@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/admin-wagering.css?v=1">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
   <link rel="stylesheet" href="css/admin-navigation.css?v=1">
-  <link rel="stylesheet" href="css/admin-contracts.css?v=2">
+  <link rel="stylesheet" href="css/admin-contracts.css?v=3">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -147,6 +147,11 @@
             <div id="cmFreeList" class="contracts-free-list"></div>
           </div>
         </div>
+        <section class="contracts-panel">
+          <h3>Team Principals que compiten en su propia escudería</h3>
+          <p class="admin-note">Son propietarios de su escudería: no tienen contrato de piloto, cláusula de rescisión ni fecha de vencimiento. No aparecen como agentes libres.</p>
+          <div id="cmOwnerList" class="contracts-free-list contracts-owners-list"></div>
+        </section>
         <section class="contracts-editor">
           <h3 id="cmFormTitle">Registrar operación</h3>
           <form id="cmForm" class="contracts-form">
@@ -277,6 +282,6 @@
   <script src="js/admin-wagering.js?v=2"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
-  <script src="js/admin-contracts.js?v=2"></script>
+  <script src="js/admin-contracts.js?v=3"></script>
 </body>
 </html>
