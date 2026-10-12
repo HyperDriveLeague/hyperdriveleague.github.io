@@ -19,10 +19,13 @@
  const obs=new MutationObserver(()=>{
    const opt=[...article.options].find(x=>x.value==='PERSONALIZADO');
    if(!opt)return;
+   const wasSelected=article.value==='PERSONALIZADO';
    opt.remove();
    const item=new Option('PERSONALIZADO · Introducir puntos y descripción','PERSONALIZADO');
    article.insertBefore(item,article.options[1]||null);
+   if(wasSelected)article.value='PERSONALIZADO';
    obs.disconnect();
+   if(wasSelected)sync();
  });
  obs.observe(article,{childList:true,subtree:true});
  article.addEventListener('change',sync);
