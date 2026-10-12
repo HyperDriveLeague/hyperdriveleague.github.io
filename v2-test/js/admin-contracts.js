@@ -32,15 +32,24 @@
   const accountFor=c=>accountMap.get(c.team_account_id);
   const teamFor=c=>teamMap.get(accountFor(c)?.team_id);
   const driverFor=c=>driverMap.get(c.driver_id);
-  const ownerDriverIds=()=>{
+  const ownerDriversByTeam=()=>{
     const byUser=new Map(profiles.map(p=>[p.id,p.driver_id]));
-    const own=new Set();
+    const owners=new Map();
+    contracts.filter(c=>c.is_team_principal_contract&&c.status==='active').forEach(c=>{
+      const account=accountMap.get(c.team_account_id);
+      if(account?.season_number!==season())return;
+      const onTeam=rosters.some(r=>r.driver_id===c.driver_id&&r.team_id===account.team_id&&r.season_number===season()&&r.is_active);
+      if(onTeam)owners.set(account.team_id,{driver_id:c.driver_id,hasAccount:!!profiles.find(p=>p.driver_id===c.driver_id)});
+    });
     principals.filter(p=>p.is_active&&p.season_number===season()).forEach(p=>{
       const driverId=byUser.get(p.user_id);
-      if(driverId&&rosters.some(r=>r.driver_id===driverId&&r.team_id===p.team_id&&r.season_number===season()&&r.is_active))own.add(driverId);
+      if(driverId&&rosters.some(r=>r.driver_id===driverId&&r.team_id===p.team_id&&r.season_number===season()&&r.is_active)){
+        owners.set(p.team_id,{driver_id:driverId,hasAccount:true});
+      }
     });
-    return own;
+    return owners;
   };
+  const ownerDriverIds=()=>new Set([...ownerDriversByTeam().values()].map(v=>v.driver_id));
   const activeNow=c=>!c.is_team_principal_contract&&c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).end_half)>=currentHalf());
   const nameFor=c=>(driverFor(c)?.nickname||'Piloto')+' · '+(teamFor(c)?.name||'Sin escudería');
   const sortedActive=()=>contracts.filter(activeNow).sort((a,b)=>nameFor(a).localeCompare(nameFor(b),'es'));
@@ -96,7 +105,7 @@
   function renderStats(){
     const active=sortedActive(),owned=ownerDriverIds(),free=drivers.filter(d=>!owned.has(d.id)&&!active.some(c=>c.driver_id===d.id)),unmapped=active.filter(c=>!termMap.has(c.id));
     $('cmStats').innerHTML=[
-      ['Contratos vigentes',active.length],['Pilotos sin contrato',free.length],['Team Principals',new Set(principals.filter(p=>p.is_active&&p.season_number===season()).map(p=>p.team_id)).size],['Por periodizar',unmapped.length]
+      ['Contratos vigentes',active.length],['Pilotos sin contrato',free.length],['Team Principals',ownerDriversByTeam().size],['Por periodizar',unmapped.length]
     ].map(([title,value])=>'<div class="contracts-stat"><strong>'+value+'</strong><span>'+escape(title)+'</span></div>').join('');
   }
 
@@ -126,27 +135,26 @@
   }
 
   function renderOwners(){
+    const owners=ownerDriversByTeam();
     const byUser=new Map(profiles.map(p=>[p.id,p.driver_id]));
-    const all=principals.filter(p=>p.is_active&&p.season_number===season());
-    const unique=new Map(all.map(p=>[p.team_id,p]));
-    const entries=[...unique.values()].sort((a,b)=>(teamMap.get(a.team_id)?.name||'').localeCompare(teamMap.get(b.team_id)?.name||'','es'));
-    const owned=ownerDriverIds();
-    const mismatches=entries.filter(p=>!owned.has(byUser.get(p.user_id)));
-    $('cmOwnerList').innerHTML=entries.length?entries.map(p=>{
-      const driverId=byUser.get(p.user_id);
-      const driver=driverMap.get(driverId);
-      const team=teamMap.get(p.team_id);
-      const roster=rosters.find(r=>r.driver_id===driverId&&r.season_number===season()&&r.is_active);
-      const matches=owned.has(driverId);
-      const teamName=team?.name||'Escudería';
-      const label=matches?'PROPIETARIO · SIN CLÁUSULA':(roster?'REVISAR: ficha en '+(teamMap.get(roster.team_id)?.name||'otro equipo'):'REVISAR: sin piloto vinculado a plantilla');
-      return '<div class="contracts-free-entry'+(matches?'':' contracts-owner-warning')+'"><strong>'+
+    const assigned=new Map(principals.filter(p=>p.is_active&&p.season_number===season()).map(p=>[p.team_id,p]));
+    const teamsAll=new Set([...owners.keys(),...assigned.keys()]);
+    const sorted=[...teamsAll].sort((a,b)=>(teamMap.get(a)?.name||'').localeCompare(teamMap.get(b)?.name||'','es'));
+    const mismatches=[];
+    $('cmOwnerList').innerHTML=sorted.length?sorted.map(teamId=>{
+      const entry=owners.get(teamId);
+      const declared=assigned.get(teamId);
+      const linkedId=declared?byUser.get(declared.user_id):null;
+      const mismatch=(!entry||!!declared&&linkedId!==entry.driver_id);
+      if(mismatch)mismatches.push(teamId);
+      const driver=driverMap.get(entry?.driver_id||linkedId);
+      const teamName=teamMap.get(teamId)?.name||'Escudería';
+      const label=mismatch?'REVISAR ASIGNACIÓN':!entry.hasAccount?'PROPIETARIO · CUENTA PENDIENTE':'PROPIETARIO · SIN CLÁUSULA';
+      return '<div class="contracts-free-entry'+(mismatch?' contracts-owner-warning':'')+'"><strong>'+
        escape(teamName)+' · '+escape(driver?.nickname||'Piloto sin vincular')+
        '</strong><span>'+escape(label)+'</span></div>';
-    }).join(''):'<div class="empty-line">No hay Team Principals para esta temporada.</div>';
-    if(mismatches.length) {
-      $('cmOwnerList').insertAdjacentHTML('afterbegin','<p class="contracts-owner-notice">Hay '+mismatches.length+' Team Principal(s) cuya escudería no coincide con la plantilla. Debes corregir la asignación antes de excluir su contrato y salary cap.</p>');
-    }
+    }).join(''):'<div class="empty-line">No hay propietarios registrados para esta temporada.</div>';
+    if(mismatches.length)$('cmOwnerList').insertAdjacentHTML('afterbegin','<p class="contracts-owner-notice">Hay '+mismatches.length+' vinculación(es) de Team Principal que no coinciden con el piloto propietario.</p>');
   }
   const kindNames={import:'Integración sin cargo',new:'Nuevo contrato',extend:'Ampliación',raise:'Subida de cláusula',buyout:'Fichaje por cláusula'};
   function renderHistory(){
