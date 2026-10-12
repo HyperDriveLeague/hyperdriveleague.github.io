@@ -22,6 +22,13 @@
     const t=termMap.get(c.id);
     return t?Math.round(currentValue(c)*150)/100:Number(c.buyout_clause_m||0);
   };
+  const seasonCap=c=>{
+    const t=termMap.get(c.id),base=2*season();
+    if(!t)return accountMap.get(c.team_account_id)?.season_number===season()?Number(c.driver_value_m||0):0;
+    const spread=periodsSum(t.periods,base,base+1);
+    return t.imported_legacy&&Number(t.import_season)===season()?
+      Number(t.legacy_cap_m||0)+spread-periodsSum(t.legacy_periods,base,base+1):spread;
+  };
   const accountFor=c=>accountMap.get(c.team_account_id);
   const teamFor=c=>teamMap.get(accountFor(c)?.team_id);
   const driverFor=c=>driverMap.get(c.driver_id);
@@ -90,11 +97,13 @@
     $('cmActiveBody').innerHTML=list.length?list.map(c=>{
       const t=termMap.get(c.id);
       return '<tr><td><strong>'+escape(driverFor(c)?.nickname||'Piloto')+'</strong><small>'+escape(teamFor(c)?.name||'—')+(t&&t.imported_legacy?' · heredado':'')+'</small></td>'+
+       '<td>'+(t?((Number(t.end_half)-Number(t.start_half)+1)/2).toLocaleString('es-ES')+' temp.':(c.half_seasons_remaining ? (Number(c.half_seasons_remaining)/2).toLocaleString('es-ES')+' temp.':'Por definir'))+'</td>'+
        '<td>'+money(t?.paid_total_m??c.driver_value_m)+'</td>'+
        '<td>'+money(currentClause(c))+'</td>'+
+       '<td>'+money(seasonCap(c))+'</td>'+
        '<td>'+escape(t?expiry(t):(c.contract_end_label||'Por definir'))+'</td>'+
        '<td><button type="button" class="contracts-mini" data-pick="'+escape(c.id)+'">'+(t?'Gestionar':'Integrar')+'</button></td></tr>';
-    }).join(''):'<tr><td colspan="5">No se han encontrado contratos.</td></tr>';
+    }).join(''):'<tr><td colspan="7">No se han encontrado contratos.</td></tr>';
   }
 
   function renderFree(){
