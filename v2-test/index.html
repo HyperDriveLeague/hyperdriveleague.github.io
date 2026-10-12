@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/app.css?v=6">
+  <link rel="stylesheet" href="css/app.css?v=6"><link rel="stylesheet" href="css/pilot-contract.css?v=1">
   <link rel="stylesheet" href="css/pending.css?v=1">
 </head>
 <body>
@@ -56,12 +56,14 @@
     <section id="pilotView" class="pilot-view is-hidden">
       <header class="module-header"><div><span class="eyebrow">ÁREA DE PILOTO · TEMPORADA 8</span><h1 id="pilotTitle">Mi piloto</h1></div><div class="topbar-actions"><button id="backToDashboard" class="secondary-button" type="button">← Control Center</button><button id="pilotLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div></header>
       <section class="pilot-hero"><div class="pilot-hero-number" id="pilotRaceNumber">--</div><div class="pilot-hero-copy"><span class="panel-label">PILOTO OFICIAL</span><h2 id="pilotNickname">Cargando…</h2><div class="pilot-tags"><span id="pilotDivision" class="info-tag">—</span><span id="pilotTeam" class="info-tag">—</span><span id="pilotRegion" class="info-tag">—</span></div></div></section>
+      <section class="module-section-heading"><div><span class="eyebrow">CONTRATO</span><h2>Mi contrato vigente</h2></div></section>
+      <section id="pilotContractPanel" class="pilot-contract-panel"><p class="muted">Cargando contrato…</p></section>
       <section class="module-section-heading"><div><span class="eyebrow">SUPERLICENCIA</span><h2>Estado actual</h2></div><span id="licenseStateBadge" class="system-indicator ok">ACTIVA</span></section>
       <section class="license-layout"><article class="license-main-card"><div class="license-score-row"><div><span class="panel-label">PUNTOS ACTUALES</span><div class="license-score"><strong id="licenseCurrent">--</strong><span>/</span><span id="licenseStarting">12</span></div></div><div class="license-meter-wrap"><div class="license-meter"><div id="licenseMeterFill" class="license-meter-fill"></div></div><span id="licenseLostText" class="muted">—</span></div></div><div class="license-stats"><div class="mini-stat"><span>AVISOS</span><strong id="licenseWarnings">0</strong></div><div class="mini-stat"><span>INCID. ASISTENCIA</span><strong id="licenseAttendance">0</strong></div><div class="mini-stat"><span>NQ</span><strong id="licenseNq">0</strong></div><div class="mini-stat"><span>RB</span><strong id="licenseRb">0</strong></div></div></article><article class="license-rules-card"><span class="panel-label">REFERENCIA</span><h3>Umbrales de sanción</h3><div class="rule-row"><span>6 puntos perdidos</span><strong>NQ</strong></div><div class="rule-row"><span>12 puntos perdidos</span><strong>RB</strong></div><p>Los datos se actualizan automáticamente desde la base de datos de la liga.</p></article></section>
       <section class="module-section-heading history-heading"><div><span class="eyebrow">HISTORIAL</span><h2>Movimientos de superlicencia</h2></div></section>
       <section class="history-card"><div id="licenseHistory" class="history-list"><div class="history-empty">Cargando historial…</div></div></section>
     </section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=5"></script><script src="js/app.js?v=8"></script><script src="js/pending.js?v=3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script><script src="js/config.js?v=5"></script><script src="js/app.js?v=9"></script><script src="js/pilot-contract.js?v=1"></script><script src="js/pending.js?v=3"></script>
 </body>
 </html>
