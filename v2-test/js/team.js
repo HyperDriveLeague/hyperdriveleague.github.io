@@ -107,20 +107,29 @@
     });
   }
 
-  function renderContracts(items) {
+  function renderContracts(items, terms = []) {
     const body = document.getElementById('contractsBody');
     body.innerHTML = '';
     if (!items.length) {
       body.innerHTML = '<tr><td colspan="4">No hay contratos activos.</td></tr>';
       return;
     }
+    const termById = new Map(terms.map(t => [t.contract_id, t]));
     items.forEach(item => {
       const driver = item.drivers || {};
-      const remaining = item.half_seasons_remaining == null ? '—' : `${item.half_seasons_remaining} medias temporadas`;
+      const t = termById.get(item.id);
+      const year = config.currentSeason;
+      if (t && Number(t.end_half) < 2 * year) return;
+      const remaining = t ? 'Hasta T' + Math.floor(t.end_half / 2) + (t.end_half % 2 === 0 ? ' · mitad' : ' · final') :
+        (item.contract_end_label || (item.half_seasons_remaining == null ? 'Por definir' : item.half_seasons_remaining + ' medias temporadas'));
+      const currentBase = t ? (t.periods || []).reduce((sum,p) => Number(p.half) >= 2 * year ? sum + Number(p.amount || 0) : sum, 0) : Number(item.driver_value_m || 0);
+      const clause = t ? currentBase * 1.5 : item.buyout_clause_m;
+      const paid = t ? t.paid_total_m : item.driver_value_m;
       const row = document.createElement('tr');
-      row.innerHTML = `<td><strong>#${driver.race_number ?? '--'} ${driver.nickname || 'Piloto'}</strong></td><td>${money(item.driver_value_m)} M</td><td>${item.buyout_clause_m == null ? '—' : `${money(item.buyout_clause_m)} M`}</td><td>${remaining}</td>`;
+      row.innerHTML = `<td><strong>#${driver.race_number ?? '--'} ${driver.nickname || 'Piloto'}</strong></td><td>${money(paid)} M</td><td>${clause == null ? '—' : `${money(clause)} M`}</td><td>${remaining}</td>`;
       body.appendChild(row);
     });
+    if (!body.children.length) body.innerHTML = '<tr><td colspan="4">No hay contratos vigentes en esta temporada.</td></tr>';
   }
 
   function setSponsorReviewMessage(text = '', type = '') {
@@ -254,15 +263,19 @@
     if (accountResponse.error || !accountResponse.data) return showError('No se pudo cargar la cuenta económica de esta escudería.');
     const account = accountResponse.data;
 
-    const [financeResponse, rosterResponse, contractsResponse, sponsorsResponse, transactionsResponse] = await Promise.all([
+    const allAccounts = await client.from('team_accounts').select('id').eq('team_id', teamId);
+    if (allAccounts.error) return showError('No se pudieron cargar las cuentas de la escudería.');
+    const accountIds = (allAccounts.data || []).map(item => item.id);
+    const [financeResponse, rosterResponse, contractsResponse, termsResponse, sponsorsResponse, transactionsResponse] = await Promise.all([
       client.from('team_financial_summary').select('*').eq('team_account_id', account.id).maybeSingle(),
       client.from('season_roster').select('division, roster_status, start_round, end_round, drivers:driver_id(id, nickname, race_number)').eq('team_id', teamId).eq('season_number', config.currentSeason).eq('is_active', true),
-      client.from('driver_contracts').select('driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, drivers:driver_id(id, nickname, race_number)').eq('team_account_id', account.id).eq('status', 'active'),
+      client.from('driver_contracts').select('id, driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, drivers:driver_id(id, nickname, race_number)').in('team_account_id', accountIds).eq('status', 'active'),
+      client.from('contract_terms').select('contract_id, start_half, end_half, periods, paid_total_m'),
       client.from('team_sponsor_rewards').select('id, division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active, review_status, review_requested_at').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
       client.from('economic_transactions').select('transaction_date, description, category, direction, amount_m, round_number, created_at').eq('account_id', account.id).order('transaction_date', { ascending: false }).order('created_at', { ascending: false }).limit(12)
     ]);
 
-    const responses = [financeResponse, rosterResponse, contractsResponse, sponsorsResponse, transactionsResponse];
+    const responses = [financeResponse, rosterResponse, contractsResponse, termsResponse, sponsorsResponse, transactionsResponse];
     const failed = responses.find(response => response.error);
     if (failed) {
       console.error('Team Principal module error:', failed.error);
@@ -299,7 +312,7 @@
     renderManagement(finance, roster, sponsors, account);
     renderRoster(roster, 'hyperdrive', 'hyperdriveRoster');
     renderRoster(roster, 'academy', 'academyRoster');
-    renderContracts(contractsResponse.data || []);
+    renderContracts(contractsResponse.data || [], termsResponse.data || []);
     renderSponsors(sponsors, 'hyperdrive', 'hyperdriveSponsors');
     renderSponsors(sponsors, 'academy', 'academySponsors');
     renderTransactions(transactionsResponse.data || []);
