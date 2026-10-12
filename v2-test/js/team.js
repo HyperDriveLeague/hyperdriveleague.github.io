@@ -94,7 +94,7 @@
     alerts.innerHTML = messages.map(item => `<div class="management-alert${item.ok ? ' ok' : ''}"><span class="management-alert-dot"></span><div>${item.html}</div></div>`).join('');
   }
 
-  function renderRoster(items, division, targetId) {
+  function renderRoster(items, division, targetId, ownerDrivers = new Set()) {
     const target = document.getElementById(targetId);
     const rows = items.filter(item => item.division === division);
     target.innerHTML = rows.length ? '' : '<div class="empty-line">No hay pilotos activos.</div>';
@@ -102,7 +102,7 @@
       const driver = item.drivers || {};
       const el = document.createElement('div');
       el.className = 'roster-driver';
-      el.innerHTML = `<div class="roster-driver-main"><span class="roster-number">${driver.race_number ?? '--'}</span><div><strong>${driver.nickname || 'Piloto'}</strong><small>${item.roster_status || 'oficial'}</small></div></div><span class="info-tag">R${item.start_round || 1} → ${item.end_round ? `R${item.end_round}` : 'ACTUAL'}</span>`;
+      el.innerHTML = `<div class="roster-driver-main"><span class="roster-number">${driver.race_number ?? '--'}</span><div><strong>${driver.nickname || 'Piloto'}</strong><small>${ownerDrivers.has(driver.id) ? 'TEAM PRINCIPAL · SIN CONTRATO NI CLÁUSULA' : item.roster_status || 'oficial'}</small></div></div><span class="info-tag">R${item.start_round || 1} → ${item.end_round ? `R${item.end_round}` : 'ACTUAL'}</span>`;
       target.appendChild(el);
     });
   }
@@ -269,7 +269,7 @@
     const [financeResponse, rosterResponse, contractsResponse, termsResponse, sponsorsResponse, transactionsResponse] = await Promise.all([
       client.from('team_financial_summary').select('*').eq('team_account_id', account.id).maybeSingle(),
       client.from('season_roster').select('division, roster_status, start_round, end_round, drivers:driver_id(id, nickname, race_number)').eq('team_id', teamId).eq('season_number', config.currentSeason).eq('is_active', true),
-      client.from('driver_contracts').select('id, driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, drivers:driver_id(id, nickname, race_number)').in('team_account_id', accountIds).eq('status', 'active'),
+      client.from('driver_contracts').select('id, driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, is_team_principal_contract, drivers:driver_id(id, nickname, race_number)').in('team_account_id', accountIds).eq('status', 'active'),
       client.from('contract_terms').select('contract_id, start_half, end_half, periods, paid_total_m'),
       client.from('team_sponsor_rewards').select('id, division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active, review_status, review_requested_at').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
       client.from('economic_transactions').select('transaction_date, description, category, direction, amount_m, round_number, created_at').eq('account_id', account.id).order('transaction_date', { ascending: false }).order('created_at', { ascending: false }).limit(12)
@@ -310,9 +310,10 @@
     document.getElementById('capStatus').textContent = available >= 0 ? `${money(available)} M disponibles antes de alcanzar el límite.` : `${money(Math.abs(available))} M por encima del límite.`;
 
     renderManagement(finance, roster, sponsors, account);
-    renderRoster(roster, 'hyperdrive', 'hyperdriveRoster');
-    renderRoster(roster, 'academy', 'academyRoster');
-    renderContracts(contractsResponse.data || [], termsResponse.data || []);
+    const ownerDrivers = new Set((contractsResponse.data || []).filter(c=>c.is_team_principal_contract).map(c=>c.drivers?.id).filter(Boolean));
+    renderRoster(roster, 'hyperdrive', 'hyperdriveRoster', ownerDrivers);
+    renderRoster(roster, 'academy', 'academyRoster', ownerDrivers);
+    renderContracts((contractsResponse.data || []).filter(c=>!c.is_team_principal_contract), termsResponse.data || []);
     renderSponsors(sponsors, 'hyperdrive', 'hyperdriveSponsors');
     renderSponsors(sponsors, 'academy', 'academySponsors');
     renderTransactions(transactionsResponse.data || []);
