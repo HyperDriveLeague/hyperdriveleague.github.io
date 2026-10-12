@@ -155,6 +155,7 @@
   async function loadPilotModule() {
     if (!activeSession || !currentDriver || !currentRoles.includes('pilot')) return;
     showOnly('pilot');
+    if (typeof window.renderPilotContract === 'function') window.renderPilotContract(currentDriver.id);
 
     const nicknameEl = document.getElementById('pilotNickname');
     const numberEl = document.getElementById('pilotRaceNumber');
