@@ -14,7 +14,19 @@
    if(!session.session)return;
    const {data:profile,error:pe}=await db.from('profiles').select('driver_id').eq('id',session.session.user.id).maybeSingle();
    if(pe||!profile||profile.driver_id!==driverId){target.textContent='No se puede consultar este contrato.';return;}
-   const {data:contracts,error:ce}=await db.from('driver_contracts').select('id,team_account_id,driver_value_m,buyout_clause_m,contract_end_label,status').eq('driver_id',driverId).eq('status','active');
+   const [principalResp,rosterResp]=await Promise.all([
+    db.from('team_principals').select('team_id').eq('user_id',session.session.user.id).eq('season_number',cfg.currentSeason).eq('is_active',true).maybeSingle(),
+    db.from('season_roster').select('team_id,teams:team_id(name)').eq('driver_id',driverId).eq('season_number',cfg.currentSeason).eq('is_active',true).maybeSingle()
+   ]);
+   if(principalResp.error)throw principalResp.error;
+   if(rosterResp.error)throw rosterResp.error;
+   const principal=principalResp.data,activeRoster=rosterResp.data;
+   if(principal?.team_id&&principal.team_id===activeRoster?.team_id){
+     target.innerHTML=box('Situación','TEAM PRINCIPAL')+box('Escudería',activeRoster?.teams?.name||'Equipo propio')+
+      '<p class="pilot-contract-caption"><strong>Piloto propietario de su escudería.</strong> No tienes contrato como piloto, cláusula de rescisión ni vencimiento; tampoco ocupas salary cap por contrato.</p>';
+     return;
+   }
+   const {data:contracts,error:ce}=await db.from('driver_contracts').select('id,team_account_id,driver_value_m,buyout_clause_m,contract_end_label,status').eq('driver_id',driverId).eq('status','active').eq('is_team_principal_contract',false);
    if(ce)throw ce;
    if(!contracts?.length){target.innerHTML='<p class="muted">Ahora mismo no tienes ningún contrato vigente.</p>';return;}
    const {data:terms,error:te}=await db.from('contract_terms').select('contract_id,end_half,periods,paid_total_m,imported_legacy').in('contract_id',contracts.map(x=>x.id));
@@ -25,9 +37,8 @@
    const c=current[current.length-1];const t=termMap.get(c.id);
    const balance=t?(t.periods||[]).filter(p=>Number(p.half)>=cfg.currentSeason*2).reduce((a,p)=>a+Number(p.amount||0),0):Number(c.driver_value_m);
    const paid=t?t.paid_total_m:c.driver_value_m,clause=t?balance*1.5:c.buyout_clause_m;
-   const {data:roster}=await db.from('season_roster').select('teams:team_id(name)').eq('driver_id',driverId).eq('season_number',cfg.currentSeason).eq('is_active',true).maybeSingle();
    target.innerHTML=
-    box('Escudería',roster?.teams?.name||'—')+
+    box('Escudería',activeRoster?.teams?.name||'—')+
     box('Valor pagado',money(paid))+
     box('Cláusula vigente',money(clause))+
     box('Vencimiento',t?expiry(t.end_half):c.contract_end_label||'Por especificar')+
