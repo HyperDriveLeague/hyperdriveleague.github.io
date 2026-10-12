@@ -54,7 +54,7 @@
           <span class="panel-label">REGLAMENTO DEPORTIVO</span><h3>Registrar sanción</h3>
           <p class="operation-help">Selecciona un artículo del reglamento o PERSONALIZADO para escribir manualmente los puntos y el motivo. Los puntos se descuentan automáticamente de la superlicencia.</p>
           <form id="sportSanctionForm" class="operation-form">
-            <label class="op-field full"><span>Artículo</span><select id="sanctionArticle" class="op-select" required><option value="">Cargando reglamento…</option></select></label>
+            <label class="op-field full"><span>Artículo</span><select id="sanctionArticle" class="op-select" required><option value="">Selecciona un artículo</option><option value="PERSONALIZADO">PERSONALIZADO · Puntos y descripción manual</option></select></label>
             <div class="article-preview">
               <div class="article-preview-top"><span class="rule-pill">SEGUNDOS: <strong id="articleSeconds">—</strong></span><span class="rule-pill">PUNTOS: <strong id="articlePoints">—</strong></span></div>
               <p id="articleDescription">Selecciona un artículo para cargar la sanción del reglamento.</p>
@@ -151,7 +151,7 @@
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=2"></script>
   <script src="js/staff-operations.js?v=4"></script>
-  <script src="js/staff-custom-sanctions.js?v=2"></script>
+  <script src="js/staff-custom-sanctions.js?v=3"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
 </body>
 </html>
