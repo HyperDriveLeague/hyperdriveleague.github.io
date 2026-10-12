@@ -37,14 +37,14 @@
     $('cmDriverWrap').hidden=hasContract;
     $('cmTeamWrap').hidden=!['new','buyout'].includes(kind);
     $('cmDivisionWrap').hidden=!['new','buyout'].includes(kind);
-    $('cmHalvesWrap').hidden===false;
     $('cmHalvesWrap').hidden=(kind==='raise');
     $('cmAmountWrap').hidden=(kind==='import');
     $('cmAllocationWrap').hidden=(kind!=='raise');
     $('cmRoundWrap').hidden=!['new','buyout'].includes(kind);
     const prev=$('cmContract').value;
-    const pool=contracts.filter(c=>activeNow(c)&&
-      (kind==='import'?!termMap.has(c.id):kind==='new'?false:!!termMap.has(c.id)));
+    const edited=actions.find(a=>a.id===editing);
+    const pool=contracts.filter(c=>(activeNow(c)||edited?.payload?.contract_id===c.id)&&
+      (edited?.payload?.contract_id===c.id|| (kind==='import'?!termMap.has(c.id):kind==='new'?false:!!termMap.has(c.id))));
     $('cmContract').innerHTML=pool.map(c=>'<option value="'+escape(c.id)+'">'+escape(nameFor(c))+'</option>').join('')||'<option value="">Sin contratos disponibles</option>';
     if(pool.some(c=>c.id===prev))$('cmContract').value=prev;
     $('cmFormTitle').textContent=editing?'Editar operación':'Registrar operación';
