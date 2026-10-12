@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/admin-wagering.css?v=1">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
   <link rel="stylesheet" href="css/admin-navigation.css?v=1">
+  <link rel="stylesheet" href="css/admin-contracts.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -44,6 +45,7 @@
           <button class="admin-section-button" type="button" data-admin-section="bancos" aria-pressed="false">Bancos</button>
           <button class="admin-section-button" type="button" data-admin-section="usuarios" aria-pressed="false">Usuarios</button>
           <button class="admin-section-button" type="button" data-admin-section="pendientes" aria-pressed="false">Pendientes</button>
+          <button class="admin-section-button" type="button" data-admin-section="contratos" aria-pressed="false">Contratos</button>
           <button class="admin-section-button" type="button" data-admin-section="permisos" aria-pressed="false">Permisos</button>
         </div>
       </nav>
@@ -120,6 +122,67 @@
 
       <section class="module-section-heading" data-admin-part="permisos"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
       <section id="roleDistribution" class="role-distribution"></section>
+
+
+      <section class="module-section-heading" data-admin-part="contratos"><div><span class="eyebrow">MERCADO · ECONOMÍA</span><h2>Gestión de contratos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
+      <section class="admin-panel contracts-admin-panel">
+        <p class="admin-note">Registra operaciones acordadas en Discord. Los contratos heredados se conservan sin nuevos cargos. Las operaciones nuevas actualizan bancos y salary cap; el historial permite rectificar la última operación de cada piloto.</p>
+        <div class="contracts-toolbar">
+          <label>Temporada <input id="cmSeason" type="number" min="1" max="100" value="8"></label>
+          <label>Momento <select id="cmMoment"><option value="0">Inicio / primera mitad</option><option value="1">Mercado de mitad de temporada</option></select></label>
+          <button id="cmReload" type="button" class="secondary-button">Actualizar datos</button>
+        </div>
+        <div id="cmMessage" class="contracts-notice" aria-live="polite"></div>
+        <div class="contracts-stats" id="cmStats"></div>
+        <div class="contracts-layout">
+          <div class="contracts-panel">
+            <h3>Contratos vigentes</h3>
+            <p class="admin-note">Importe total pagado, cláusula actual, duración y vencimiento. Los importes heredados no se cargan otra vez.</p>
+            <input id="cmSearch" type="search" class="admin-search" placeholder="Buscar piloto o escudería…">
+            <div class="contracts-scroll"><table class="contracts-table"><thead><tr><th>Piloto / Equipo</th><th>Pagado</th><th>Cláusula</th><th>Expira</th><th></th></tr></thead><tbody id="cmActiveBody"></tbody></table></div>
+          </div>
+          <div class="contracts-panel">
+            <h3>Pilotos sin contrato</h3>
+            <p class="admin-note">Incluye contratos vencidos al momento seleccionado y pilotos que todavía no tienen contrato activo.</p>
+            <div id="cmFreeList" class="contracts-free-list"></div>
+          </div>
+        </div>
+        <section class="contracts-editor">
+          <h3 id="cmFormTitle">Registrar operación</h3>
+          <form id="cmForm" class="contracts-form">
+            <label>Operación <select id="cmKind" required>
+              <option value="import">Integrar contrato existente (sin cobrar)</option>
+              <option value="new">Nuevo contrato</option>
+              <option value="extend">Ampliar duración del contrato</option>
+              <option value="raise">Aumentar valor / cláusula</option>
+              <option value="buyout">Fichaje pagando cláusula</option>
+            </select></label>
+            <label id="cmContractWrap">Contrato vigente <select id="cmContract"></select></label>
+            <label id="cmDriverWrap">Piloto <select id="cmDriver"></select></label>
+            <label id="cmTeamWrap">Equipo de destino <select id="cmTeam"></select></label>
+            <label id="cmDivisionWrap">División (piloto sin plantilla) <select id="cmDivision"><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
+            <label id="cmHalvesWrap">Duración / ampliación <select id="cmHalves">
+              <option value="1">Media temporada</option><option value="2" selected>1 temporada</option><option value="3">1,5 temporadas</option><option value="4">2 temporadas</option>
+            </select></label>
+            <label id="cmAmountWrap">Importe a pagar (millones) <input id="cmAmount" type="number" min="0.01" max="100000" step="0.01" value="60"></label>
+            <label id="cmAllocationWrap">Reparto del aumento <select id="cmAllocation">
+              <option value="last">Sumar a la última media temporada</option>
+              <option value="spread">Repartir entre las mitades restantes</option>
+            </select></label>
+            <label id="cmRoundWrap">Ronda efectiva del fichaje <input id="cmRound" type="number" min="1" max="50" value="6"></label>
+            <div class="contracts-preview" id="cmPreview"></div>
+            <div class="contracts-form-actions">
+              <button id="cmSave" class="primary-button" type="submit">GUARDAR OPERACIÓN</button>
+              <button id="cmCancel" class="secondary-button is-hidden" type="button">Cancelar edición</button>
+            </div>
+          </form>
+        </section>
+        <section class="contracts-history">
+          <h3>Historial de operaciones</h3>
+          <p class="admin-note">Editar recalcula los movimientos bancarios y de salary cap. Eliminar revierte los efectos sin borrar la auditoría. Para evitar incoherencias, hay que rectificar primero las operaciones posteriores del mismo piloto.</p>
+          <div id="cmHistory" class="contracts-history-list"></div>
+        </section>
+      </section>
 
       <section id="adminStoreSection" class="admin-store-section" hidden>
         <section class="admin-hero admin-store-hero">
@@ -214,5 +277,6 @@
   <script src="js/admin-wagering.js?v=2"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
+  <script src="js/admin-contracts.js?v=1"></script>
 </body>
 </html>
