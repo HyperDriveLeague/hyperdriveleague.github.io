@@ -6,7 +6,7 @@
   const escape=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const money=v=>Number(v||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' M';
   const labelHalf=h=>'T'+Math.floor(h/2)+' · '+(h%2?'2.ª':'1.ª')+' mitad';
-  let contracts=[],terms=[],drivers=[],teams=[],accounts=[],actions=[],rosters=[],editing=null;
+  let contracts=[],terms=[],drivers=[],teams=[],accounts=[],actions=[],rosters=[],principals=[],profiles=[],editing=null;
   let contractMap=new Map(),termMap=new Map(),driverMap=new Map(),teamMap=new Map(),accountMap=new Map();
   let initialized=false,loading=false;
   const season=()=>Number($('cmSeason').value||cfg.currentSeason);
@@ -32,7 +32,16 @@
   const accountFor=c=>accountMap.get(c.team_account_id);
   const teamFor=c=>teamMap.get(accountFor(c)?.team_id);
   const driverFor=c=>driverMap.get(c.driver_id);
-  const activeNow=c=>c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).end_half)>=currentHalf());
+  const ownerDriverIds=()=>{
+    const byUser=new Map(profiles.map(p=>[p.id,p.driver_id]));
+    const own=new Set();
+    principals.filter(p=>p.is_active&&p.season_number===season()).forEach(p=>{
+      const driverId=byUser.get(p.user_id);
+      if(driverId&&rosters.some(r=>r.driver_id===driverId&&r.team_id===p.team_id&&r.season_number===season()&&r.is_active))own.add(driverId);
+    });
+    return own;
+  };
+  const activeNow=c=>!c.is_team_principal_contract&&c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).end_half)>=currentHalf());
   const nameFor=c=>(driverFor(c)?.nickname||'Piloto')+' · '+(teamFor(c)?.name||'Sin escudería');
   const sortedActive=()=>contracts.filter(activeNow).sort((a,b)=>nameFor(a).localeCompare(nameFor(b),'es'));
   const expiry=t=>t?labelHalf(t.end_half):(t=>t||'Sin especificar')(null);
@@ -85,9 +94,9 @@
   }
 
   function renderStats(){
-    const active=sortedActive(),free=drivers.filter(d=>!active.some(c=>c.driver_id===d.id)),unmapped=active.filter(c=>!termMap.has(c.id));
+    const active=sortedActive(),owned=ownerDriverIds(),free=drivers.filter(d=>!owned.has(d.id)&&!active.some(c=>c.driver_id===d.id)),unmapped=active.filter(c=>!termMap.has(c.id));
     $('cmStats').innerHTML=[
-      ['Contratos vigentes',active.length],['Pilotos sin contrato',free.length],['Por periodizar',unmapped.length]
+      ['Contratos vigentes',active.length],['Pilotos sin contrato',free.length],['Pilotos propietarios',owned.size],['Por periodizar',unmapped.length]
     ].map(([title,value])=>'<div class="contracts-stat"><strong>'+value+'</strong><span>'+escape(title)+'</span></div>').join('');
   }
 
@@ -108,13 +117,22 @@
 
   function renderFree(){
     const activeIds=new Set(sortedActive().map(c=>c.driver_id));
-    const free=drivers.filter(d=>!activeIds.has(d.id)).sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
+    const owned=ownerDriverIds();
+    const free=drivers.filter(d=>!owned.has(d.id)&&!activeIds.has(d.id)).sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
     $('cmFreeList').innerHTML=free.length?free.map(d=>{
       const expired=contracts.some(c=>c.driver_id===d.id&&termMap.get(c.id)?.end_half<currentHalf());
       return '<div class="contracts-free-entry"><strong>'+escape(d.nickname)+'</strong><span>'+(expired?'Vencido':'Sin contrato')+'</span><button type="button" class="contracts-mini" data-free="'+escape(d.id)+'">Contratar</button></div>';
     }).join(''):'<div class="empty-line">Todos los pilotos tienen contrato registrado.</div>';
   }
 
+  function renderOwners(){
+    const owned=ownerDriverIds();
+    const matches=drivers.filter(d=>owned.has(d.id)).sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
+    $('cmOwnerList').innerHTML=matches.length?matches.map(d=>{
+      const roster=rosters.find(r=>r.driver_id===d.id&&r.season_number===season()&&r.is_active);
+      return '<div class="contracts-free-entry"><strong>'+escape(d.nickname)+'</strong><span>'+escape(teamMap.get(roster?.team_id)?.name||'Equipo propio')+' · SIN CLÁUSULA</span></div>';
+    }).join(''):'<div class="empty-line">No hay Team Principals compitiendo en su propia escudería en esta temporada.</div>';
+  }
   const kindNames={import:'Integración sin cargo',new:'Nuevo contrato',extend:'Ampliación',raise:'Subida de cláusula',buyout:'Fichaje por cláusula'};
   function renderHistory(){
     const ordered=[...actions].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
@@ -142,7 +160,7 @@
     if(teams.some(t=>t.id===previousTeam))$('cmTeam').value=previousTeam;
     syncForm();
   }
-  function render(){renderStats();renderOptions();renderActive();renderFree();renderHistory();}
+  function render(){renderStats();renderOptions();renderActive();renderFree();renderOwners();renderHistory();}
 
   async function reload(){
     if(loading)return;
@@ -159,10 +177,12 @@
         db.from('teams').select('id,name,slug').order('name'),
         db.from('team_accounts').select('id,team_id,season_number,is_active'),
         db.from('contract_admin_actions').select('*').order('created_at',{ascending:false}).limit(300),
-        db.from('season_roster').select('id,driver_id,team_id,season_number,start_round,end_round,division,is_active')
+        db.from('season_roster').select('id,driver_id,team_id,season_number,start_round,end_round,division,is_active'),
+        db.from('team_principals').select('user_id,team_id,season_number,is_active').eq('is_active',true),
+        db.from('profiles').select('id,driver_id').not('driver_id','is',null)
       ]);
       const fail=req.find(r=>r.error);if(fail)throw fail.error;
-      [contracts,terms,drivers,teams,accounts,actions,rosters]=req.map(r=>r.data||[]);
+      [contracts,terms,drivers,teams,accounts,actions,rosters,principals,profiles]=req.map(r=>r.data||[]);
       contractMap=new Map(contracts.map(c=>[c.id,c]));
       termMap=new Map(terms.map(t=>[t.contract_id,t]));
       driverMap=new Map(drivers.map(d=>[d.id,d]));
@@ -193,6 +213,7 @@
     e.preventDefault();if(loading)return;
     const data=payload();
     if(!data.driver_id){notice('Selecciona un piloto o contrato válido','error');return}
+    if(ownerDriverIds().has(data.driver_id)){notice('Un Team Principal que corre en su propia escudería no necesita contrato ni cláusula.','error');return}
     const warning=data.kind==='import'?'La integración no generará cobros ni cargos adicionales.':'El importe se cobrará inmediatamente al equipo y los movimientos quedarán registrados.';
     if(!window.confirm('¿Guardar esta operación?\n\n'+warning+(editing?'\n\nSe sustituirá la operación anterior y se recalcularán sus efectos.':'')))return;
     $('cmSave').disabled=true;notice('Guardando operación…');
