@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/admin-bank.css?v=1">
   <link rel="stylesheet" href="css/admin-wagering.css?v=1">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
+  <link rel="stylesheet" href="css/admin-navigation.css?v=1">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -35,13 +36,24 @@
         <button class="admin-tab is-active" type="button" data-admin-tab="control">ADMINISTRACIÓN</button>
         <button class="admin-tab" type="button" data-admin-tab="store">TIENDA</button>
       </nav>
-      <section class="admin-hero">
+      <nav class="admin-section-nav" aria-label="Apartados de administración">
+        <span class="admin-section-nav-label">SELECCIONAR APARTADO</span>
+        <div class="admin-section-nav-buttons">
+          <button class="admin-section-button is-selected" type="button" data-admin-section="resumen" aria-pressed="true">Resumen</button>
+          <button class="admin-section-button" type="button" data-admin-section="actividad" aria-pressed="false">HyperBet / HyperLoto</button>
+          <button class="admin-section-button" type="button" data-admin-section="bancos" aria-pressed="false">Bancos</button>
+          <button class="admin-section-button" type="button" data-admin-section="usuarios" aria-pressed="false">Usuarios</button>
+          <button class="admin-section-button" type="button" data-admin-section="pendientes" aria-pressed="false">Pendientes</button>
+          <button class="admin-section-button" type="button" data-admin-section="permisos" aria-pressed="false">Permisos</button>
+        </div>
+      </nav>
+      <section class="admin-hero" data-admin-part="resumen">
         <div class="admin-mark">A</div>
         <div><span class="panel-label">CONTROL DE ACCESO</span><h2>Administración</h2><p>Estado de cuentas, perfiles, permisos y Team Principals.</p></div>
         <span class="system-indicator ok">GESTIÓN ACTIVA</span>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">RESUMEN</span><h2>Estado del sistema</h2></div></section>
+      <section class="module-section-heading" data-admin-part="resumen"><div><span class="eyebrow">RESUMEN</span><h2>Estado del sistema</h2></div></section>
       <section class="admin-summary-grid">
         <article class="admin-summary-card"><span>PERFILES</span><strong id="profileCount">—</strong><small>cuentas con perfil</small></article>
         <article class="admin-summary-card"><span>PILOTOS VINCULADOS</span><strong id="linkedCount">—</strong><small>perfiles con piloto</small></article>
@@ -50,7 +62,7 @@
         <article class="admin-summary-card"><span>ROLES ASIGNADOS</span><strong id="roleCount">—</strong><small>permisos totales</small></article>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">HYPERBET · HYPERLOTO</span><h2>Historial de actividad</h2></div><span class="season-badge">CONTROL ECONÓMICO</span></section>
+      <section class="module-section-heading" data-admin-part="actividad"><div><span class="eyebrow">HYPERBET · HYPERLOTO</span><h2>Historial de actividad</h2></div><span class="season-badge">CONTROL ECONÓMICO</span></section>
       <section id="adminWageringPanel" class="admin-panel admin-wagering-panel">
         <div class="admin-wagering-summary">
           <article class="admin-wagering-stat featured"><span>TOTAL JUGADO</span><strong id="adminWageringTotal">0,00 M</strong><small>HyperBet + HyperLoto</small></article>
@@ -72,7 +84,7 @@
         </div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">BANCO DEL PILOTO</span><h2>Consultar bancos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
+      <section class="module-section-heading" data-admin-part="bancos"><div><span class="eyebrow">BANCO DEL PILOTO</span><h2>Consultar bancos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
       <section class="admin-panel admin-bank-panel">
         <div class="admin-bank-layout">
           <div class="admin-bank-picker">
@@ -95,18 +107,18 @@
         </div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">CUENTAS</span><h2>Usuarios configurados</h2></div><input id="accountSearch" class="admin-search" type="search" placeholder="Buscar usuario, piloto, equipo o rol…"></section>
+      <section class="module-section-heading" data-admin-part="usuarios"><div><span class="eyebrow">CUENTAS</span><h2>Usuarios configurados</h2></div><input id="accountSearch" class="admin-search" type="search" placeholder="Buscar usuario, piloto, equipo o rol…"></section>
       <section class="admin-panel table-panel">
         <div class="table-wrap"><table class="admin-table"><thead><tr><th>Perfil</th><th>Piloto</th><th>Roles</th><th>Team Principal</th><th>Estado</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">ALTAS</span><h2>Cuentas pendientes de configurar</h2></div><span class="season-badge">SOLO ADMIN</span></section>
+      <section class="module-section-heading" data-admin-part="pendientes"><div><span class="eyebrow">ALTAS</span><h2>Cuentas pendientes de configurar</h2></div><span class="season-badge">SOLO ADMIN</span></section>
       <section class="admin-panel">
         <p class="admin-note">Cuando alguien cree una cuenta nueva, aparecerá aquí. Puedes vincularla a un piloto y asignar sus permisos o descartar la solicitud si no quieres aprobarla. Los pilotos y escuderías ya asignados se excluyen para evitar duplicados.</p>
         <div id="pendingAccounts" class="pending-list"></div>
       </section>
 
-      <section class="module-section-heading"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
+      <section class="module-section-heading" data-admin-part="permisos"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
       <section id="roleDistribution" class="role-distribution"></section>
 
       <section id="adminStoreSection" class="admin-store-section" hidden>
@@ -201,5 +213,6 @@
   <script src="js/admin-bank.js?v=2"></script>
   <script src="js/admin-wagering.js?v=2"></script>
   <script src="js/admin-store.js?v=1"></script>
+  <script src="js/admin-navigation.js?v=1"></script>
 </body>
 </html>
