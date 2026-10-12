@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/admin-wagering.css?v=1">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
   <link rel="stylesheet" href="css/admin-navigation.css?v=1">
-  <link rel="stylesheet" href="css/admin-contracts.css?v=5">
+  <link rel="stylesheet" href="css/admin-contracts.css?v=6">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -161,6 +161,8 @@
               <option value="extend">Ampliar duración del contrato</option>
               <option value="raise">Aumentar valor / cláusula</option>
               <option value="buyout">Fichaje pagando cláusula</option>
+              <option value="dismiss_voluntary">Despido voluntario · el equipo paga cláusula</option>
+              <option value="dismiss_attendance">Despido por asistencia · devolución proporcional</option>
             </select></label>
             <label id="cmContractWrap">Contrato vigente <select id="cmContract"></select></label>
             <label id="cmDriverWrap">Piloto <select id="cmDriver"></select></label>
@@ -175,6 +177,7 @@
               <option value="spread">Repartir entre las mitades restantes</option>
             </select></label>
             <label id="cmRoundWrap">Ronda efectiva del fichaje <input id="cmRound" type="number" min="1" max="50" value="6"></label>
+            <label id="cmTotalRoundsWrap" hidden>Rondas de la temporada <input id="cmTotalRounds" type="number" min="2" max="40" step="2" value="12"></label>
             <div class="contracts-preview" id="cmPreview"></div>
             <div class="contracts-form-actions">
               <button id="cmSave" class="primary-button" type="submit">GUARDAR OPERACIÓN</button>
@@ -184,7 +187,7 @@
         </section>
         <section class="contracts-history">
           <h3>Historial de operaciones</h3>
-          <p class="admin-note">Editar recalcula los movimientos bancarios y de salary cap. Eliminar revierte los efectos sin borrar la auditoría. Para evitar incoherencias, hay que rectificar primero las operaciones posteriores del mismo piloto.</p>
+          <p class="admin-note">Editar recalcula banco, salary cap y plantilla. Eliminar revierte los efectos sin borrar la auditoría. Los despidos pasan al piloto a reserva desde la primera ronda no disputada; opción voluntaria = gasto por cláusula; asistencia = devolución proporcional. Solo puede rectificarse primero la operación más reciente de cada piloto.</p>
           <div id="cmHistory" class="contracts-history-list"></div>
         </section>
       </section>
@@ -282,6 +285,6 @@
   <script src="js/admin-wagering.js?v=2"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
-  <script src="js/admin-contracts.js?v=6"></script>
+  <script src="js/admin-contracts.js?v=7"></script>
 </body>
 </html>
