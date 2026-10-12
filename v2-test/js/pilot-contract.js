@@ -25,9 +25,9 @@
    const c=current[current.length-1];const t=termMap.get(c.id);
    const balance=t?(t.periods||[]).filter(p=>Number(p.half)>=cfg.currentSeason*2).reduce((a,p)=>a+Number(p.amount||0),0):Number(c.driver_value_m);
    const paid=t?t.paid_total_m:c.driver_value_m,clause=t?balance*1.5:c.buyout_clause_m;
-   const {data:account}=await db.from('team_accounts').select('team_id,teams:team_id(name)').eq('id',c.team_account_id).maybeSingle();
+   const {data:roster}=await db.from('season_roster').select('teams:team_id(name)').eq('driver_id',driverId).eq('season_number',cfg.currentSeason).eq('is_active',true).maybeSingle();
    target.innerHTML=
-    box('Escudería',account?.teams?.name||'—')+
+    box('Escudería',roster?.teams?.name||'—')+
     box('Valor pagado',money(paid))+
     box('Cláusula vigente',money(clause))+
     box('Vencimiento',t?expiry(t.end_half):c.contract_end_label||'Por especificar')+
