@@ -8,7 +8,7 @@
   const labelHalf=h=>'T'+Math.floor(h/2)+' · '+(h%2?'2.ª':'1.ª')+' mitad';
   let contracts=[],terms=[],drivers=[],teams=[],accounts=[],actions=[],rosters=[],principals=[],profiles=[],editing=null;
   let contractMap=new Map(),termMap=new Map(),driverMap=new Map(),teamMap=new Map(),accountMap=new Map();
-  let initialized=false,loading=false;
+  let initialized=false,loading=false,previewRequest=0;
   const season=()=>Number($('cmSeason').value||cfg.currentSeason);
   const market=()=>Number($('cmMoment').value||0);
   const currentHalf=()=>season()*2+market();
@@ -57,26 +57,33 @@
 
   function syncForm(){
     const kind=$('cmKind').value;
+    const dismissal=kind.startsWith('dismiss_');
     const hasContract=kind!=='new';
     $('cmContractWrap').hidden=!hasContract;
     $('cmDriverWrap').hidden=hasContract;
     $('cmTeamWrap').hidden=!['new','buyout'].includes(kind);
     $('cmDivisionWrap').hidden=!['new','buyout'].includes(kind);
-    $('cmHalvesWrap').hidden=(kind==='raise');
-    $('cmAmountWrap').hidden=(kind==='import');
+    $('cmHalvesWrap').hidden=(kind==='raise'||dismissal);
+    $('cmAmountWrap').hidden=(kind==='import'||dismissal);
     $('cmAllocationWrap').hidden=(kind!=='raise');
-    $('cmRoundWrap').hidden=!['new','buyout'].includes(kind);
+    $('cmRoundWrap').hidden=!['new','buyout'].includes(kind)&&!dismissal;
+    $('cmTotalRoundsWrap').hidden=!dismissal;
+    $('cmRoundWrap').firstChild.textContent=dismissal?'Primera ronda que no disputará ':'Ronda efectiva del fichaje ';
+    $('cmRound').max=dismissal?$('cmTotalRounds').value:'50';
     const prev=$('cmContract').value;
     const edited=actions.find(a=>a.id===editing);
     const pool=contracts.filter(c=>(activeNow(c)||edited?.payload?.contract_id===c.id)&&
-      (edited?.payload?.contract_id===c.id|| (kind==='import'?!termMap.has(c.id):kind==='new'?false:!!termMap.has(c.id))));
+      (edited?.payload?.contract_id===c.id||(dismissal
+      ? rosters.some(r=>r.driver_id===c.driver_id&&r.team_id===accountFor(c)?.team_id&&r.season_number===season()&&r.is_active&&r.roster_status==='official')
+      :kind==='import'?!termMap.has(c.id):kind==='new'?false:!!termMap.has(c.id))));
     $('cmContract').innerHTML=pool.map(c=>'<option value="'+escape(c.id)+'">'+escape(nameFor(c))+'</option>').join('')||'<option value="">Sin contratos disponibles</option>';
     if(pool.some(c=>c.id===prev))$('cmContract').value=prev;
     $('cmFormTitle').textContent=editing?'Editar operación':'Registrar operación';
     updatePreview();
   }
 
-  function updatePreview(){
+  async function updatePreview(){
+    const requested=++previewRequest;
     const kind=$('cmKind').value;
     const contract=contractMap.get($('cmContract').value);
     const count=Number($('cmHalves').value);
@@ -84,6 +91,28 @@
     const initial=season()*2+market();
     const term=termMap.get(contract?.id);
     let summary='';
+    if(kind.startsWith('dismiss_')){
+      const data=payload();
+      if(!data.contract_id){$('cmPreview').textContent='Selecciona un contrato para despedir al piloto.';return;}
+      $('cmPreview').textContent='Calculando importe de cláusula, reembolso y liberación de salary cap…';
+      const {data:quote,error}=await db.rpc('contract_dismissal_quote',{
+        p_contract:data.contract_id,p_season:data.season,
+        p_first_unplayed_round:data.start_round,p_rounds:data.total_rounds
+      });
+      if(requested!==previewRequest)return;
+      if(error){$('cmPreview').textContent='No se puede calcular: '+error.message;return;}
+      const first=Number(data.start_round),played=first-1;
+      const voluntary=kind==='dismiss_voluntary';
+      $('cmPreview').textContent=
+        'Se convierte al piloto en reserva ANTES de la ronda '+first+' de '+data.total_rounds+
+        '. Carreras ya disputadas: '+played+'. '+(voluntary
+          ?'Cláusula que paga la escudería: −'+money(quote.clause_m)+'. No hay reembolso bancario.'
+          :'Reembolso a la escudería: +'+money(quote.refund_m)+'. No hay pago de cláusula.')+
+        ' Salary cap liberado en esta temporada: '+money(quote.cap_released_this_season_m)+
+        '. Coste retenido por las carreras disputadas: '+money(quote.cap_retained_this_season_m)+
+        '. Los futuros periodos contractuales quedan liberados.';
+      return;
+    }
     if(kind==='import'){
       summary='No se crea ningún gasto ni se añade ningún coste al salary cap. Solo se establece el calendario del contrato heredado.';
       if(contract)summary+=' Importe heredado: '+money(contract.driver_value_m)+'.';
@@ -120,7 +149,7 @@
        '<td>'+money(currentClause(c))+'</td>'+
        '<td>'+money(seasonCap(c))+'</td>'+
        '<td>'+escape(t?expiry(t):(c.contract_end_label||'Por definir'))+'</td>'+
-       '<td><button type="button" class="contracts-mini" data-pick="'+escape(c.id)+'">'+(t?'Gestionar':'Integrar')+'</button></td></tr>';
+       '<td><button type="button" class="contracts-mini" data-pick="'+escape(c.id)+'">'+(t?'Gestionar':'Integrar')+'</button> <button type="button" class="contracts-mini" data-dismiss="'+escape(c.id)+'">Despedir</button></td></tr>';
     }).join(''):'<tr><td colspan="7">No se han encontrado contratos.</td></tr>';
   }
 
@@ -130,7 +159,8 @@
     const free=drivers.filter(d=>!owned.has(d.id)&&!activeIds.has(d.id)).sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
     $('cmFreeList').innerHTML=free.length?free.map(d=>{
       const expired=contracts.some(c=>c.driver_id===d.id&&termMap.get(c.id)?.end_half<currentHalf());
-      return '<div class="contracts-free-entry"><strong>'+escape(d.nickname)+'</strong><span>'+(expired?'Vencido':'Sin contrato')+'</span><button type="button" class="contracts-mini" data-free="'+escape(d.id)+'">Contratar</button></div>';
+      const reserve=rosters.some(r=>r.driver_id===d.id&&r.season_number===season()&&r.is_active&&r.roster_status==='reserve');
+      return '<div class="contracts-free-entry"><strong>'+escape(d.nickname)+'</strong><span>'+(reserve?'Reserva':expired?'Vencido':'Sin contrato')+'</span><button type="button" class="contracts-mini" data-free="'+escape(d.id)+'">Contratar</button></div>';
     }).join(''):'<div class="empty-line">Todos los pilotos tienen contrato registrado.</div>';
   }
 
@@ -156,7 +186,8 @@
     }).join(''):'<div class="empty-line">No hay propietarios registrados para esta temporada.</div>';
     if(mismatches.length)$('cmOwnerList').insertAdjacentHTML('afterbegin','<p class="contracts-owner-notice">Hay '+mismatches.length+' vinculación(es) de Team Principal que no coinciden con el piloto propietario.</p>');
   }
-  const kindNames={import:'Integración sin cargo',new:'Nuevo contrato',extend:'Ampliación',raise:'Subida de cláusula',buyout:'Fichaje por cláusula'};
+  const kindNames={import:'Integración sin cargo',new:'Nuevo contrato',extend:'Ampliación',raise:'Subida de cláusula',buyout:'Fichaje por cláusula',
+    dismiss_voluntary:'Despido voluntario',dismiss_attendance:'Despido por inasistencia'};
   function renderHistory(){
     const ordered=[...actions].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
     const latest=new Map();
@@ -167,7 +198,11 @@
       return '<div class="contracts-history-entry '+(a.status==='voided'?'voided':'')+'"><div><strong>'+
        escape(driverMap.get(a.driver_id)?.nickname||'Piloto')+' · '+escape(kindNames[a.kind]||a.kind)+
        '</strong><small>'+new Date(a.created_at).toLocaleString('es-ES')+' · '+
-       (a.kind==='import'?'Sin movimiento bancario':money(a.payload?.amount||0))+
+       (a.kind==='import'?'Sin movimiento bancario':a.kind?.startsWith('dismiss_')?
+         ((a.kind==='dismiss_voluntary'?'Cláusula pagada −'+money(a.payload?.quote?.clause_m):
+           'Reembolso +'+money(a.payload?.quote?.refund_m))+
+          ' · Libera '+money(a.payload?.quote?.cap_released_this_season_m)+' cap · antes R'+(a.payload?.start_round||'?'))
+         :money(a.payload?.amount||0))+
        (team?' · '+escape(team):'')+' · '+(a.status==='voided'?'Revertida':'Registrada')+
        '</small></div><div class="contracts-history-actions">'+
        (a.status==='active'?'<button type="button" data-edit="'+a.id+'" '+(!can?'disabled title="Primero rectifica la acción posterior"':'')+'>Editar</button><button type="button" class="danger" data-undo="'+a.id+'" '+(!can?'disabled title="Primero rectifica la acción posterior"':'')+'>Eliminar / Revertir</button>':'<span>Registro conservado</span>')+
@@ -200,7 +235,7 @@
         db.from('teams').select('id,name,slug').order('name'),
         db.from('team_accounts').select('id,team_id,season_number,is_active'),
         db.from('contract_admin_actions').select('*').order('created_at',{ascending:false}).limit(300),
-        db.from('season_roster').select('id,driver_id,team_id,season_number,start_round,end_round,division,is_active'),
+        db.from('season_roster').select('id,driver_id,team_id,season_number,start_round,end_round,division,roster_status,is_active'),
         db.from('team_principals').select('user_id,team_id,season_number,is_active').eq('is_active',true),
         db.from('profiles').select('id,driver_id').not('driver_id','is',null)
       ]);
@@ -225,7 +260,8 @@
       season:season(),market_half:market(),halves:Number($('cmHalves').value),
       amount:Number($('cmAmount').value||0),
       allocation:$('cmAllocation').value,
-      division:$('cmDivision').value,start_round:Number($('cmRound').value)
+      division:$('cmDivision').value,start_round:Number($('cmRound').value),
+      total_rounds:Number($('cmTotalRounds').value||12)
     };
   }
   function cancelEdit(){
@@ -237,7 +273,12 @@
     const data=payload();
     if(!data.driver_id){notice('Selecciona un piloto o contrato válido','error');return}
     if(ownerDriverIds().has(data.driver_id)){notice('Un Team Principal que corre en su propia escudería no necesita contrato ni cláusula.','error');return}
-    const warning=data.kind==='import'?'La integración no generará cobros ni cargos adicionales.':'El importe se cobrará inmediatamente al equipo y los movimientos quedarán registrados.';
+    const warning=data.kind==='import'?'La integración no generará cobros ni cargos adicionales.':
+      data.kind.startsWith('dismiss_')?
+      ('El piloto pasará a reserva antes de la ronda '+data.start_round+'. '+
+      (data.kind==='dismiss_voluntary'?'El equipo pagará su cláusula.':'Se devolverá al equipo la parte proporcional del contrato.')+
+      ' El salary cap se liberará por carreras pendientes.') :
+      'El importe se cobrará inmediatamente al equipo y los movimientos quedarán registrados.';
     if(!window.confirm('¿Guardar esta operación?\n\n'+warning+(editing?'\n\nSe sustituirá la operación anterior y se recalcularán sus efectos.':'')))return;
     $('cmSave').disabled=true;notice('Guardando operación…');
     try{
@@ -259,6 +300,12 @@
     $('cmForm').scrollIntoView({behavior:'smooth',block:'start'});
     updatePreview();
   }
+
+  function pickDismiss(id){
+    cancelEdit();$('cmKind').value='dismiss_voluntary';$('cmRound').value='7';syncForm();
+    $('cmContract').value=id;
+    $('cmForm').scrollIntoView({behavior:'smooth',block:'start'});updatePreview();
+  }
   function pickFree(id){
     cancelEdit();$('cmKind').value='new';syncForm();$('cmDriver').value=id;
     $('cmForm').scrollIntoView({behavior:'smooth',block:'start'});updatePreview();
@@ -274,6 +321,7 @@
     $('cmAmount').value=p.amount||60;
     $('cmAllocation').value=p.allocation||'last';
     $('cmRound').value=p.start_round||6;
+    $('cmTotalRounds').value=p.total_rounds||12;
     $('cmDivision').value=p.division||'academy';
     syncForm();
     if(p.contract_id)$('cmContract').value=p.contract_id;
@@ -298,11 +346,11 @@
   $('cmSeason').addEventListener('change',()=>{render();});
   $('cmMoment').addEventListener('change',()=>{render();});
   $('cmSearch').addEventListener('input',renderActive);
-  $('cmKind').addEventListener('change',syncForm);
-  ['cmContract','cmDriver','cmTeam','cmHalves','cmAmount','cmAllocation','cmRound'].forEach(id=>$(id).addEventListener('input',updatePreview));
+  $('cmKind').addEventListener('change',()=>{if($('cmKind').value.startsWith('dismiss_')&&!editing&&Number($('cmRound').value)===6)$('cmRound').value=7;syncForm();});
+  ['cmContract','cmDriver','cmTeam','cmHalves','cmAmount','cmAllocation','cmRound','cmTotalRounds'].forEach(id=>$(id).addEventListener('input',updatePreview));
   $('cmForm').addEventListener('submit',save);
   $('cmCancel').addEventListener('click',cancelEdit);
-  $('cmActiveBody').addEventListener('click',e=>{const btn=e.target.closest('[data-pick]');if(btn)pickContract(btn.dataset.pick);});
+  $('cmActiveBody').addEventListener('click',e=>{const pick=e.target.closest('[data-pick]'),dismiss=e.target.closest('[data-dismiss]');if(pick)pickContract(pick.dataset.pick);if(dismiss)pickDismiss(dismiss.dataset.dismiss);});
   $('cmFreeList').addEventListener('click',e=>{const btn=e.target.closest('[data-free]');if(btn)pickFree(btn.dataset.free);});
   $('cmHistory').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),undo=e.target.closest('[data-undo]');if(edit&&!edit.disabled)editAction(edit.dataset.edit);if(undo&&!undo.disabled)undoAction(undo.dataset.undo);});
   const tab=document.querySelector('[data-admin-section="contratos"]');
