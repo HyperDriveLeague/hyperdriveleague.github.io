@@ -70,7 +70,7 @@
       ].join(' ')).includes(q);
     });
     setMessage(filtered.length===records.length
-      ?records.length+' sanción'+(records.length===1?'':'es')+' registrada'+(records.length===1?'':'s')+' en la temporada '+config.currentSeason
+      ?records.length+' '+(records.length===1?'sanción registrada':'sanciones registradas')+' en la temporada '+config.currentSeason
       :filtered.length+' de '+records.length+' sanciones · Temporada '+config.currentSeason);
     body.replaceChildren();
     if(!filtered.length) {
