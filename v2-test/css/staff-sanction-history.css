@@ -1,0 +1,34 @@
+/* Temporada en curso: historial completo de sanciones deportivas */
+.season-sanctions-heading-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.season-sanctions-open{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:12px 15px;border-radius:9px;border:1px solid rgba(255,213,0,.52);background:rgba(255,213,0,.075);color:var(--yellow);font:900 10px Inter,Arial,sans-serif;letter-spacing:.045em;cursor:pointer;transition:background .18s,border-color .18s}
+.season-sanctions-open:hover{background:rgba(255,213,0,.16);border-color:var(--yellow)}
+.season-sanctions-open span{font-size:16px;line-height:1}
+.season-sanctions-open.staff-nav-hidden{display:none!important}
+.season-sanctions-dialog{position:fixed;inset:0;box-sizing:border-box;width:min(1150px,calc(100vw - 28px));max-width:1150px;max-height:min(90dvh,950px);margin:auto;padding:0;overflow:auto;overscroll-behavior:contain;border:1px solid rgba(255,255,255,.19);border-radius:16px;background:#0f1115;color:#fff;box-shadow:0 30px 100px rgba(0,0,0,.7);font-family:Inter,Arial,sans-serif}
+.season-sanctions-dialog::backdrop{background:rgba(0,0,0,.8);backdrop-filter:blur(5px)}
+.season-sanctions-dialog-top{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:23px 27px 18px;border-bottom:1px solid rgba(255,255,255,.09);background:#121419}
+.season-sanctions-dialog-top h2{font-size:clamp(21px,3vw,29px);letter-spacing:-.025em;margin:6px 0 4px}
+.season-sanctions-dialog-top p{font-size:11px;line-height:1.55;color:#9599a2;margin:5px 0 0}
+.season-sanctions-close{display:grid;place-items:center;flex:0 0 auto;width:38px;height:38px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.065);color:#f5f5f6;font-size:17px;cursor:pointer}
+.season-sanctions-close:hover{border-color:var(--yellow);color:var(--yellow)}
+.season-sanctions-tools{display:grid;grid-template-columns:minmax(200px,1fr) minmax(155px,220px);gap:12px;padding:20px 27px 13px}
+.season-sanctions-tools label{display:grid;gap:7px;min-width:0}
+.season-sanctions-tools label span{font-size:9px;font-weight:900;letter-spacing:.08em;color:#a0a4ad}
+.season-sanctions-tools input,.season-sanctions-tools select{width:100%;min-height:43px;background:#0a0c0e;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:10px 12px;font:inherit;font-size:12px;color:#f4f5f5;outline:none}
+.season-sanctions-tools input:focus,.season-sanctions-tools select:focus{border-color:var(--yellow)}
+.season-sanctions-count{padding:4px 27px 14px;color:#9297a0;font-size:11px}
+.season-sanctions-count.error{color:var(--red)}
+.season-sanctions-table-wrap{margin:0 27px 27px;overflow:auto;max-height:calc(90dvh - 280px);min-height:90px;border:1px solid rgba(255,255,255,.09);border-radius:10px}
+.season-sanctions-table{width:100%;min-width:840px;border-collapse:collapse;text-align:left}
+.season-sanctions-table th{position:sticky;top:0;background:#1b1e23;z-index:1;color:#aeb2ba;font-size:9px;letter-spacing:.07em;text-transform:uppercase;font-weight:900}
+.season-sanctions-table th,.season-sanctions-table td{padding:12px 11px;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
+.season-sanctions-table tr:last-child td{border-bottom:0}
+.season-sanctions-table td{font-size:11px;line-height:1.55;color:#c4c6cc}
+.season-sanctions-table .driver-name{font-weight:900;color:#fff}
+.season-sanctions-table .team-name{font-weight:700;color:#e0e2e5}
+.season-sanctions-table .team-beneficiary{display:block;color:#9b9fa9;font-size:9px;line-height:1.55;margin-top:4px}
+.season-sanctions-table .sanction-article{display:inline-block;border-radius:5px;border:1px solid rgba(255,213,0,.22);color:var(--yellow);font-weight:900;font-size:10px;padding:4px 6px;white-space:nowrap}
+.season-sanctions-table .sanction-description{max-width:340px;white-space:normal;min-width:180px;overflow-wrap:anywhere}
+.season-sanctions-table .sanction-points{font-weight:900;color:#ff929e}
+.season-sanctions-table .sanction-empty{text-align:center;color:#8c929a;padding:24px;font-size:12px}
+@media(max-width:720px){.season-sanctions-heading-actions{justify-content:flex-start}.season-sanctions-open{width:100%;font-size:10px}.season-sanctions-dialog{width:calc(100vw - 12px);max-height:95dvh;border-radius:11px}.season-sanctions-dialog-top{padding:18px 15px}.season-sanctions-tools{padding:16px 15px 10px;grid-template-columns:1fr}.season-sanctions-count{padding:6px 15px 12px}.season-sanctions-table-wrap{margin:0 12px 15px;max-height:calc(95dvh - 290px)}}
