@@ -18,6 +18,7 @@
   let slip = [];
   let bank = null;
   let activeMarketType = 'winner';
+  let winnersLoaded = false;
 
   const formatDateTime = value => value ? new Intl.DateTimeFormat('es-ES', {
     timeZone:'Europe/Madrid', weekday:'short', day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'
@@ -297,6 +298,27 @@
       const meta = document.createElement('span');
       meta.textContent = 'T' + item.season_number + ' · R' + item.round_number + ' · ' + (item.division === 'academy' ? 'Academy' : 'HyperDrive') + ' · GP ' + item.grand_prix;
       main.append(name, meta);
+      const legs = Array.isArray(item.legs) ? item.legs : [];
+      const stake = document.createElement('span');
+      stake.className = 'winners-bet-meta';
+      const betType = item.bet_type === 'simple' ? 'APUESTA SENCILLA' : 'APUESTA COMBINADA';
+      stake.textContent = betType + ' · Jugado: ' + money(item.stake_m) + ' M · Cuota total: x' +
+        Number(item.combined_odds || 0).toFixed(2);
+      main.appendChild(stake);
+      if (legs.length) {
+        const list = document.createElement('ul');
+        list.className = 'winners-legs';
+        legs.forEach(leg => {
+          const line = document.createElement('li');
+          const pick = document.createElement('span');
+          pick.textContent = (leg.market || 'Mercado') + ': ' + (leg.selection || 'Selección');
+          const odds = document.createElement('strong');
+          odds.textContent = 'x' + Number(leg.odds || 0).toFixed(2);
+          line.append(pick, odds);
+          list.appendChild(line);
+        });
+        main.appendChild(list);
+      }
 
       const amount = document.createElement('div');
       amount.className = 'public-prize-amount';
@@ -312,13 +334,17 @@
   }
 
   async function loadPrizeHistory() {
-    const response = await client.rpc('hyperbet_prize_history', { p_limit: 100 });
+    const history = $('hyperbetPrizeHistory');
+    history.textContent = 'Cargando historial de ganadores…';
+    const response = await client.rpc('hyperbet_prize_history_detailed', { p_limit: 100 });
     if (response.error) {
       console.error('Error al cargar premios HyperBet:', response.error);
-      renderPrizeHistory([]);
+      history.textContent = 'No se pudo cargar el historial de apuestas ganadoras. Inténtalo de nuevo.';
+      winnersLoaded = false;
       return;
     }
     renderPrizeHistory(response.data || []);
+    winnersLoaded = true;
   }
 
   function renderAll() {
@@ -375,8 +401,6 @@
       settings = settingsResponse.data;
       await refreshBank();
       await loadMarketsAndBets();
-      await loadPrizeHistory();
-
       $('loadingPanel').classList.add('is-hidden');
       $('errorPanel').classList.add('is-hidden');
       $('wagerContent').classList.remove('is-hidden');
@@ -393,6 +417,16 @@
       setBetMessage('');
       try { await loadMarketsAndBets(); } catch (error) { setBetMessage(error.message || 'No se pudo cambiar de división.', 'error'); }
     });
+  });
+
+  const winnersDialog = $('hyperbetWinnersDialog');
+  $('openHyperbetWinners').addEventListener('click', () => {
+    if (!winnersDialog.open) winnersDialog.showModal();
+    if (!winnersLoaded) loadPrizeHistory();
+  });
+  $('closeHyperbetWinners').addEventListener('click', () => winnersDialog.close());
+  winnersDialog.addEventListener('click', event => {
+    if (event.target === winnersDialog) winnersDialog.close();
   });
 
   $('stakeInput').addEventListener('input', updatePotential);
