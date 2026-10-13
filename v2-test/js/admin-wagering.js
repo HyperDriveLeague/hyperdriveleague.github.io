@@ -75,6 +75,44 @@
     $(id).addEventListener('change',load);
   });
   $('adminWageringRefresh').addEventListener('click',load);
+  $('adminWageringSettleNow').addEventListener('click',processPendingPayouts);
+
+  async function processPendingPayouts(){
+    const button=$('adminWageringSettleNow');
+    const note=$('adminWageringCycleStatus');
+    if(button.disabled)return;
+    if(!window.confirm('¿Ejecutar ahora el ciclo de HyperBet y HyperLoto? Solo liquidará eventos cuyo plazo ya haya vencido. Los eventos ya liquidados no se abonarán de nuevo.'))return;
+    button.disabled=true;
+    note.textContent='Solicitando la liquidación de premios pendientes…';
+    try{
+      const result=await client.rpc('admin_refresh_wagering_cycle');
+      if(result.error)throw result.error;
+      note.textContent='Ciclo solicitado. Comprobando que los eventos hayan quedado liquidados…';
+      const started=Date.now();
+      let complete=false;
+      while(Date.now()-started<70000){
+        await new Promise(resolve=>setTimeout(resolve,5000));
+        const events=await client.from('wagering_events')
+          .select('id,round_number,division,status,settles_at,is_suspended')
+          .lte('settles_at',new Date().toISOString())
+          .eq('is_suspended',false);
+        if(events.error)throw events.error;
+        const pending=(events.data||[]).filter(event=>event.status!=='settled');
+        if(pending.length===0){
+          complete=true;
+          note.textContent='Liquidación completada. Premios y movimientos bancarios actualizados.';
+          break;
+        }
+        note.textContent='Esperando confirmación: '+pending.length+' evento(s) pendientes de liquidar.';
+      }
+      await load();
+      if(!complete)note.textContent='El ciclo fue solicitado, pero la liquidación sigue pendiente. Revisa los registros del proceso antes de repetirlo.';
+    }catch(error){
+      note.textContent='No se pudo ejecutar el ciclo: '+(error?.message||String(error));
+    }finally{
+      button.disabled=false;
+    }
+  }
 
   async function init(){
     const {data:{session}}=await client.auth.getSession();if(!session)return;
