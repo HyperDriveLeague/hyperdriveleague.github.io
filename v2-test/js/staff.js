@@ -244,6 +244,7 @@
     setVisible(regions.pilotsTable, section === 'points');
     setVisible(regions.historyHeading, section === 'points' || section === 'sanctions');
     setVisible(regions.historyPanel, section === 'points' || section === 'sanctions');
+    setVisible(document.getElementById('showSeasonSanctions'), section === 'sanctions');
     setVisible(regions.operations, !home);
 
     if (!home) {
