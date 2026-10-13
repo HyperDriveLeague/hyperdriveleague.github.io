@@ -209,8 +209,7 @@
     const stake = Number(rawStake || 0);
     const odds = combinedOdds();
     const isSimple = slip.length <= 1;
-    const returnCap = isSimple ? Number(settings?.max_simple_return_m || 12) : Number(settings?.max_combo_return_m || 15);
-    const potential = stake > 0 && odds > 0 ? Math.min(Math.round(stake * odds * 100) / 100, returnCap) : 0;
+    const potential = stake > 0 && odds > 0 ? Math.round(stake * odds * 100) / 100 : 0;
     $('potentialReturn').textContent = money(potential) + ' M';
     $('potentialProfit').textContent = money(Math.max(0, potential - stake)) + ' M';
 
