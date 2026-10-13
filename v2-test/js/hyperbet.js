@@ -214,7 +214,7 @@
     $('potentialProfit').textContent = money(Math.max(0, potential - stake)) + ' M';
 
     const minStake = isSimple ? Number(settings?.min_simple_stake_m || .1) : Number(settings?.min_combo_stake_m || .1);
-    const maxStake = isSimple ? Number(settings?.max_simple_stake_m || 2) : Number(settings?.max_combo_stake_m || 1);
+    const maxStake = isSimple ? Number(settings?.max_simple_stake_m || 5) : Number(settings?.max_combo_stake_m || 5);
     const available = Number(bank?.available_balance_m || 0);
     $('stakeInput').min = minStake;
     $('stakeInput').max = maxStake;
