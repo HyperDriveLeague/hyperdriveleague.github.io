@@ -1,245 +1,269 @@
 (() => {
   'use strict';
-  // HYPERSPIN LAB ONLY: no API requests, no persistence and no real transactions.
-  // 20 equally likely sectors -> preliminary RTP = 90%. Production must use
-  // an authenticated server-side atomic debit/draw/credit transaction.
-  const sectors = [
-    0, .5, 1, 0, 1.5, 0, .5, 2, 0, 1,
-    0, 5, .5, 0, 1.5, 0, 3, 1, .5, 0
+  // LABORATORY ONLY — NO API, DATABASE, WALLET OR PERSISTENT RECORDS.
+  // For production: authenticate on server and atomically debit/draw/credit.
+  const RULES = [
+    {mult:0,count:16,color:'#272b30',ink:'#aeb5bd'},
+    {mult:0.5,count:15,color:'#5b626c',ink:'#fff'},
+    {mult:1,count:10,color:'#366a74',ink:'#f0faff'},
+    {mult:1.5,count:5,color:'#278d7c',ink:'#edfff9'},
+    {mult:2,count:3,color:'#a66c32',ink:'#fff5e7'},
+    {mult:5,count:1,color:'#ffda17',ink:'#171507'}
   ];
-  const scheme = [
-    {mult:0,color:'#282c33',text:'#bdc1c8'},
-    {mult:.5,color:'#53606d',text:'#ffffff'},
-    {mult:1,color:'#3c7e7c',text:'#f2fffb'},
-    {mult:1.5,color:'#347dc0',text:'#ffffff'},
-    {mult:2,color:'#8062ba',text:'#ffffff'},
-    {mult:3,color:'#b97928',text:'#fff0d3'},
-    {mult:5,color:'#f0ce3a',text:'#17130a'}
-  ];
-  const $ = id => document.getElementById(id);
-  const SVG_NS = 'http://www.w3.org/2000/svg';
-  const SEGMENT = 360 / sectors.length;
-  const money = cents => (cents/100).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const label = factor => factor === 0 ? 'x0' : 'x' + factor.toLocaleString('es-ES',{maximumFractionDigits:1});
-  const currency = cents => money(cents) + ' M';
-  let balance = 5000; // 50 million demo only, expressed in hundredths of 1M.
-  let turns = [];
-  let spinning = false;
-  let cumulativeRotation = 0;
-  const wheel = $('spinWheel');
-  const container = $('wheelSegments');
+  const INITIAL = 5000, MAX_STAKE = 500, MIN_STAKE = 10; // hundredths of 1 M.
+  const TOTAL=RULES.reduce((sum,r)=>sum+r.count,0);
+  if(TOTAL!==50)throw Error('La rueda debe contener exactamente 50 sectores.');
+  const EXPECTED=RULES.reduce((sum,r)=>sum+r.mult*r.count,0)/TOTAL;
+  const $=id=>document.getElementById(id);
+  const format=cents=>(cents/100).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const money=cents=>format(cents)+' M';
+  const name=n=>'x'+String(n).replace('.',',');
+  const SVG='http://www.w3.org/2000/svg';
+  const state={balance:INITIAL,history:[],spinning:false,angle:0};
+  const wheel=$('spinWheel');
+  const stage=$('wheelSegments');
+  let sectors=[];
 
-  function secureInt(limit) {
-    const space=4294967296;
-    const max=Math.floor(space/limit)*limit;
-    let v;
-    do {
-      const buffer = new Uint32Array(1);
-      window.crypto.getRandomValues(buffer);
-      v=buffer[0];
-    } while(v>=max);
-    return v % limit;
-  }
-  function svg(name,attrs,content) {
-    const el=document.createElementNS(SVG_NS,name);
-    Object.entries(attrs).forEach(([key,value])=>el.setAttribute(key,String(value)));
-    if(content!==undefined)el.textContent=String(content);
-    return el;
-  }
-  function point(angle,r) {
-    const rad=angle*Math.PI/180;
-    return {x:300+Math.sin(rad)*r,y:300-Math.cos(rad)*r};
-  }
-  function drawWheel() {
-    sectors.forEach((mult,i)=>{
-      const a=i*SEGMENT,b=(i+1)*SEGMENT,mid=(a+b)/2;
-      const p1=point(a,284),p2=point(b,284);
-      const palette=scheme.find(x=>x.mult===mult);
-      const path='M 300 300 L '+p1.x.toFixed(3)+' '+p1.y.toFixed(3)+
-        ' A 284 284 0 0 1 '+p2.x.toFixed(3)+' '+p2.y.toFixed(3)+' Z';
-      container.appendChild(svg('path',{
-        d:path,fill:palette.color,stroke:'#131518','stroke-width':2
-      }));
-      const p=point(mid,216);
-      const group=svg('g',{transform:'rotate('+mid+' '+p.x+' '+p.y+')'});
-      const text=svg('text',{
-        x:p.x,y:p.y,fill:palette.text,
-        'font-size':mult===1.5?25:30,'font-weight':'900',
-        'text-anchor':'middle','dominant-baseline':'central',
-        'font-family':'Inter,Arial,sans-serif','letter-spacing':'-1.5'
-      },label(mult));
-      group.appendChild(text);
-      container.appendChild(group);
-    });
-  }
-  function setMessage(message='',error=false) {
-    const el=$('spinMessage');
-    el.textContent=message;
-    el.classList.toggle('error',error);
-  }
-  function currentStake() {
-    const raw=$('stakeInput').value.replace(',','.');
-    if(raw.trim()==='')return null;
-    const value=Number(raw);
-    if(!Number.isFinite(value))return null;
-    return Math.round(value*100);
-  }
-  function showBalance() {
-    $('demoBalance').innerHTML=money(balance)+' <small>M</small>';
-  }
-  function updateControls() {
-    const stake=currentStake();
-    const valid=stake!==null && stake>=10 && stake<=500
-      && stake===Math.round(stake) && stake<=balance;
-    $('betSummary').textContent=stake===null?'—':currency(stake);
-    $('maxReturn').textContent=stake===null?'—':currency(stake*5);
-    $('afterBet').textContent=stake===null?'—':currency(balance-stake);
-    $('spinButton').disabled=!valid||spinning;
-    $('stakeInput').disabled=spinning;
-    $('resetDemo').disabled=spinning;
-    document.querySelectorAll('[data-stake]').forEach(button=>{
-      button.disabled=spinning;
-      button.classList.toggle('selected',stake!==null &&
-        Math.round(Number(button.dataset.stake)*100)===stake);
-    });
-    if(!spinning && stake!==null && stake>balance) {
-      setMessage('No tienes saldo de prueba suficiente para esa tirada.',true);
-    } else if(!spinning && stake!==null && (stake<10 || stake>500)) {
-      setMessage('El importe de prueba debe estar entre 0,10 M y 5 M.',true);
-    } else if(!spinning) {
-      setMessage('');
+  // Stable shuffle of sector appearances; equal angular sizes ensure listed
+  // probability equals actual selection probability.
+  function buildDistribution(){
+    const bag=RULES.flatMap(r=>Array.from({length:r.count},()=>r.mult));
+    let seed=0x1f87b53;
+    for(let i=bag.length-1;i>0;i--){
+      seed=(Math.imul(1664525,seed)+1013904223)>>>0;
+      const j=seed%(i+1);
+      [bag[i],bag[j]]=[bag[j],bag[i]];
     }
-    showBalance();
-    return valid;
+    return bag;
   }
-  function paintResult(factor,stake,payout) {
-    const panel=$('spinResult');
-    panel.classList.remove('win','loss');
-    panel.classList.add(payout>stake?'win':payout<stake?'loss':'win');
-    panel.querySelector('.result-label').textContent=payout>stake?'PREMIO CONSEGUIDO':
-      payout<stake?'RESULTADO DEL GIRO':'APUESTA RECUPERADA';
-    panel.querySelector('strong').textContent=label(factor)+' · '+currency(payout);
-    const net=payout-stake;
-    panel.querySelector('small').textContent=
-      'Apostado '+currency(stake)+' · '+(net>=0?'Beneficio ':'Pérdida ')+
-      (net>=0?'+':'−')+currency(Math.abs(net));
+  function unbiasedRandom(max){
+    const SIZE=4294967296;
+    const ceiling=SIZE-SIZE%max;
+    let pick;
+    do{
+      const values=new Uint32Array(1);
+      crypto.getRandomValues(values);
+      pick=values[0];
+    }while(pick>=ceiling);
+    return pick%max;
   }
-  function paintLegend() {
-    const list=$('multiplierLegend');
-    const rtp=sectors.reduce((sum,v)=>sum+v,0)/sectors.length*100;
-    $('rtpValue').textContent=rtp.toLocaleString('es-ES',{maximumFractionDigits:2})+'%';
-    scheme.forEach(item=>{
-      const count=sectors.filter(x=>x===item.mult).length;
+  function svg(tag,attr,txt){
+    const node=document.createElementNS(SVG,tag);
+    Object.entries(attr).forEach(([key,val])=>node.setAttribute(key,String(val)));
+    if(txt!==undefined)node.textContent=txt;
+    return node;
+  }
+  function polar(deg,r){
+    const a=deg*Math.PI/180;
+    return {x:300+Math.sin(a)*r,y:300-Math.cos(a)*r};
+  }
+  function arc(i,r=282){
+    const a=i*360/TOTAL,b=(i+1)*360/TOTAL;
+    const first=polar(a,r),second=polar(b,r);
+    return 'M300 300 L'+first.x.toFixed(4)+' '+first.y.toFixed(4)+
+      ' A'+r+' '+r+' 0 0 1 '+second.x.toFixed(4)+' '+second.y.toFixed(4)+' Z';
+  }
+  function renderWheel(){
+    sectors=buildDistribution();
+    const wedge=360/TOTAL;
+    sectors.forEach((factor,i)=>{
+      const rule=RULES.find(r=>r.mult===factor);
+      stage.appendChild(svg('path',{
+        d:arc(i),fill:rule.color,stroke:'#0d1013','stroke-width':'2.3',
+        'data-sector':String(i),'data-multiplier':String(factor)
+      }));
+      // Legibility-first: the colors represent every actual segment; show
+      // labels on rarer high multipliers and a sampled subset of other tiles.
+      if(i%5===0||factor>=2){
+        const center=(i+.5)*wedge;
+        const p=polar(center,222);
+        const group=svg('g',{transform:'rotate('+center+' '+p.x+' '+p.y+')'});
+        group.appendChild(svg('text',{
+          x:p.x,y:p.y,fill:rule.ink,'font-family':'Barlow Condensed, Impact, sans-serif',
+          'font-size':factor>=2?'23':'19','font-weight':'900',
+          'text-anchor':'middle','dominant-baseline':'middle'
+        },name(factor)));
+        stage.appendChild(group);
+      }
+    });
+    $('rtpValue').innerHTML=(EXPECTED*100).toLocaleString('es-ES',{maximumFractionDigits:2})+' <small>%</small>';
+  }
+  function renderOdds(){
+    const root=$('multiplierLegend');
+    root.replaceChildren();
+    RULES.forEach(rule=>{
       const tile=document.createElement('div');
-      tile.className='legend-item';
-      const circle=document.createElement('i');
-      circle.style.background=item.color;
+      tile.className='odds-item';
+      const swatch=document.createElement('i');
+      swatch.className='odds-swatch';
+      swatch.style.background=rule.color;
       const title=document.createElement('strong');
-      title.textContent=label(item.mult);
-      const small=document.createElement('small');
-      small.textContent=(count*100/sectors.length)+'%';
-      tile.append(circle,title,small);
-      list.appendChild(tile);
+      title.textContent=name(rule.mult);
+      const prob=document.createElement('small');
+      prob.textContent=(rule.count/TOTAL*100).toLocaleString('es-ES')+' %';
+      const tiny=document.createElement('span');
+      tiny.className='odds-note';
+      tiny.textContent=rule.count+' / '+TOTAL+' sectores';
+      tile.append(swatch,title,prob,tiny);
+      root.appendChild(tile);
     });
   }
-  function paintHistory() {
-    $('spinCount').textContent=turns.length+(turns.length===1?' TIRADA':' TIRADAS');
+  function stakeAmount(){
+    const raw=$('stakeInput').value.replace(',','.').trim();
+    if(raw==='')return null;
+    const number=Number(raw);
+    if(!Number.isFinite(number))return null;
+    const cents=number*100;
+    if(!Number.isInteger(Math.round(cents)) || Math.abs(Math.round(cents)-cents)>1e-7)return null;
+    return Math.round(cents);
+  }
+  function checkStake(cents){
+    if(cents===null || cents<MIN_STAKE || cents>MAX_STAKE)return false;
+    if(cents%10!==0)return false;
+    return cents<=state.balance;
+  }
+  function balancePaint(){
+    $('demoBalance').innerHTML=format(state.balance)+' <small>M</small>';
+    const net=state.balance-INITIAL,area=$('sessionNet');
+    area.classList.remove('positive','negative','neutral');
+    area.classList.add(net>0?'positive':net<0?'negative':'neutral');
+    area.innerHTML=(net>0?'+':net<0?'−':'')+format(Math.abs(net))+' <small>M</small>';
+    $('spinCount').textContent=String(state.history.length).padStart(2,'0');
+  }
+  function showMessage(message='',isError=false){
+    const node=$('spinMessage');
+    node.textContent=message;
+    node.classList.toggle('error',isError);
+  }
+  function updateControls(){
+    const cents=stakeAmount(),ready=checkStake(cents);
+    $('betSummary').textContent=cents===null?'—':money(cents);
+    $('maxReturn').textContent=cents===null?'—':money(cents*5);
+    $('afterBet').textContent=cents===null?'—':money(state.balance-cents);
+    $('spinButton').disabled=state.spinning||!ready;
+    $('stakeInput').disabled=state.spinning;
+    $('addStake').disabled=state.spinning;
+    $('subtractStake').disabled=state.spinning;
+    $('resetDemo').disabled=state.spinning;
+    document.querySelectorAll('[data-stake]').forEach(button=>{
+      button.disabled=state.spinning;
+      button.classList.toggle('selected',cents!==null&&cents===Math.round(Number(button.dataset.stake)*100));
+    });
+    if(!state.spinning){
+      if(cents!==null&&cents>state.balance)showMessage('Saldo de prueba insuficiente para esta apuesta.',true);
+      else if(cents!==null&&(cents<MIN_STAKE||cents>MAX_STAKE||cents%10))showMessage('Apuesta permitida: de 0,10 M a 5 M, en pasos de 0,10 M.',true);
+      else showMessage();
+    }
+    balancePaint();
+  }
+  function paintOutcome(mult,stake,payout){
+    const net=payout-stake;
+    const box=$('resultBox');
+    box.classList.remove('positive','negative');
+    box.classList.add(net>=0?'positive':'negative');
+    box.querySelector('span').textContent=net>0?'PREMIO CONSEGUIDO':net<0?'RESULTADO DE LA TIRADA':'IMPORTE RECUPERADO';
+    $('resultFactor').textContent=name(mult)+'  /  '+money(payout);
+    $('resultDescription').textContent='Apostados '+money(stake)+' · '+(net>=0?'Balance +':'Balance −')+money(Math.abs(net));
+  }
+  function paintHistory(){
     const root=$('spinHistory');
     root.replaceChildren();
-    if(!turns.length) {
-      const empty=document.createElement('div');
-      empty.className='empty-history';
-      empty.textContent='Aún no has girado la ruleta. Tu actividad de prueba aparecerá aquí.';
-      root.appendChild(empty);
+    if(!state.history.length){
+      const message=document.createElement('p');
+      message.className='empty-history';
+      message.textContent='Todavía no has girado la ruleta.';
+      root.appendChild(message);
       return;
     }
-    turns.forEach(turn=>{
-      const row=document.createElement('div');
-      row.className='history-row';
-      const value=document.createElement('div');
-      const item=scheme.find(x=>x.mult===turn.factor);
-      value.className='history-x';
-      value.style.background=item.color;
-      value.style.color=item.text;
-      value.textContent=label(turn.factor);
-      const detail=document.createElement('div');
-      detail.className='history-detail';
-      const name=document.createElement('strong');
-      name.textContent='Apostado '+currency(turn.stake)+' · Retorno '+currency(turn.payout);
-      const sub=document.createElement('small');
-      sub.textContent=turn.time.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · Tirada de prueba';
-      detail.append(name,sub);
-      const difference=document.createElement('strong');
-      const net=turn.payout-turn.stake;
-      difference.className='history-profit '+(net>=0?'positive':'negative');
-      difference.textContent=(net>=0?'+':'−')+currency(Math.abs(net));
-      row.append(value,detail,difference);
+    state.history.slice(0,12).forEach(entry=>{
+      const rule=RULES.find(r=>r.mult===entry.mult);
+      const row=document.createElement('div');row.className='history-row';
+      const factor=document.createElement('div');factor.className='history-factor';
+      factor.textContent=name(entry.mult);
+      factor.style.background=rule.color;factor.style.color=rule.ink;
+      const desc=document.createElement('div');desc.className='history-desc';
+      const first=document.createElement('strong');first.textContent='Apostado '+money(entry.stake)+' · Pagado '+money(entry.payout);
+      const second=document.createElement('small');
+      second.textContent=entry.time.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · Simulación';
+      desc.append(first,second);
+      const net=document.createElement('strong');
+      net.className='history-net '+(entry.net>=0?'positive':'negative');
+      net.textContent=(entry.net>=0?'+':'−')+money(Math.abs(entry.net));
+      row.append(factor,desc,net);
       root.appendChild(row);
     });
   }
-  function finishSpin(factor,stake) {
-    const payout=Math.round(stake*factor);
-    balance+=payout;
-    turns.unshift({factor,stake,payout,time:new Date()});
-    turns=turns.slice(0,20);
-    spinning=false;
-    $('spinButton').querySelector('span').textContent='VOLVER A GIRAR';
-    $('spinResult').setAttribute('aria-busy','false');
-    paintResult(factor,stake,payout);
+  function endSpin(chosen,stake){
+    const mult=sectors[chosen],payout=Math.round(stake*mult);
+    state.balance+=payout;
+    state.history.unshift({mult,payout,stake,net:payout-stake,time:new Date()});
+    state.spinning=false;
+    $('spinButtonLabel').textContent='GIRAR DE NUEVO';
+    paintOutcome(mult,stake,payout);
     paintHistory();
     updateControls();
   }
-  function spin() {
-    if(spinning || !updateControls())return;
-    const stake=currentStake();
-    if(stake===null || stake>balance)return;
-    spinning=true;
-    balance-=stake;
-    const index=secureInt(sectors.length);
-    const factor=sectors[index];
+  function spin(){
+    const stake=stakeAmount();
+    if(state.spinning || !checkStake(stake))return;
+    state.spinning=true;
+    state.balance-=stake;
+    // Decide the outcome before the animation, using an unbiased crypto RNG.
+    const chosen=unbiasedRandom(sectors.length);
+    const anglePerSector=360/TOTAL;
+    const target=(360-(chosen+.5)*anglePerSector)%360;
+    const previous=((state.angle%360)+360)%360;
+    const adjustment=((target-previous)+360)%360;
+    const jitter=(unbiasedRandom(401)-200)/100; // within the selected sector.
+    state.angle+=360*7+adjustment+jitter;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const duration=reduced?200:4800;
-    const desired=(360-((index+.5)*SEGMENT)%360)%360;
-    const current=((cumulativeRotation%360)+360)%360;
-    const delta=(desired-current+360)%360;
-    const jitter=(secureInt(801)/100)-4;
-    cumulativeRotation+=6*360+delta+jitter;
+    const duration=reduced?200:5600;
     wheel.style.transitionDuration=duration+'ms';
-    wheel.style.transform='rotate('+cumulativeRotation+'deg)';
-    $('spinResult').classList.remove('win','loss');
-    $('spinResult').setAttribute('aria-busy','true');
-    $('spinResult').querySelector('.result-label').textContent='GIRANDO RULETA';
-    $('spinResult').querySelector('strong').textContent='···';
-    $('spinResult').querySelector('small').textContent='El resultado se decide al iniciar el giro.';
-    $('spinButton').querySelector('span').textContent='GIRANDO…';
-    setMessage('Apuesta de '+currency(stake)+' descontada del saldo de prueba.');
+    wheel.style.transform='rotate('+state.angle+'deg)';
+    const box=$('resultBox');
+    box.classList.remove('positive','negative');
+    box.querySelector('span').textContent='RUEDA EN MOVIMIENTO';
+    $('resultFactor').textContent='GIRANDO…';
+    $('resultDescription').textContent='La apuesta ya se ha descontado del saldo de prueba.';
+    $('spinButtonLabel').textContent='GIRANDO…';
+    showMessage('Resultado determinado. Esperando a que termine la animación.');
     updateControls();
-    window.setTimeout(()=>finishSpin(factor,stake),duration+75);
+    window.setTimeout(()=>endSpin(chosen,stake),duration+85);
   }
-  function reset() {
-    if(spinning)return;
-    if(turns.length && !window.confirm('¿Reiniciar el saldo y borrar las tiradas de prueba?'))return;
-    balance=5000;
-    turns=[];
+  function setStake(cents){
+    if(state.spinning)return;
+    $('stakeInput').value=(cents/100).toFixed(2);
+    updateControls();
+  }
+  function nudgeStake(delta){
+    const value=stakeAmount();
+    const next=Math.max(MIN_STAKE,Math.min(MAX_STAKE,(value===null?100:value)+delta));
+    setStake(next);
+  }
+  function reset(){
+    if(state.spinning)return;
+    if(state.history.length&&!window.confirm('¿Reiniciar los 50 M de prueba y borrar todas las tiradas?'))return;
+    state.balance=INITIAL;
+    state.history=[];
     $('stakeInput').value='1';
-    $('spinButton').querySelector('span').textContent='GIRAR RULETA';
-    $('spinResult').classList.remove('win','loss');
-    $('spinResult').querySelector('.result-label').textContent='ESPERANDO TU APUESTA';
-    $('spinResult').querySelector('strong').textContent='—';
-    $('spinResult').querySelector('small').textContent='Selecciona un importe y pulsa GIRAR.';
+    $('spinButtonLabel').textContent='LANZAR HYPERSPIN';
+    $('resultBox').classList.remove('positive','negative');
+    $('resultBox').querySelector('span').textContent='RESULTADO DEL ÚLTIMO GIRO';
+    $('resultFactor').textContent='—';
+    $('resultDescription').textContent='Preparado para empezar.';
     paintHistory();
     updateControls();
   }
-  drawWheel();
-  paintLegend();
+  renderWheel();
+  renderOdds();
   paintHistory();
   updateControls();
-  $('stakeInput').addEventListener('input',updateControls);
-  document.querySelectorAll('[data-stake]').forEach(button=>button.addEventListener('click',()=>{
-    if(spinning)return;
-    $('stakeInput').value=button.dataset.stake;
-    updateControls();
-  }));
   $('spinButton').addEventListener('click',spin);
   $('resetDemo').addEventListener('click',reset);
+  $('stakeInput').addEventListener('input',updateControls);
+  $('addStake').addEventListener('click',()=>nudgeStake(10));
+  $('subtractStake').addEventListener('click',()=>nudgeStake(-10));
+  document.querySelectorAll('[data-stake]').forEach(button=>button.addEventListener('click',()=>{
+    setStake(Math.round(Number(button.dataset.stake)*100));
+  }));
 })();
