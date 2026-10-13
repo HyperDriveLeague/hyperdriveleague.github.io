@@ -5,82 +5,100 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#08090b">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>HyperSpin — Laboratorio | HyperDrive League</title>
-  <link rel="icon" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg" type="image/jpeg">
+  <meta name="description" content="HyperSpin: simulador de ruleta en desarrollo. No conectado a los bancos de HyperDrive.">
+  <title>HyperSpin · Game Lab | HyperDrive League</title>
+  <link rel="icon" type="image/jpeg" href="https://hyperdriveleague.github.io/images/logo/favicon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="hyperspin.css?v=1">
-  <script src="hyperspin.js?v=1" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hyperspin.css?v=2">
+  <script defer src="hyperspin.js?v=2"></script>
 </head>
 <body>
-  <div class="background-grid" aria-hidden="true"></div>
-  <main class="app">
-    <header class="topbar">
-      <div class="wordmark">
-        <div class="ident"><span class="ident-stroke"></span><span class="ident-stroke"></span><span class="ident-stroke"></span></div>
-        <div><span class="eyebrow">HYPERDRIVE LEAGUE · SPIN LAB</span><h1>HYPER<span>SPIN</span><small>™</small></h1></div>
+  <div class="grain" aria-hidden="true"></div>
+  <main class="layout">
+    <header class="masthead">
+      <div class="brand"><div class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="brand-copy"><small>HYPERDRIVE LEAGUE</small><strong>HYPER<span>SPIN</span><sup>®</sup></strong></div>
       </div>
-      <div class="topbar-right">
-        <span class="pill lab"><span class="dot"></span> PROTOTIPO FUERA DEL MENÚ</span>
-        <span class="pill offline">● NO CONECTADO AL BANCO</span>
+      <div class="masthead-right">
+        <span class="code-label">HS//PROTO·02</span>
+        <span class="sandbox-indicator"><span class="sandbox-dot"></span> MODO DEMOSTRACIÓN</span>
       </div>
     </header>
-    <section class="hero">
-      <div><div class="section-index">01 / LA RULETA</div><h2>GIRA. ARRIESGA.<br><em>MULTIPLICA.</em></h2><p>Elige tu apuesta en millones virtuales, gira la ruleta y descubre qué multiplicador consigues. Esta versión es un simulador: no realiza movimientos bancarios.</p></div>
-      <div class="wallet"><div class="wallet-label">SALDO DE PRUEBA <span>SIMULADO</span></div><strong id="demoBalance">50,00 <small>M</small></strong><button id="resetDemo" class="reset-link" type="button">↺ Reiniciar simulación</button></div>
+
+    <section class="intro">
+      <div><span class="eyebrow"><span class="yellow-square"></span> WHEEL EXPERIENCE <span class="sep">/</span> LABORATORIO</span>
+        <h1>ONE SPIN.<br><em>ALL OR NOTHING.</em></h1>
+        <p>Elige cuánto arriesgar, gira y descubre el multiplicador. Solo estás jugando con créditos ficticios: HyperSpin aún no está integrado.</p>
+      </div>
+      <div class="intro-mark" aria-hidden="true">H<span>S</span><small>02</small></div>
     </section>
-    <div class="game-grid">
-      <section class="wheel-card" aria-label="Ruleta HyperSpin">
-        <div class="panel-head"><span class="eyebrow">HYPERSPIN 01</span><span class="live-pill"><i></i> SISTEMA DEMO</span></div>
-        <div class="wheel-stage">
-          <div class="wheel-glow"></div>
-          <div class="wheel-ring">
-            <div class="pointer" aria-hidden="true"></div>
-            <svg id="spinWheel" class="spin-wheel" viewBox="0 0 600 600" role="img" aria-label="Ruleta con 20 casillas y multiplicadores de 0 a 5">
-              <circle cx="300" cy="300" r="295" fill="#111318" stroke="#434752" stroke-width="2"></circle>
-              <g id="wheelSegments"></g>
-              <circle cx="300" cy="300" r="285" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3"></circle>
-            </svg>
-            <div class="hub" aria-hidden="true"><div class="hub-logo">H<span>S</span></div><small>SPIN</small></div>
+
+    <section class="telemetry" aria-label="Estadísticas de la simulación">
+      <article class="stat"><div class="stat-label">SALDO DE PRUEBA <span class="stat-indicator">DEMO</span></div><strong id="demoBalance">50,00 <small>M</small></strong><div class="stat-under">Créditos virtuales, no transferibles</div></article>
+      <article class="stat"><div class="stat-label">BALANCE DE SESIÓN</div><strong id="sessionNet" class="neutral">0,00 <small>M</small></strong><div class="stat-under">Ganancias menos apuestas</div></article>
+      <article class="stat"><div class="stat-label">TIRADAS DE ESTA SESIÓN</div><strong id="spinCount">00</strong><div class="stat-under">Historial solo en esta pestaña</div></article>
+      <article class="stat house-stat"><div class="stat-label">RETORNO TEÓRICO</div><strong id="rtpValue">72 <small>%</small></strong><div class="stat-under">Promedio estadístico · no garantizado</div></article>
+    </section>
+
+    <section class="play-layout">
+      <div class="arena">
+        <div class="panel-top"><div class="tag">01 <span>/</span> THE SPIN</div><div class="live-id"><span></span> RUEDA OPERATIVA</div></div>
+        <div class="arena-core">
+          <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="wheel-shell">
+            <div class="outer-bezel"></div>
+            <div class="wheel-container">
+              <svg id="spinWheel" viewBox="0 0 600 600" aria-label="Ruleta con 50 sectores y probabilidades visibles abajo" role="img">
+                <circle cx="300" cy="300" r="299" fill="#090c10"/>
+                <g id="wheelSegments"></g>
+                <circle cx="300" cy="300" r="283" fill="none" stroke="#ffffff" stroke-opacity=".1" stroke-width="2"/>
+                <circle cx="300" cy="300" r="266" fill="none" stroke="#040607" stroke-opacity=".47" stroke-width="4"/>
+              </svg>
+              <div class="wheel-hub"><div class="hub-triangle">▲</div><div class="hub-letters">H<span>S</span></div><div class="hub-caption">HYPERSPIN</div></div>
+            </div>
+            <div class="wheel-pointer" aria-hidden="true"></div>
           </div>
         </div>
-        <div id="spinResult" class="result" role="status" aria-live="polite"><span class="result-label">ESPERANDO TU APUESTA</span><strong>—</strong><small>Selecciona un importe y pulsa GIRAR.</small></div>
-      </section>
-      <aside class="controls">
-        <div class="control-head"><span class="section-index">02 / TU APUESTA</span><h3>ELIGE TU IMPORTE</h3><p>La apuesta se descuenta antes de girar. El multiplicador determina cuánto recuperas.</p></div>
-        <div class="bet-label">APUESTA <span>MILLONES (M)</span></div>
-        <div class="stake-field"><input id="stakeInput" aria-label="Cantidad a apostar en millones" type="number" inputmode="decimal" min="0.1" max="5" step="0.1" value="1" autocomplete="off"><span>M</span></div>
-        <div class="presets" aria-label="Cantidades rápidas">
-          <button class="preset" data-stake="0.5" type="button">0,50 M</button>
-          <button class="preset selected" data-stake="1" type="button">1 M</button>
-          <button class="preset" data-stake="2" type="button">2 M</button>
-          <button class="preset" data-stake="5" type="button">5 M</button>
+        <div class="arena-footer">
+          <div id="resultBox" class="result-box" role="status" aria-live="polite"><span>RESULTADO DEL ÚLTIMO GIRO</span><strong id="resultFactor">—</strong><small id="resultDescription">Preparado para empezar.</small></div>
+          <div class="arena-emblem" aria-hidden="true"><span>H</span>S</div>
         </div>
-        <div class="bet-summary">
-          <div><span>APUESTA</span><strong id="betSummary">1,00 M</strong></div>
-          <div><span>RETORNO MÁX. EN ESTA RULETA</span><strong id="maxReturn">5,00 M</strong></div>
-          <div><span>SALDO TRAS DESCONTAR APUESTA</span><strong id="afterBet">49,00 M</strong></div>
+      </div>
+
+      <aside class="bet-console">
+        <div class="console-top"><div class="tag">02 <span>/</span> YOUR STAKE</div><span class="console-status">● SIMULACIÓN</span></div>
+        <div class="console-title"><h2>HAZ TU<br><span>APUESTA.</span></h2><p>El importe se descuenta antes del giro. Si sale un multiplicador, recuperas la apuesta multiplicada por ese valor.</p></div>
+        <label class="input-heading" for="stakeInput">IMPORTE DE LA TIRADA <small>MILLONES (M)</small></label>
+        <div class="stake-control"><button id="subtractStake" class="stepper" type="button" aria-label="Restar 0,10 millones">−</button><input id="stakeInput" type="number" min="0.1" max="5" step="0.1" value="1" inputmode="decimal" aria-label="Millones que deseas apostar"><span class="stake-unit">M</span><button id="addStake" class="stepper" type="button" aria-label="Sumar 0,10 millones">+</button></div>
+        <div class="presets" aria-label="Cantidades sugeridas"><button data-stake="0.5" type="button">0,50 M</button><button class="selected" data-stake="1" type="button">1 M</button><button data-stake="2" type="button">2 M</button><button data-stake="5" type="button">5 M</button></div>
+        <div class="ticket">
+          <div class="ticket-title"><span>SIMULACIÓN DE BOLETO</span><span>HS // 000</span></div>
+          <div class="ticket-row"><span>IMPORTE EN JUEGO</span><strong id="betSummary">1,00 M</strong></div>
+          <div class="ticket-row"><span>MULTIPLICADOR MÁXIMO</span><strong class="maxx">x5</strong></div>
+          <div class="ticket-row"><span>PREMIO MÁXIMO POSIBLE</span><strong id="maxReturn">5,00 M</strong></div>
+          <div class="ticket-row after"><span>SALDO TRAS APOSTAR</span><strong id="afterBet">49,00 M</strong></div>
         </div>
-        <button id="spinButton" class="spin-button" type="button"><span>GIRAR RULETA</span><span>↗</span></button>
-        <p id="spinMessage" class="spin-message" role="status" aria-live="polite"></p>
-        <div class="micro"><span>◈ TIRADAS INDEPENDIENTES</span><span>◈ RESULTADO LOCAL DE PRUEBA</span></div>
-        <div class="card-fine">Valores y probabilidades <strong>provisionales</strong> hasta aprobar las reglas de HyperSpin. La selección del resultado es local y solo sirve para probar la experiencia.</div>
+        <button id="spinButton" class="spin-cta" type="button"><span id="spinButtonLabel">LANZAR HYPERSPIN</span><span class="cta-arrow">↗</span></button>
+        <div id="spinMessage" class="spin-message" aria-live="polite"></div>
+        <p class="security-note"><span>◇</span> Resultado aleatorio local y sin dinero real. El sistema final deberá sortear y liquidar en un servidor seguro.</p>
       </aside>
-    </div>
-    <div class="below-grid">
-      <section class="odds-panel">
-        <div class="bottom-heading"><div><span class="section-index">03 / LA DISTRIBUCIÓN</span><h3>MULTIPLICADORES</h3></div><span class="subtitle">20 CASILLAS · PROBABILIDADES VISIBLES</span></div>
-        <div id="multiplierLegend" class="multiplier-legend"></div>
-        <div class="odds-footer"><span>RETORNO TEÓRICO AL JUGADOR</span><strong id="rtpValue">90%</strong><p>En promedio estadístico, no en cada tirada. Pendiente de definir la economía final.</p></div>
-      </section>
-      <section class="history-panel">
-        <div class="bottom-heading"><div><span class="section-index">04 / ACTIVIDAD</span><h3>ÚLTIMAS TIRADAS</h3></div><span class="subtitle" id="spinCount">0 TIRADAS</span></div>
-        <div class="history-list" id="spinHistory"><div class="empty-history">Aún no has girado la ruleta.<br>Tu actividad de prueba aparecerá aquí.</div></div>
-        <p class="history-note">Este historial solo existe en la página abierta. No se guarda ni se publica.</p>
-      </section>
-    </div>
-    <footer><span>HYPERSPIN / VERSIÓN DE LABORATORIO 0.1</span><span>NO INTEGRADO EN HYPERDRIVE · NINGUNA TRANSACCIÓN REAL</span></footer>
+    </section>
+
+    <section class="lower-layout">
+      <div class="distribution content-card">
+        <div class="section-title"><div><div class="tag">03 <span>/</span> ODDS & OUTCOMES</div><h2>¿QUÉ PUEDE SALIR?</h2></div><span class="side-label">PROBABILIDADES EXACTAS</span></div>
+        <div id="multiplierLegend" class="odds-grid"></div>
+        <div class="probability-note"><span class="note-icon">i</span><p>La ruleta está compuesta por 50 sectores del mismo tamaño. Las probabilidades indicadas coinciden con las casillas reales. Una sesión corta puede ganar o perder más que el promedio.</p></div>
+      </div>
+      <div class="session-log content-card">
+        <div class="section-title"><div><div class="tag">04 <span>/</span> SESSION ACTIVITY</div><h2>HISTORIAL DE GIROS</h2></div><button type="button" id="resetDemo" class="reset">↺ REINICIAR</button></div>
+        <div id="spinHistory" class="history-list"><p class="empty-history">Todavía no has girado la ruleta.</p></div>
+        <div class="log-footer">Las tiradas desaparecen al cerrar o recargar la página.</div>
+      </div>
+    </section>
+    <footer><span>© HYPERDRIVE LEAGUE · HYPERSPIN LAB</span><span>CONSTRUCCIÓN INDEPENDIENTE — NO APARECE EN LA APP</span></footer>
   </main>
 </body>
 </html>
