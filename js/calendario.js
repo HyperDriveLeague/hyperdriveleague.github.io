@@ -134,8 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 date: "15 OCTUBRE"
             },
 
-            special: "F2",
-            sprint: false
+            special: "F2 · CLASIFICACIÓN + SPRINT + CARRERA",
+            sprint: true
         },
 
 
@@ -539,7 +539,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (
             !round.special ||
-            round.sprint
+            (round.sprint && round.special === "SPRINT")
         ) {
 
             return "";
