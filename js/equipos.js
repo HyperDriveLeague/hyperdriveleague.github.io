@@ -849,7 +849,7 @@ document.addEventListener(
                                                 "race",
 
                                             data:
-                                                data
+                                                window.HyperDriveRoundSix?.normalizeFile(data,division,round,'race') || data
 
                                         });
 
@@ -887,7 +887,7 @@ document.addEventListener(
                                                 "sprint",
 
                                             data:
-                                                data
+                                                window.HyperDriveRoundSix?.normalizeFile(data,division,round,'sprint') || data
 
                                         });
 
