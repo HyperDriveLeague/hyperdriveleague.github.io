@@ -737,7 +737,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             "sprint",
 
                         data:
-                            data
+                            window.HyperDriveRoundSix?.normalizeFile(data,division,round,'sprint') || data
                     })
                 )
 
@@ -760,7 +760,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             "race",
 
                         data:
-                            data
+                            window.HyperDriveRoundSix?.normalizeFile(data,division,round,'race') || data
                     })
                 )
 
