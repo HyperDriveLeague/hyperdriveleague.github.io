@@ -264,7 +264,14 @@
         circuitSelect.disabled = state.circuits.length === 0;
 
         if (!state.selectedCircuitId && state.circuits.length) {
-            state.selectedCircuitId = state.circuits[state.circuits.length - 1].id;
+            const available = state.circuits.filter(circuit =>
+                state.records.some(raw => {
+                    const record = normaliseRecord(raw);
+                    return record.trackId === circuit.id && record.carClass === state.selectedCarClass;
+                })
+            );
+            const candidates = available.length ? available : state.circuits;
+            state.selectedCircuitId = candidates[candidates.length - 1].id;
         }
 
         if (state.selectedCircuitId) circuitSelect.value = state.selectedCircuitId;
@@ -555,6 +562,8 @@
         carClassSelect.addEventListener('change', () => {
             state.selectedCarClass = carClassSelect.value === 'F2' ? 'F2' : 'F1';
             state.selectedDriverKey = '';
+            state.selectedCircuitId = '';
+            renderCircuitSelect();
             renderCurrentCircuit();
         });
     }
