@@ -7,13 +7,20 @@
  let editId=null;
  function sync(){
    const on=article.value==='PERSONALIZADO';
+   const manual=['MANUAL_NO_QUALY','MANUAL_RACE_BAN'].includes(article.value);
    $('customSanctionPointsWrap').classList.toggle('is-hidden',!on);
-   $('customSanctionDescriptionWrap').classList.toggle('is-hidden',!on);
-   points.required=reason.required=on;
+   $('customSanctionDescriptionWrap').classList.toggle('is-hidden',!(on||manual));
+   $('customSanctionDescriptionLabel').textContent=manual?'Motivo del NO QUALY / RACE BAN':'Descripción personalizada';
+   points.required=on;
+   reason.required=on||manual;
    if(on){
      $('articleSeconds').textContent='—';
      $('articlePoints').textContent=points.value||'Por indicar';
      $('articleDescription').textContent=reason.value||'Escribe una descripción personalizada.';
+   }else if(manual){
+     $('articleSeconds').textContent='—';
+     $('articlePoints').textContent='0';
+     $('articleDescription').textContent='Pendiente de cumplir. Sin descuento de puntos de superlicencia.';
    }
  }
  function ensureCustomOption(){
@@ -40,6 +47,9 @@
    if(e.detail?.article_code==='PERSONALIZADO'){
      points.value=e.detail.points_text||'';
      reason.value=e.detail.description||'';
+   }else if(['MANUAL_NO_QUALY','MANUAL_RACE_BAN'].includes(e.detail?.article_code)){
+     points.value='';
+     reason.value=String(e.detail.description||'').replace(/^.*?manual \(0 puntos\)\. Motivo:\s*/i,'');
    }else{points.value='';reason.value='';}
    sync();
  });
