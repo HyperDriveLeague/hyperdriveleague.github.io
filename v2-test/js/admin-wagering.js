@@ -130,7 +130,7 @@
       :'Historial de apuestas liquidadas, ganadas o perdidas, incluidas las de premio 0 M. Filtra por sistema, división o ronda.';
   }
   async function load(more=false){
-    if(loading)return;
+    if(more&&loading)return;
     loading=true;
     const thisRequest=++requestVersion;
     const offset=more?nextOffset:0;
@@ -167,11 +167,12 @@
         (view==='current'?' · Solo pendientes':' · Incluye premiados y no premiados');
       $('adminWageringLoadMore').hidden=!hasMore;
     }catch(error){
+      if(thisRequest!==requestVersion)return;
       console.error('Error cargando historial HyperBet/HyperLoto:',error);
       notice.textContent='No se pudo cargar el historial: '+(error?.message||String(error));
       if(!more)renderRows();
     }finally{
-      loading=false;
+      if(thisRequest===requestVersion)loading=false;
     }
   }
   function switchView(next){
