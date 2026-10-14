@@ -7,3 +7,36 @@
 .admin-wagering-status:empty{display:none}
 @media(max-width:1100px){.admin-wagering-filters{grid-template-columns:repeat(3,1fr)}.admin-wagering-filters button{width:100%}}
 @media(max-width:560px){.admin-wagering-filters{grid-template-columns:1fr}}
+
+/* Wagering: separate weekly pending activity from the complete settled archive. */
+.admin-wagering-views{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 10px}
+.admin-wagering-view{border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:13px 17px;background:#17191d;color:#9ea4ac;font:900 10px Inter,Arial,sans-serif;letter-spacing:.035em;cursor:pointer}
+.admin-wagering-view.active{color:#0e0e0e;border-color:var(--yellow);background:var(--yellow)}
+.admin-wagering-view:not(.active):hover{color:var(--yellow);border-color:rgba(255,213,0,.4)}
+.admin-wagering-view-info,.admin-wagering-history-notice{color:#9298a1;font-size:11px;line-height:1.6;margin:0 0 13px}
+.admin-wagering-history-notice{color:#c4cad1;margin:8px 0 12px}
+.admin-wagering-filters input:disabled{opacity:.42;cursor:not-allowed}
+.admin-wagering-table{min-width:1350px}
+.admin-wagering-table .admin-wagering-detail{min-width:320px;max-width:430px;white-space:normal}
+.admin-wagering-pick-title{color:#eee;font-size:10px;font-weight:900;letter-spacing:.025em;margin-bottom:9px;line-height:1.45}
+.admin-wagering-leg{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.055);padding:7px 0;line-height:1.5}
+.admin-wagering-leg:first-of-type{border-top:0}
+.admin-wagering-market{font-size:9px;font-weight:900;color:#ffdc59;text-transform:uppercase}
+.admin-wagering-selection{font-size:11px;color:#f4f4f4}
+.admin-wagering-pick-muted{font-size:9px;color:#899099;line-height:1.5}
+.admin-wagering-odd{font-weight:900;font-size:10px;color:#e4e5e5;white-space:nowrap}
+.admin-wagering-leg-result{padding:2px 6px;border-radius:4px;background:#282d33;color:#bdc5cc}
+.admin-wagering-leg-result.won{background:rgba(55,190,128,.13);color:#7be9ae}
+.admin-wagering-leg-result.lost{background:rgba(237,91,101,.13);color:#ff969e}
+.admin-wagering-loto-specials{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.admin-wagering-loto-specials span{padding:6px 8px;background:#191d23;border:1px solid rgba(255,255,255,.07);border-radius:5px;font-size:10px;font-weight:800;color:#ddcfff}
+.admin-wagering-loto-top10{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0 10px}
+.admin-wagering-loto-pos{border-radius:4px;padding:4px 6px;border:1px solid rgba(255,255,255,.07);background:#171a1e;color:#d5d7db;font-size:10px}
+.admin-wagering-state{font-weight:900;white-space:nowrap}
+.admin-wagering-state.pending{color:#e4c86a}
+.admin-wagering-state.won,.admin-wagering-state.settled{color:#89e9ae}
+.admin-wagering-state.lost{color:#ed9696}
+.admin-wagering-loadmore{display:block;margin:18px auto 0;padding:12px 22px;border:1px solid rgba(255,213,0,.4);border-radius:8px;background:rgba(255,213,0,.06);color:#ffe167;font-size:10px;font-weight:900;cursor:pointer}
+.admin-wagering-loadmore[hidden]{display:none}
+.admin-wagering-loadmore:hover{background:rgba(255,213,0,.12)}
+@media(max-width:680px){.admin-wagering-views{display:grid;grid-template-columns:1fr}.admin-wagering-view{width:100%}.admin-wagering-panel{padding:15px}}
