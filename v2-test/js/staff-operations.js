@@ -238,7 +238,7 @@
       return;
     }
     const { data, error } = await client.from('superlicense_events')
-      .select('id,superlicense_id,round_number,event_date,event_type,description,status')
+      .select('id,superlicense_id,round_number,event_date,event_type,description,status,source_key')
       .in('superlicense_id', licenses.map(item => item.id))
       .in('event_type', ['no_qualy', 'race_ban'])
       .eq('status', 'pending')
@@ -283,7 +283,11 @@
       button.className = 'serve-button';
       button.textContent = 'MARCAR COMO CUMPLIDA';
       button.addEventListener('click', async () => {
-        const extra = event.event_type === 'race_ban' ? '\n\nSi está a 0 puntos, recuperará 6 automáticamente.' : '';
+        const manual = String(event.source_key||'').startsWith('staff:manual:ban:');
+        const extra = event.event_type === 'race_ban'
+          ? manual ? '\n\nRace Ban manual: cumplirlo NO modifica los puntos de superlicencia.'
+            : '\n\nRace Ban automático: si está a 0 puntos, recuperará 6 automáticamente.'
+          : '';
         if (!window.confirm(`¿Marcar esta sanción como cumplida?${extra}`)) return;
         button.disabled = true;
         const response = await client.from('superlicense_events').update({ status: 'served' }).eq('id', event.id).eq('status', 'pending');
