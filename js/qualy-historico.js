@@ -4,6 +4,7 @@
 
     const circuitSelect = document.getElementById('qualy-circuit-select');
     const driverSelect = document.getElementById('qualy-driver-select');
+    const carClassSelect = document.getElementById('qualy-car-class-select');
     const rankingList = document.getElementById('qualy-ranking-list');
     const rankingTitle = document.getElementById('qualy-ranking-title');
     const rankingMeta = document.getElementById('qualy-ranking-meta');
@@ -17,7 +18,8 @@
         circuits: [],
         records: [],
         selectedCircuitId: '',
-        selectedDriverKey: ''
+        selectedDriverKey: '',
+        selectedCarClass: 'F1'
     };
 
     const esc = value => String(value ?? '')
@@ -146,6 +148,7 @@
             season: Number(raw.season ?? raw.seasonNumber) || null,
             round: Number(raw.round ?? raw.roundNumber) || null,
             division: divisionLabel(raw.division || raw.league || ''),
+            carClass: String(raw.carClass || raw.carCategory || (Number(raw.season ?? raw.seasonNumber) === 8 && Number(raw.round ?? raw.roundNumber) === 6 ? 'F2' : 'F1')).toUpperCase() === 'F2' ? 'F2' : 'F1',
             date: raw.date || raw.eventDate || null,
             sessionPosition: Number(raw.sessionPosition ?? raw.qualyPosition ?? raw.position) || null,
             weatherType: raw.weatherType || raw.weather || '',
@@ -180,7 +183,11 @@
             division: divisionLabel(data?.metadata?.leagueName || division),
             date: data?.event?.eventDate || null,
             sessionPosition: Number(driver?.classificationPosition ?? driver?.position) || null,
-            teamName: driver?.team?.name || '',
+            carClass: Number(data?.event?.round) === 6 ? 'F2' : (window.HyperDriveRoundSix?.carCategory(division, Number(data?.event?.round), data) || 'F1'),
+            teamName: Number(data?.event?.round) === 6
+                ? (window.HyperDriveRoundSix?.getF1Name(driver?.team?.name) || driver?.team?.name || '')
+                : (driver?.team?.name || ''),
+            f2TeamName: Number(data?.event?.round) === 6 ? (driver?.team?.name || '') : '',
             weatherType: info.weatherType || '',
             airTemperature: finiteTemperature(info.airTemperature),
             trackTemperature: finiteTemperature(info.trackTemperature),
@@ -198,6 +205,7 @@
         for (const rawRecord of state.records) {
             const record = normaliseRecord(rawRecord);
             if (record.trackId !== circuitId) continue;
+            if (record.carClass !== state.selectedCarClass) continue;
             if (!record.driverKey || !Number.isFinite(record.timeMs) || record.timeMs <= 0) continue;
 
             const previous = bestByDriver.get(record.driverKey);
@@ -222,6 +230,7 @@
 
     function recordMeta(record) {
         const bits = [];
+        bits.push(record.carClass || 'F1');
         if (record.season) bits.push(`Season ${record.season}`);
         if (record.division) bits.push(record.division);
         if (record.round) bits.push(`R${record.round}`);
@@ -371,7 +380,7 @@
         const circuit = getCircuit(state.selectedCircuitId);
         const ranking = getRanking(state.selectedCircuitId);
 
-        rankingTitle.textContent = circuit ? `RANKING · ${circuit.name.toUpperCase()}` : 'RANKING GLOBAL';
+        rankingTitle.textContent = circuit ? `RANKING ${state.selectedCarClass} · ${circuit.name.toUpperCase()}` : `RANKING ${state.selectedCarClass}`;
         rankingMeta.textContent = ranking.length
             ? `${ranking.length} ${ranking.length === 1 ? 'piloto' : 'pilotos'} · mejor tiempo histórico de cada uno`
             : 'Pendiente de importar tiempos de clasificación';
@@ -503,6 +512,7 @@
                 record.driverKey,
                 record.season || '',
                 record.division || '',
+                record.carClass || 'F1',
                 record.round || '',
                 record.timeMs
             ].join('|');
@@ -539,6 +549,14 @@
             recordContent.innerHTML = '<span class="qualy-muted qualy-error">Error al cargar los datos.</span>';
             driverContent.innerHTML = '<span class="qualy-muted qualy-error">Error al cargar los datos.</span>';
         }
+    }
+
+    if (carClassSelect) {
+        carClassSelect.addEventListener('change', () => {
+            state.selectedCarClass = carClassSelect.value === 'F2' ? 'F2' : 'F1';
+            state.selectedDriverKey = '';
+            renderCurrentCircuit();
+        });
     }
 
     circuitSelect.addEventListener('change', () => {
