@@ -712,7 +712,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
             const sprint =
                 buildSessionFromFile(
-                    sprintData,
+                    window.HyperDriveRoundSix?.normalizeFile(sprintData,division,roundNumber,'sprint') || sprintData,
                     "sprint",
                     roundNumber
                 );
@@ -732,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
             const race =
                 buildSessionFromFile(
-                    mainData,
+                    window.HyperDriveRoundSix?.normalizeFile(mainData,division,roundNumber,'race') || mainData,
                     "race",
                     roundNumber
                 );
