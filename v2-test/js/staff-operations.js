@@ -115,10 +115,16 @@
     });
   }
 
+  const isManualBan = code => code === 'MANUAL_NO_QUALY' || code === 'MANUAL_RACE_BAN';
+
   function populateArticles() {
     sanctionArticle.innerHTML = '<option value="">Selecciona artículo</option>';
     const grouped = new Map();
-    [...articles].sort((a, b) => Number(a.sort_order) - Number(b.sort_order)).forEach(article => {
+    [...articles].sort((a,b) => {
+      const manualA=isManualBan(a.article_code) ? -10000 : Number(a.sort_order);
+      const manualB=isManualBan(b.article_code) ? -10000 : Number(b.sort_order);
+      return manualA-manualB;
+    }).forEach(article => {
       if (!grouped.has(article.section_name)) grouped.set(article.section_name, []);
       grouped.get(article.section_name).push(article);
     });
@@ -128,7 +134,11 @@
       items.forEach(article => {
         const option = document.createElement('option');
         option.value = article.article_code;
-        option.textContent = `${article.article_code} · ${article.description}`;
+        option.textContent = article.article_code === 'MANUAL_NO_QUALY'
+          ? 'NO QUALY MANUAL · 0 puntos'
+          : article.article_code === 'MANUAL_RACE_BAN'
+          ? 'RACE BAN MANUAL · 0 puntos'
+          : `${article.article_code} · ${article.description}`;
         group.appendChild(option);
       });
       sanctionArticle.appendChild(group);
@@ -136,6 +146,11 @@
   }
 
   function syncArticlePreview() {
+    const manual=isManualBan(sanctionArticle.value);
+    const info=document.getElementById('manualBanInfo');
+    if(info)info.classList.toggle('is-hidden',!manual);
+    beneficiaryTeam.disabled=manual;
+    if(manual)beneficiaryTeam.value='';
     const article = articleByCode.get(sanctionArticle.value);
     if (!article) {
       articleSeconds.textContent = '—';
@@ -293,6 +308,9 @@
     if (!sanctionDriver.value) return setStatus(sanctionStatus, 'Selecciona un piloto.', 'error');
     if (!sanctionTeam.value) return setStatus(sanctionStatus, 'Selecciona la escudería.', 'error');
     if (!sanctionDate.value) return setStatus(sanctionStatus, 'Selecciona la fecha.', 'error');
+    const manualBan=isManualBan(sanctionArticle.value);
+    const banReason=(document.getElementById('customSanctionDescription')?.value||'').trim();
+    if(manualBan&&(banReason.length<3||banReason.length>500))return setStatus(sanctionStatus,'Escribe un motivo entre 3 y 500 caracteres para el NQ / RB manual.','error');
     if (beneficiaryTeam.value && beneficiaryTeam.value === sanctionTeam.value) return setStatus(sanctionStatus, 'La escudería beneficiada debe ser distinta.', 'error');
 
     const driver = drivers.find(item => item.id === sanctionDriver.value);
@@ -301,8 +319,10 @@
     const special = article.points_numeric == null && article.points_text !== '-';
     const isEdit = !!editingSanctionId;
     let message = `${isEdit ? '¿Guardar cambios en la sanción?' : '¿Registrar sanción?'}\n\n${driver?.nickname || 'Piloto'} · ${team?.name || ''}\n${article.article_code}\n${article.description}\nSegundos: ${article.seconds_text}\nPuntos: ${article.points_text}`;
-    if (special) message += '\n\nEl valor de puntos es especial y NO se descontará automáticamente.';
-    if (beneficiary) message += `\n\nSe transferirán 0,50 M de ${team?.name} a ${beneficiary.name}.`;
+    if (manualBan) message += `\n\nSanción manual con 0 puntos de superlicencia.\nMotivo: ${banReason}\nQuedará PENDIENTE de cumplir.`;
+    else if (special) message += '\n\nEl valor de puntos es especial y NO se descontará automáticamente.';
+    if (!manualBan && beneficiary) message += `\n\nSe transferirán 0,50 M de ${team?.name} a ${beneficiary.name}.`;
+    if (manualBan && sanctionArticle.value === 'MANUAL_RACE_BAN')message += '\n\nATENCIÓN: la acumulación de dos Race Ban puede ocasionar la expulsión.';
     if (isEdit) message += '\n\nLa sanción anterior se revertirá primero: puntos y movimientos económicos volverán a su estado previo antes de aplicar estos nuevos datos.';
     if (!window.confirm(message)) return;
 
@@ -318,7 +338,14 @@
       p_season_number: config.currentSeason
     };
     if (isEdit) args.p_sanction_id = editingSanctionId;
-    const { error } = await client.rpc(isEdit ? 'staff_edit_sporting_sanction' : 'staff_apply_sporting_sanction', args);
+    if (manualBan) {
+      delete args.p_beneficiary_team_id;
+      args.p_reason=banReason;
+    }
+    const rpcName=manualBan
+      ? (isEdit ? 'staff_edit_manual_grid_ban' : 'staff_apply_manual_grid_ban')
+      : (isEdit ? 'staff_edit_sporting_sanction' : 'staff_apply_sporting_sanction');
+    const { error } = await client.rpc(rpcName, args);
     setBusy(sanctionSubmit, false, 'GUARDANDO…', normalText);
     if (error) return setStatus(sanctionStatus, error.message || 'No se pudo guardar la sanción.', 'error');
     setStatus(sanctionStatus, isEdit ? 'Sanción corregida correctamente.' : 'Sanción registrada correctamente.', 'success');
