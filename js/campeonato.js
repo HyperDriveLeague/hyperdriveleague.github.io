@@ -545,7 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             mainPath,
 
                         data:
-                            mainData
+                            window.HyperDriveRoundSix?.normalizeFile(mainData,division,round,'race') || mainData
 
                     };
 
@@ -587,7 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             sprintPath,
 
                         data:
-                            sprintData
+                            window.HyperDriveRoundSix?.normalizeFile(sprintData,division,round,'sprint') || sprintData
 
                     };
 
