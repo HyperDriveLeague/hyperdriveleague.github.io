@@ -53,7 +53,7 @@
 
         <article class="operation-panel" data-operation-panel="sanctions">
           <span class="panel-label">REGLAMENTO DEPORTIVO</span><h3>Registrar sanción</h3>
-          <p class="operation-help">Selecciona un artículo del reglamento o PERSONALIZADO para escribir manualmente los puntos y el motivo. Los puntos se descuentan automáticamente de la superlicencia.</p>
+          <p class="operation-help">Selecciona un artículo del reglamento, una sanción personalizada o impón directamente un NO QUALY / RACE BAN manual con 0 puntos. Estas dos sanciones no descuentan puntos de superlicencia.</p>
           <form id="sportSanctionForm" class="operation-form">
             <label class="op-field full"><span>Artículo</span><select id="sanctionArticle" class="op-select" required><option value="">Selecciona un artículo</option><option value="PERSONALIZADO">PERSONALIZADO · Puntos y descripción manual</option></select></label>
             <div class="article-preview">
@@ -61,12 +61,13 @@
               <p id="articleDescription">Selecciona un artículo para cargar la sanción del reglamento.</p>
             </div>
             <label class="op-field is-hidden" id="customSanctionPointsWrap"><span>Puntos a descontar</span><input id="customSanctionPoints" class="op-input" type="number" min="0" max="99" step="1"></label>
-<label class="op-field full is-hidden" id="customSanctionDescriptionWrap"><span>Descripción personalizada</span><textarea id="customSanctionDescription" class="op-textarea" minlength="3" maxlength="500" rows="3"></textarea></label>
+<label class="op-field full is-hidden" id="customSanctionDescriptionWrap"><span id="customSanctionDescriptionLabel">Descripción personalizada</span><textarea id="customSanctionDescription" class="op-textarea" minlength="3" maxlength="500" rows="3"></textarea></label>
 <label class="op-field"><span>Piloto</span><select id="sanctionDriver" class="op-select" required></select></label>
             <label class="op-field"><span>Escudería sancionada</span><select id="sanctionTeam" class="op-select" required></select><small id="sanctionTeamMode" class="team-mode">Se rellenará al elegir piloto.</small></label>
             <label class="op-field"><span>Escudería beneficiada · opcional</span><select id="beneficiaryTeam" class="op-select"></select><small class="money-hint">Si eliges una, se transfieren automáticamente 0,50 M entre equipos.</small></label>
             <label class="op-field"><span>Ronda</span><input id="sanctionRound" class="op-input" type="number" min="1" step="1" placeholder="Ej.: 4"></label>
             <label class="op-field"><span>Fecha</span><input id="sanctionDate" class="op-input" type="date" required></label>
+            <div id="manualBanInfo" class="operation-note is-hidden">NO QUALY / RACE BAN manual: quedan pendientes de cumplir y se reflejan en la superlicencia con <strong>0 puntos de penalización</strong>. Cuando se cumplan, podrán marcarse en la pestaña NQ / RB. La acumulación de dos Race Ban puede provocar la expulsión según el reglamento.</div>
             <div class="operation-note">Si el piloto tiene asiento oficial, su escudería queda fijada automáticamente. Si es reserva o no tiene asiento oficial para esa ronda, podrás seleccionarla manualmente.</div>
             <div class="operation-footer"><p id="sanctionStatus" class="operation-status" aria-live="polite"></p><div class="operation-buttons"><button id="cancelSanctionEdit" class="secondary-button cancel-edit is-hidden" type="button">CANCELAR EDICIÓN</button><button id="sanctionSubmit" class="primary-button op-submit" type="submit"><span>REGISTRAR SANCIÓN</span></button></div></div>
           </form>
@@ -168,8 +169,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=3"></script>
-  <script src="js/staff-operations.js?v=4"></script>
-  <script src="js/staff-custom-sanctions.js?v=3"></script>
+  <script src="js/staff-operations.js?v=5"></script>
+  <script src="js/staff-custom-sanctions.js?v=4"></script>
   <script src="js/staff-sanction-history.js?v=1"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
 </body>
