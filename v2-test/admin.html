@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="css/admin-role-editor.css?v=1">
   <link rel="stylesheet" href="css/admin-roster.css?v=1">
   <link rel="stylesheet" href="css/admin-bank.css?v=1">
-  <link rel="stylesheet" href="css/admin-wagering.css?v=2">
+  <link rel="stylesheet" href="css/admin-wagering.css?v=3">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
   <link rel="stylesheet" href="css/admin-navigation.css?v=1">
   <link rel="stylesheet" href="css/admin-contracts.css?v=6">
@@ -72,6 +72,11 @@
           <article class="admin-wagering-stat"><span>HYPERLOTO</span><strong id="adminWageringLotoSales">0,00 M</strong><small id="adminWageringLotoCount">0 boletos</small></article>
           <article class="admin-wagering-stat"><span>PREMIOS PAGADOS</span><strong id="adminWageringPaid">0,00 M</strong><small>total liquidado</small></article>
         </div>
+        <div class="admin-wagering-views" role="group" aria-label="Tipo de historial">
+          <button id="adminWageringCurrentView" class="admin-wagering-view active" type="button" aria-pressed="true">APUESTAS DE ESTA SEMANA</button>
+          <button id="adminWageringSettledView" class="admin-wagering-view" type="button" aria-pressed="false">VER APUESTAS LIQUIDADAS ↗</button>
+        </div>
+        <p id="adminWageringViewInfo" class="admin-wagering-view-info">Mostrando únicamente apuestas y boletos pendientes de la ronda en curso.</p>
         <div class="admin-wagering-filters">
           <label><span>SISTEMA</span><select id="adminWageringProduct"><option value="all">Todos</option><option value="hyperbet">HyperBet</option><option value="hyperloto">HyperLoto</option></select></label>
           <label><span>DIVISIÓN</span><select id="adminWageringDivision"><option value="all">Todas</option><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
@@ -80,12 +85,14 @@
           <button id="adminWageringSettleNow" class="admin-wagering-refresh" type="button">PROCESAR PREMIOS PENDIENTES</button>
         </div>
         <p id="adminWageringCycleStatus" class="admin-wagering-status" role="status" aria-live="polite"></p>
+        <p id="adminWageringHistoryNotice" class="admin-wagering-history-notice" role="status" aria-live="polite"></p>
         <div class="admin-wagering-table-wrap">
           <table class="admin-wagering-table">
-            <thead><tr><th>Sistema</th><th>Fecha</th><th>Piloto</th><th>Ronda</th><th>División</th><th>Tipo</th><th>Jugado</th><th>Retorno pot.</th><th>Premio</th><th>Estado</th></tr></thead>
+            <thead><tr><th>Sistema</th><th>Fecha</th><th>Piloto</th><th>Ronda</th><th>División</th><th>Apuesta / pronóstico</th><th>Jugado</th><th>Retorno pot.</th><th>Premio</th><th>Estado</th></tr></thead>
             <tbody id="adminWageringBody"><tr><td colspan="10" class="admin-wagering-empty">Cargando actividad…</td></tr></tbody>
           </table>
         </div>
+        <button id="adminWageringLoadMore" class="admin-wagering-loadmore" type="button" hidden>CARGAR MÁS APUESTAS</button>
       </section>
 
       <section class="module-section-heading" data-admin-part="bancos"><div><span class="eyebrow">BANCO DEL PILOTO</span><h2>Consultar bancos</h2></div><span class="season-badge">SOLO ADMIN</span></section>
@@ -284,7 +291,7 @@
   <script src="js/admin-team-preview.js?v=1"></script>
   <script src="js/admin-roster.js?v=3"></script>
   <script src="js/admin-bank.js?v=2"></script>
-  <script src="js/admin-wagering.js?v=3"></script>
+  <script src="js/admin-wagering.js?v=4"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
   <script src="js/admin-contracts.js?v=7"></script>
