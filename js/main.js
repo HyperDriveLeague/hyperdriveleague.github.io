@@ -450,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 path,
 
             data:
-                data
+                window.HyperDriveRoundSix?.normalizeFile(data,division,round,type) || data
 
         };
 
