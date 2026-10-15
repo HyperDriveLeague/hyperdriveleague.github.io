@@ -24,6 +24,9 @@
 
   function configurePreviewUi(teamName) {
     if (!previewMode) return;
+    document.querySelectorAll('[data-team-hypermarket]').forEach(link => {
+      link.href = 'hypermarket.html?v=1&preview_team=' + encodeURIComponent(previewTeamId);
+    });
     const eyebrow = document.querySelector('.module-header .eyebrow');
     if (eyebrow) eyebrow.textContent = 'ADMINISTRACIÓN · VISTA TEAM PRINCIPAL';
     const back = document.querySelector('.module-header .topbar-actions a');
