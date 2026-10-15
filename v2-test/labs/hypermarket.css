@@ -11,3 +11,18 @@
 @media(max-width:870px){.workspace{grid-template-columns:1fr}.right-side{grid-template-columns:1fr 1fr;align-items:start}.result-panel{position:static;grid-column:span 2}.overview{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-item:nth-child(2){border-right:0}.overview-item:nth-child(-n+2){border-bottom:1px solid var(--line)}.hero{grid-template-columns:minmax(0,1fr) minmax(220px,.7fr)}.hero-right>strong{font-size:44px}.hero-right{min-height:280px}}
 @media(max-width:610px){.app{width:calc(100% - 30px)}.site-header{height:auto;min-height:82px;align-items:flex-start;flex-direction:column;padding:19px 0;gap:13px}.brand-mark{height:43px;width:43px;font-size:25px}.brand-text strong{font-size:28px}.header-tag{padding:7px;font-size:8px}.hero{grid-template-columns:1fr;gap:0}.hero-left{padding:29px 0 24px}.hero h1{font-size:58px}.hero-right{min-height:160px;padding:20px}.hero-right>strong{font-size:48px}.hero-emblem{font-size:150px;right:5px}.overview{margin-top:16px;margin-bottom:32px}.overview-item{padding:15px 13px}.big-number{font-size:32px}.big-number small{font-size:17px}.meta-title{font-size:8px}.section-heading h2{font-size:29px}.section-heading{align-items:center}.soft-button{font-size:9px;padding:9px 8px}.recruits-heading{align-items:flex-start}.add-button{padding:9px;font-size:9px}.signing-controls{padding:13px;gap:12px 9px}.signing-controls label{font-size:9px}.signing-summary strong{font-size:22px}.editor-grid{grid-template-columns:1fr}.right-side{grid-template-columns:1fr}.result-panel{grid-column:span 1}.team-panel h3{font-size:28px}.footer{flex-direction:column;gap:10px}.main-total{font-size:70px}}
 @media(max-width:380px){.signing-controls{grid-template-columns:1fr}.signing-controls label.wide{grid-column:auto}.main-total{font-size:58px}.header-right{gap:5px}.hero h1{font-size:49px}}
+
+/* Optional clause: independent of salary and enabled explicitly per transfer. */
+.signing-controls .clause-toggle{grid-column:1/-1;display:flex;align-items:center;gap:13px;min-height:65px;padding:13px 15px;border:1px solid #373c42;background:#111519;border-radius:7px;cursor:pointer;transition:border-color .2s,background .2s}
+.signing-controls .clause-toggle:hover,.signing-controls .clause-toggle.enabled{border-color:#9b8a39;background:#211f16}
+.signing-controls .clause-toggle>input{position:relative;appearance:none;-webkit-appearance:none;flex:0 0 auto;width:21px;height:21px;margin:0;border:2px solid #7c8289;border-radius:5px;background:#080a0d;cursor:pointer}
+.signing-controls .clause-toggle>input:checked{background:var(--yellow);border-color:var(--yellow)}
+.signing-controls .clause-toggle-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.signing-controls .clause-toggle-copy strong{color:#f2f3f4;font-size:12px;line-height:1.4}
+.signing-controls .clause-toggle-copy small{color:#979da4;font-size:10px;font-weight:500;line-height:1.5}
+.signing-controls .clause-check-icon{position:absolute;pointer-events:none;color:#101114;font-size:15px;top:24px;left:20px;opacity:0;font-weight:900}
+.signing-controls .clause-toggle.enabled .clause-check-icon{opacity:1}
+.signing-controls .buyout-field{grid-column:1/-1;background:#1c1d1a;border:1px solid #49432b;border-radius:7px;padding:13px;color:#f6d35b}
+.signing-controls .buyout-field[hidden]{display:none}
+.signing-controls .buyout-field input{background:#0c0e0d;border-color:#5b5131}
+@media(max-width:610px){.signing-controls .clause-toggle{padding:12px;gap:11px}.signing-controls .clause-check-icon{left:17px;top:22px}.signing-controls .clause-toggle-copy strong{font-size:11px}}
