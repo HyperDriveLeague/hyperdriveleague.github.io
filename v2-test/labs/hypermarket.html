@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="hypermarket.css?v=1">
-  <script src="hypermarket.js?v=1" defer></script>
+  <link rel="stylesheet" href="hypermarket.css?v=2">
+  <script src="hypermarket.js?v=2" defer></script>
 </head>
 <body>
   <main class="app">
@@ -111,11 +111,11 @@
       <header class="signing-head"><div class="slot"><span class="slot-number">01</span><div><span class="slot-eyebrow">OPERACIÓN SIMULADA</span><strong class="slot-title">NUEVO FICHAJE</strong></div></div><button type="button" class="remove-signing" aria-label="Eliminar operación">✕</button></header>
       <div class="signing-controls">
         <label class="wide">Piloto / operación <input data-key="name" type="text" maxlength="45" placeholder="Ej.: Nuevo piloto" autocomplete="off"></label>
-        <label>Tipo de operación <select data-key="type"><option value="free">Fichaje libre</option><option value="buyout">Fichaje con cláusula</option></select></label>
         <label>División <select data-key="division"><option value="hyperdrive">HyperDrive (1.ª)</option><option value="academy">Academy (2.ª)</option></select></label>
         <label>Importe del contrato (M) <input data-key="salary" type="number" min="0" max="100000" step=".01" value="80"></label>
         <label>Duración del contrato <select data-key="halves"><option value="1">1/2 temporada</option><option value="2">1 temporada (2 medias)</option><option value="3">1½ temporadas (3 medias)</option><option value="4">2 temporadas (4 medias)</option></select></label>
-        <label class="buyout-field" hidden>Cláusula de rescisión (M) <input data-key="buyout" type="number" min="0" max="100000" step=".01" value="0"></label>
+        <label class="clause-toggle wide"><input data-key="payClause" type="checkbox"><span class="clause-toggle-copy"><strong>¿Hay que pagar cláusula de rescisión?</strong><small>Opcional · Se suma al pago inmediato, pero no al salary cap.</small></span><span class="clause-check-icon" aria-hidden="true">✓</span></label>
+        <label class="buyout-field wide" hidden>Importe de la cláusula (M) <input data-key="buyout" type="number" min="0" max="100000" step=".01" value="0" placeholder="Introduce el importe de la cláusula"></label>
       </div>
       <div class="signing-summary"><div><small>SALIDA DEL BANCO</small><strong class="row-cost">80,00 M</strong></div><div><small>IMPACTO EN CAP T8</small><strong class="row-cap">40,00 M</strong></div><div class="row-max-wrap"><small>OFERTA MÁXIMA VIABLE*</small><strong class="row-max">278,75 M</strong><button type="button" class="use-max">USAR MÁX.</button></div></div>
       <p class="signing-note">* Máximo para este contrato, manteniendo los demás fichajes y cláusulas simulados. No implica cumplir otros requisitos administrativos.</p>
