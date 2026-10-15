@@ -11,14 +11,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css?v=4">
-  <link rel="stylesheet" href="css/team.css?v=3">
+  <link rel="stylesheet" href="css/team.css?v=4">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
   <main class="app-shell team-shell">
     <header class="module-header">
       <div><span class="eyebrow">TEAM PRINCIPAL · TEMPORADA 8</span><h1 id="teamPageTitle">Mi escudería</h1></div>
-      <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><a class="secondary-button link-button" href="team-transfers.html">Transferir a pilotos</a><button id="teamLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
+      <div class="topbar-actions"><a class="secondary-button link-button" href="index.html">← Control Center</a><a class="secondary-button link-button" href="team-transfers.html">Transferir a pilotos</a><a class="secondary-button link-button" data-team-hypermarket href="hypermarket.html?v=1">Calculadora de fichajes</a><button id="teamLogoutButton" class="secondary-button" type="button">Cerrar sesión</button></div>
     </header>
 
     <section id="loadingPanel" class="team-message-card">Cargando datos de la escudería…</section>
@@ -45,6 +45,16 @@
         <article class="finance-card"><span>INGRESOS T8</span><strong id="totalIncome">—</strong><small>millones</small></article>
         <article class="finance-card"><span>GASTOS T8</span><strong id="totalExpense">—</strong><small>millones</small></article>
         <article class="finance-card"><span>RESULTADO T8</span><strong id="seasonProfit">—</strong><small>millones</small></article>
+      </section>
+
+      <section class="team-hypermarket-entry">
+        <div class="team-hypermarket-copy">
+          <span class="eyebrow">HYPERMARKET · NUEVO</span>
+          <h2>PREPARA EL MERCADO DE PILOTOS</h2>
+          <p>Simula contratos y cláusulas con el saldo real de tu equipo, el salary cap y los impuestos. Calcula cuánto puedes gastar sin acabar en negativo.</p>
+          <span class="team-hypermarket-safe">SIMULACIÓN · NO MODIFICA EL BANCO</span>
+        </div>
+        <a class="team-hypermarket-button" data-team-hypermarket href="hypermarket.html?v=1">ABRIR CALCULADORA <span aria-hidden="true">↗</span></a>
       </section>
 
       <section class="team-two-col">
@@ -85,6 +95,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=4"></script>
-  <script src="js/team.js?v=6"></script>
+  <script src="js/team.js?v=7"></script>
 </body>
 </html>
