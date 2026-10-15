@@ -4,13 +4,16 @@
    luxury tax charged on TOTAL excess (non-progressive bands), marginal FFP tax. */
 (() => {
   'use strict';
+  // The laboratory retains Mercedes defaults; the TP page supplies a live,
+  // authenticated, team-scoped snapshot before loading this simulator.
   const SNAPSHOT=Object.freeze({
     balance:278.75,
     capUsed:367,
     capLimit:500,
     reserved:0,
     profit:-513.90,
-    marketHalf:1
+    marketHalf:1,
+    ...(window.HYPERMARKET_INITIAL_DATA || {})
   });
   const DEFAULT_ROW=()=>({id:++sequence,name:'',division:'hyperdrive',salary:80,halves:2,payClause:false,buyout:0});
   let sequence=0;
