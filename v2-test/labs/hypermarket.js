@@ -12,7 +12,7 @@
     profit:-513.90,
     marketHalf:1
   });
-  const DEFAULT_ROW=()=>({id:++sequence,name:'',type:'free',division:'hyperdrive',salary:80,halves:2,buyout:0});
+  const DEFAULT_ROW=()=>({id:++sequence,name:'',division:'hyperdrive',salary:80,halves:2,payClause:false,buyout:0});
   let sequence=0;
 
   const round2=value=>Math.round((Number(value)||0)*100)/100;
@@ -51,7 +51,7 @@
       Math.max(0,p-300)*.40
     );
   }
-  const clause=row=>row.type==='buyout'?sane(row.buyout):0;
+  const clause=row=>row.payClause?sane(row.buyout):0;
   function calculate(rows,base){
     const salaries=round2(rows.reduce((sum,r)=>sum+sane(r.salary),0));
     const buyouts=round2(rows.reduce((sum,r)=>sum+clause(r),0));
@@ -115,22 +115,25 @@
       const card=template.content.firstElementChild.cloneNode(true);
       card.dataset.id=String(row.id);
       card.querySelector('.slot-number').textContent=String(index+1).padStart(2,'0');
-      for(const key of ['name','type','division','salary','halves','buyout'])inputFor(card,key).value=row[key];
-      const syncType=()=>{
-        card.querySelector('.buyout-field').hidden=row.type!=='buyout';
-        card.querySelector('.slot-title').textContent=row.type==='buyout'?'FICHAJE CON CLÁUSULA':'NUEVO FICHAJE';
+      for(const key of ['name','division','salary','halves','buyout'])inputFor(card,key).value=row[key];
+      inputFor(card,'payClause').checked=Boolean(row.payClause);
+      const syncClause=()=>{
+        card.querySelector('.buyout-field').hidden=!row.payClause;
+        card.querySelector('.clause-toggle').classList.toggle('enabled',Boolean(row.payClause));
+        card.querySelector('.slot-title').textContent=row.payClause?'FICHAJE CON CLÁUSULA':'NUEVO FICHAJE';
       };
-      syncType();
+      syncClause();
       card.querySelectorAll('[data-key]').forEach(input=>{
         const key=input.dataset.key;
         const update=()=>{
-          row[key]=['salary','buyout','halves'].includes(key)?sane(input.value):input.value;
+          row[key]=key==='payClause'?input.checked
+            :['salary','buyout','halves'].includes(key)?sane(input.value):input.value;
           if(key==='halves')row.halves=Math.max(1,Math.min(4,Math.floor(row.halves)));
-          if(key==='type')syncType();
+          if(key==='payClause')syncClause();
           updateAll();
         };
-        input.addEventListener('input',update);
-        if(input.tagName==='SELECT')input.addEventListener('change',update);
+        if(key==='payClause'||input.tagName==='SELECT')input.addEventListener('change',update);
+        else input.addEventListener('input',update);
       });
       card.querySelector('.remove-signing').addEventListener('click',()=>{
         state.rows=state.rows.filter(x=>x.id!==row.id);
@@ -158,6 +161,7 @@
       const warnings=[];
       const recommendedMinimum=row.division==='academy'?20:40;
       if(sane(row.salary)<recommendedMinimum)warnings.push('Por debajo del mínimo orientativo de '+recommendedMinimum+' M para nuevos pilotos de esta división.');
+      if(row.payClause && !sane(row.buyout))warnings.push('Has marcado la cláusula, pero su importe está a 0 M.');
       if(max<recommendedMinimum)warnings.push('Con el resto de operaciones y la cláusula indicada, no queda margen para una oferta mínima de esta división.');
       const warn=card.querySelector('.signing-warning');
       warn.textContent=warnings.join(' ');
