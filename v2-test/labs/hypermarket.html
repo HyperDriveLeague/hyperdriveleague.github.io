@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#080a0d">
+  <title>HyperMarket · Simulador de fichajes | HyperDrive</title>
+  <meta name="description" content="Laboratorio de HyperDrive: simula fichajes, salario, cláusulas, impuestos y el dinero realmente disponible. No aplica operaciones.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hypermarket.css?v=1">
+  <script src="hypermarket.js?v=1" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="site-header">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">H<span>M</span></div><div class="brand-text"><strong>HYPER<span>MARKET</span></strong><small>FORMULA 1 LEAGUE / FINANCIAL LAB</small></div></div>
+      <div class="header-right"><span class="header-tag"><i></i> SIMULACIÓN LOCAL</span><span class="header-tag secondary">TEMPORADA 08 / MERCADO INTERMEDIO</span></div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-left"><div class="eyebrow"><span class="bar"></span> PADDOCK FINANCE / CONTRACT PLANNING <span class="hero-version">BETA 01</span></div>
+        <h1>FICHA CON LA<br><em>CABEZA FRÍA.</em></h1>
+        <p>Comprueba cuánto te cuesta realmente construir tu equipo: contrato, cláusula, límite salarial e impuestos. Descubre tu oferta máxima sin dejar el banco en negativo.</p>
+        <div class="hero-pills"><span>01 / PLANIFICA</span><span>02 / SIMULA</span><span>03 / CONOCE TU LÍMITE</span></div>
+      </div>
+      <div class="hero-right"><span>ESCUDERÍA DE PRUEBA</span><strong>MERCEDES</strong><div class="hero-emblem">M</div><small>Banco T8 · Captura de datos 15 OCT 2026</small></div>
+    </section>
+
+    <section class="overview" aria-label="Situación económica de Mercedes">
+      <div class="overview-item primary"><span class="meta-title">BANCO DISPONIBLE</span><div class="big-number" id="baseAvailable">278,75 <small>M</small></div><p>Saldo neto de partida, menos reservas</p></div>
+      <div class="overview-item"><span class="meta-title">SALARY CAP UTILIZADO</span><div class="big-number" id="baseUsedCap">367,00 <small>M</small></div><p>Valor computable actual de la plantilla</p></div>
+      <div class="overview-item"><span class="meta-title">MARGEN DEL CAP</span><div class="big-number" id="baseHeadroom">133,00 <small>M</small></div><p>Antes de entrar en impuesto de lujo</p></div>
+      <div class="overview-item last"><span class="meta-title">IMPUESTO ACTUAL</span><div class="big-number" id="baseTax">0,00 <small>M</small></div><p>Impuesto de lujo ya incluido en saldo</p></div>
+    </section>
+
+    <div class="workspace">
+      <section class="left-side">
+        <div class="section-heading"><div><span class="kicker">01 / CONFIGURACIÓN</span><h2>Tu punto de partida</h2></div><button type="button" id="toggleBase" class="soft-button" aria-expanded="false">AJUSTAR BANCO <span>⌄</span></button></div>
+        <section class="base-editor" id="baseEditor" hidden>
+          <div class="editor-callout"><strong>Foto fija de Supabase, no conexión en tiempo real.</strong> Estos valores son editables y los cálculos no escriben nada en el banco ni en los contratos de la liga. El saldo neto ya descuenta los impuestos actuales.</div>
+          <div class="editor-grid">
+            <label>Saldo neto actual <span>M</span><input id="baseBalance" type="number" min="-100000" max="1000000" step=".01" value="278.75"></label>
+            <label>Cap ya utilizado <span>M</span><input id="baseCapUsed" type="number" min="0" max="1000000" step=".01" value="367"></label>
+            <label>Límite salarial <span>M</span><input id="salaryCap" type="number" min="1" max="1000000" step=".01" value="500"></label>
+            <label>Dinero reservado <span>M</span><input id="reservedMoney" type="number" min="0" max="1000000" step=".01" value="0"></label>
+            <label>Resultado económico temporada <span>M</span><input id="baseProfit" type="number" min="-1000000" max="1000000" step=".01" value="-513.9"></label>
+            <label>Mercado <select id="marketHalf"><option value="1">Mitad de temporada (T8)</option><option value="0">Inicio de temporada (T8)</option></select></label>
+          </div>
+          <div class="base-actions"><button type="button" class="secondary-button" id="resetBase">RESTAURAR DATOS MERCEDES</button><small>Para otras escuderías, cambia los valores manualmente.</small></div>
+        </section>
+
+        <div class="section-heading recruits-heading"><div><span class="kicker">02 / SIMULADOR</span><h2>Operaciones de mercado</h2></div><button type="button" id="addSigning" class="add-button"><span>＋</span> AÑADIR OPERACIÓN</button></div>
+        <p class="section-description">Cada tarjeta representa una operación. Añade varias para ver cuánto puedes invertir en conjunto. Los importes son millones (M) de la moneda virtual de HyperDrive.</p>
+        <div id="signingList" class="signing-list"></div>
+        <div class="add-foot"><button type="button" id="addSigningBottom" class="ghost-add">＋ Añadir otra operación de mercado</button></div>
+
+        <section class="breakdown">
+          <div class="breakdown-title"><span class="kicker">03 / DESGLOSE</span><h2>¿Dónde se va el dinero?</h2></div>
+          <div class="breakdown-rows">
+            <div><span>Presupuesto disponible inicial</span><strong id="breakStart">278,75 M</strong></div>
+            <div><span>Contratos nuevos / aumentos</span><strong id="breakSalaries">−0,00 M</strong></div>
+            <div><span>Cláusulas y costes adicionales</span><strong id="breakBuyouts">−0,00 M</strong></div>
+            <div><span>Variación del impuesto de lujo</span><strong id="breakLuxury">−0,00 M</strong></div>
+            <div><span>Variación de Fair Play financiero</span><strong id="breakFairPlay">0,00 M</strong></div>
+          </div>
+          <div class="breakdown-total"><span>SALDO NETO TRAS OPERACIONES</span><strong id="breakEnd">278,75 M</strong></div>
+        </section>
+      </section>
+
+      <aside class="right-side">
+        <section class="result-panel">
+          <div class="result-top"><span class="kicker">PROYECCIÓN ECONÓMICA</span><span id="resultStatus" class="status-label">VIABLE</span></div>
+          <p>Dinero real que te quedaría</p><div class="main-total" id="moneyLeft">278,75 <span>M</span></div>
+          <div class="result-subtext" id="resultText">Puedes asumir las operaciones con el banco actual.</div>
+          <div class="progress-title"><span>SALARY CAP PROYECTADO</span><strong id="capProgressText">367,00 / 500,00 M</strong></div>
+          <div class="cap-track"><div id="capFill" class="cap-fill" style="width:73.4%"></div><span class="cap-limit" aria-hidden="true"></span></div>
+          <div class="bar-legend"><span id="capFreeLabel">133,00 M de margen sin impuesto</span><span id="capOverLabel">+0,00 M de exceso</span></div>
+          <div class="result-facts">
+            <div><small>COSTE INMEDIATO</small><strong id="factImmediate">0,00 M</strong></div>
+            <div><small>IMPACTO EN CAP T8</small><strong id="factCap">0,00 M</strong></div>
+            <div><small>IMPUESTO DE LUJO TOTAL</small><strong id="factLuxury">0,00 M</strong></div>
+            <div><small>SALDO MÍNIMO EXIGIDO</small><strong>0,00 M</strong></div>
+          </div>
+        </section>
+        <section class="team-panel">
+          <div class="team-header"><span class="kicker">REFERENCIA MERCEDES</span><span class="tiny-label">T8 · FOTOGRAFÍA INICIAL</span></div>
+          <h3>Plantilla actual</h3>
+          <div class="roster-list">
+            <div><span>LEWTON <small>HyperDrive</small></span><strong>200 M</strong></div>
+            <div><span>LAXAVINETA <small>Academy</small></span><strong>100 M</strong></div>
+            <div><span>ERIKNIGHT <small>HyperDrive</small></span><strong>67 M</strong></div>
+            <div class="owner"><span>BLACKSTORM <small>Team Principal · Academy</small></span><strong>EXENTO</strong></div>
+          </div>
+          <p>El contrato del Team Principal está exento del salary cap. Los otros tres suman los 367 M cargados como base. Este simulador <strong>no da de baja contratos existentes</strong>.</p>
+        </section>
+        <section class="rules-panel"><span class="kicker">CÓMO SE CALCULA</span><h3>Reglas que no hay que olvidar</h3>
+          <div><b>01</b><p>El precio total del contrato se paga ahora; la parte que ocupa el cap se reparte entre las medias temporadas contratadas.</p></div>
+          <div><b>02</b><p>El salary cap es de 500 M. Superarlo genera un impuesto de lujo calculado sobre el exceso total, según el tramo correspondiente.</p></div>
+          <div><b>03</b><p>Una cláusula de rescisión se paga aparte del contrato, y no aumenta por sí sola el salary cap.</p></div>
+          <div><b>04</b><p>El Fair Play se recalcula según el beneficio de la temporada. Un gasto puede reducir la carga de Fair Play prevista.</p></div>
+        </section>
+      </aside>
+    </div>
+    <footer class="footer"><span>HYPER<span>MARKET</span> / FINANCIAL SIMULATION SYSTEM</span><span>LABORATORIO INDEPENDIENTE · SIN MOVIMIENTOS REALES NI CAMBIOS EN LA WEB</span></footer>
+  </main>
+  <template id="signingTemplate">
+    <article class="signing-card">
+      <header class="signing-head"><div class="slot"><span class="slot-number">01</span><div><span class="slot-eyebrow">OPERACIÓN SIMULADA</span><strong class="slot-title">NUEVO FICHAJE</strong></div></div><button type="button" class="remove-signing" aria-label="Eliminar operación">✕</button></header>
+      <div class="signing-controls">
+        <label class="wide">Piloto / operación <input data-key="name" type="text" maxlength="45" placeholder="Ej.: Nuevo piloto" autocomplete="off"></label>
+        <label>Tipo de operación <select data-key="type"><option value="free">Fichaje libre</option><option value="buyout">Fichaje con cláusula</option></select></label>
+        <label>División <select data-key="division"><option value="hyperdrive">HyperDrive (1.ª)</option><option value="academy">Academy (2.ª)</option></select></label>
+        <label>Importe del contrato (M) <input data-key="salary" type="number" min="0" max="100000" step=".01" value="80"></label>
+        <label>Duración del contrato <select data-key="halves"><option value="1">1/2 temporada</option><option value="2">1 temporada (2 medias)</option><option value="3">1½ temporadas (3 medias)</option><option value="4">2 temporadas (4 medias)</option></select></label>
+        <label class="buyout-field" hidden>Cláusula de rescisión (M) <input data-key="buyout" type="number" min="0" max="100000" step=".01" value="0"></label>
+      </div>
+      <div class="signing-summary"><div><small>SALIDA DEL BANCO</small><strong class="row-cost">80,00 M</strong></div><div><small>IMPACTO EN CAP T8</small><strong class="row-cap">40,00 M</strong></div><div class="row-max-wrap"><small>OFERTA MÁXIMA VIABLE*</small><strong class="row-max">278,75 M</strong><button type="button" class="use-max">USAR MÁX.</button></div></div>
+      <p class="signing-note">* Máximo para este contrato, manteniendo los demás fichajes y cláusulas simulados. No implica cumplir otros requisitos administrativos.</p>
+      <p class="signing-warning" hidden></p>
+    </article>
+  </template>
+</body>
+</html>
