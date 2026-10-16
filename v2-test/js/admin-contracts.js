@@ -342,9 +342,50 @@
     }catch(e){console.error(e);notice('No se pudo revertir: '+(e.message||'Error'),'error')}
   }
 
+  async function processExpiries(){
+    if(loading)return;
+    const button=$('cmProcessExpiries');
+    button.disabled=true;
+    notice('Comprobando contratos que terminan en el periodo seleccionado…');
+    try{
+      const params={p_season:season(),p_market_half:market()};
+      const preview=await db.rpc('admin_contract_process_period',{...params,p_dry_run:true});
+      if(preview.error)throw preview.error;
+      const due=preview.data?.drivers||[];
+      if(!due.length){
+        notice('No hay contratos pendientes de finalizar en el periodo seleccionado.','ok');
+        return;
+      }
+      const label=market()===1?'mercado de mitad de temporada':'inicio de temporada';
+      const names=due.map(x=>'• '+x.name).join('\n');
+      if(!window.confirm(
+        '¿Aplicar '+due.length+' vencimiento(s) de la T'+season()+
+        ' ('+label+')?\n\n'+names+
+        '\n\nLos pilotos pasarán a SIN ESCUDERÍA desde la ronda '+
+        (market()===1?7:1)+
+        '. Sus equipos históricos, resultados, estadísticas y puntos anteriores se conservarán.'+
+        '\n\nNo se descontará ni ingresará dinero por esta operación.'
+      )){
+        notice('Operación cancelada. No se han modificado contratos.');return;
+      }
+      const applied=await db.rpc('admin_contract_process_period',{...params,p_dry_run:false});
+      if(applied.error)throw applied.error;
+      await reload();
+      notice('Vencimientos aplicados: '+(applied.data?.released_count||0)+
+        '. Se han desvinculado los pilotos de su escudería actual desde la nueva ronda, sin borrar resultados históricos.','ok');
+    }catch(error){
+      console.error('Error al aplicar vencimientos',error);
+      notice('No se pudieron aplicar los vencimientos: '+(error.message||error),'error');
+    }finally{button.disabled=false;}
+  }
+
+  $('cmProcessExpiries').addEventListener('click',processExpiries);
   $('cmReload').addEventListener('click',reload);
   $('cmSeason').addEventListener('change',()=>{render();});
-  $('cmMoment').addEventListener('change',()=>{render();});
+  $('cmMoment').addEventListener('change',()=>{
+    if(market()===1 && Number($('cmRound').value)<7)$('cmRound').value=7;
+    render();
+  });
   $('cmSearch').addEventListener('input',renderActive);
   $('cmKind').addEventListener('change',()=>{if($('cmKind').value.startsWith('dismiss_')&&!editing&&Number($('cmRound').value)===6)$('cmRound').value=7;syncForm();});
   ['cmContract','cmDriver','cmTeam','cmHalves','cmAmount','cmAllocation','cmRound','cmTotalRounds'].forEach(id=>$(id).addEventListener('input',updatePreview));
