@@ -920,7 +920,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 <span class="standings-team">
-                                    ${escapeHTML(driver.teamName)}
+                                    ${escapeHTML(window.HyperdriveCurrentRoster?.displayName(driver.driverName,division,driver.teamName) || driver.teamName)}
                                 </span>
 
 
@@ -1720,6 +1720,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             calculateStandings();
+
+            // Roster actual: solo etiquetas, nunca puntos históricos.
+            await window.HyperdriveCurrentRoster?.load().catch(() => null);
 
 
             if (standingsList) {
