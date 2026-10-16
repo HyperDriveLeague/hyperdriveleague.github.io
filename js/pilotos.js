@@ -1197,57 +1197,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // EQUIPO ACTUAL
     // ========================================
 
-    function getCurrentTeam(
-        officialDriver,
-        stats
-    ) {
-
-        const appearances =
-            stats.appearances;
-
-
-        for (
-            let index =
-                appearances.length - 1;
-
-            index >= 0;
-
-            index--
-        ) {
-
-            const appearance =
-                appearances[index];
-
-
-            if (
-                appearance?.driver?.team
-            ) {
-
-                return getDriverTeamData(
-                    appearance.driver,
-                    officialDriver.teamName
-                );
-
-            }
-
-        }
-
-
+    function getCurrentTeam(officialDriver, stats) {
+        // La alineación actual de Supabase es la fuente de verdad.
+        // Los JSON de carreras conservan las escuderías históricas, pero
+        // nunca deben volver a vincular a un agente libre a su antiguo equipo.
+        const teamName=String(officialDriver?.teamName||"").trim();
         return {
-
-            name:
-                officialDriver.teamName
-                || "SIN EQUIPO",
-
-            color:
-                fallbackTeamColor(
-                    officialDriver.teamName
-                )
-
+            name:teamName||"SIN EQUIPO",
+            color:fallbackTeamColor(teamName)
         };
-
     }
-
 
     // ========================================
     // POWER RANKING
@@ -2114,7 +2073,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         driversCount.textContent =
-            `${sortedDrivers.length} PILOTOS OFICIALES`;
+            `${sortedDrivers.length} PILOTOS DE LA LIGA`;
 
 
         driversGrid.innerHTML =
