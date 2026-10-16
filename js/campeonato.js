@@ -1509,7 +1509,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 <span class="championship-team">
-                                    ${escapeHTML(driver.teamName || "SIN EQUIPO")}
+                                    ${escapeHTML(window.HyperdriveCurrentRoster?.displayName(driver.driverName,division,driver.teamName) || driver.teamName || "SIN EQUIPO")}
                                 </span>
 
 
@@ -1909,6 +1909,9 @@ document.addEventListener("DOMContentLoaded", () => {
             */
 
             calculateChampionships();
+
+            // Consulta actual solo para la escudería mostrada; las puntuaciones proceden de los JSON.
+            await window.HyperdriveCurrentRoster?.load().catch(() => null);
 
 
             renderChampionship(
