@@ -140,7 +140,9 @@
           <label>Temporada <input id="cmSeason" type="number" min="1" max="100" value="8"></label>
           <label>Momento <select id="cmMoment"><option value="0">Inicio / primera mitad</option><option value="1">Mercado de mitad de temporada</option></select></label>
           <button id="cmReload" type="button" class="secondary-button">Actualizar datos</button>
+          <button id="cmProcessExpiries" type="button" class="primary-button">APLICAR VENCIMIENTOS</button>
         </div>
+        <p class="admin-note" data-admin-part="contratos">Seleccionar una fecha únicamente cambia la vista. Para dar por terminados los contratos y liberar la vinculación actual del equipo, pulsa <strong>APLICAR VENCIMIENTOS</strong>. Se conservarán los equipos y resultados de las rondas anteriores.</p>
         <div id="cmMessage" class="contracts-notice" aria-live="polite"></div>
         <div class="contracts-stats" id="cmStats"></div>
         <div class="contracts-layout">
@@ -294,6 +296,6 @@
   <script src="js/admin-wagering.js?v=4"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
-  <script src="js/admin-contracts.js?v=7"></script>
+  <script src="js/admin-contracts.js?v=8"></script>
 </body>
 </html>
