@@ -55,6 +55,26 @@
   const sortedActive=()=>contracts.filter(activeNow).sort((a,b)=>nameFor(a).localeCompare(nameFor(b),'es'));
   const expiry=t=>t?labelHalf(t.end_half):(t=>t||'Sin especificar')(null);
 
+  // A transfer cannot overwrite a roster assignment already begun at the
+  // selected round. Suggest the following round instead (history stays intact).
+  function minSigningRound(kind=$('cmKind').value){
+    const base=market()===1?7:1;
+    if(kind!=='buyout')return base;
+    const contract=contractMap.get($('cmContract').value);
+    if(!contract)return base;
+    const roster=rosters.filter(r=>r.driver_id===contract.driver_id&&r.season_number===season()&&r.is_active)
+      .sort((a,b)=>Number(b.start_round)-Number(a.start_round))[0];
+    if(!roster||roster.team_id===$('cmTeam').value)return base;
+    return Math.max(base,Number(roster.start_round||0)+1);
+  }
+  function alignSigningRound(){
+    const kind=$('cmKind').value,field=$('cmRound');
+    if(!['new','buyout'].includes(kind)){field.min='1';return;}
+    const earliest=minSigningRound(kind);
+    field.min=String(earliest);
+    if(!Number.isFinite(Number(field.value))||Number(field.value)<earliest)field.value=String(earliest);
+  }
+
   function syncForm(){
     const kind=$('cmKind').value;
     const dismissal=kind.startsWith('dismiss_');
@@ -78,6 +98,7 @@
       :kind==='import'?!termMap.has(c.id):kind==='new'?false:!!termMap.has(c.id))));
     $('cmContract').innerHTML=pool.map(c=>'<option value="'+escape(c.id)+'">'+escape(nameFor(c))+'</option>').join('')||'<option value="">Sin contratos disponibles</option>';
     if(pool.some(c=>c.id===prev))$('cmContract').value=prev;
+    alignSigningRound();
     $('cmFormTitle').textContent=editing?'Editar operación':'Registrar operación';
     updatePreview();
   }
@@ -117,10 +138,28 @@
       summary='No se crea ningún gasto ni se añade ningún coste al salary cap. Solo se establece el calendario del contrato heredado.';
       if(contract)summary+=' Importe heredado: '+money(contract.driver_value_m)+'.';
     }else if(kind==='new'||kind==='buyout'){
-      const chunks=Array.from({length:count},(_,i)=>({h:initial+i,v:amount/count}));
+      if(kind==='buyout'&&!contract){$('cmPreview').textContent='Selecciona el contrato del piloto que se va a fichar mediante su cláusula.';return;}
+      if(kind==='buyout'&&accountFor(contract)?.team_id===$('cmTeam').value){
+        $('cmPreview').textContent='El equipo comprador debe ser distinto de la escudería que tiene contratado al piloto.';return;
+      }
+      if(!Number.isFinite(amount)||amount<=0||!Number.isInteger(count)||count<1){
+        $('cmPreview').textContent='Introduce un importe y una duración válidos.';return;
+      }
+      // Same rounding as contract_split_periods: any residual cents go to the last half.
+      const totalCents=Math.round(amount*100),baseCents=Math.floor(totalCents/count);
+      const chunks=Array.from({length:count},(_,i)=>({h:initial+i,v:(baseCents+(i===count-1?totalCents-baseCents*count:0))/100}));
       const bySeason={};chunks.forEach(x=>bySeason[Math.floor(x.h/2)]=(bySeason[Math.floor(x.h/2)]||0)+x.v);
-      summary='Contrato: '+money(amount)+' pagados ahora. Salary cap: '+Object.entries(bySeason).map(([s,v])=>'T'+s+' '+money(v)).join(' · ')+'.';
-      if(kind==='buyout'&&contract)summary+=' Cláusula al equipo anterior: '+money(currentClause(contract))+' (importe adicional al contrato).';
+      const clause=kind==='buyout'?currentClause(contract):0;
+      summary='Contrato completo: '+money(amount)+' (se paga hoy). '+
+        'Salary cap: '+Object.entries(bySeason).map(([s,v])=>'T'+s+' '+money(v)).join(' · ')+
+        '. Las temporadas futuras no se vuelven a cobrar.';
+      if(kind==='buyout'){
+        summary+=' Cláusula al equipo anterior: '+money(clause)+
+          '. Desembolso total inmediato del comprador: '+money(amount+clause)+
+          '. El antiguo equipo recibe la cláusula. Su salary cap conserva el coste de las mitades ya disputadas.';
+        const earliest=minSigningRound(kind);
+        if(earliest>7&&market()===1)summary+=' Este piloto ya estaba inscrito desde otra ronda; el cambio puede comenzar desde R'+earliest+' para conservar las rondas anteriores.';
+      }
     }else if(kind==='extend'){
       summary='Se pagan '+money(amount)+' ahora. Se añaden '+count+' medias temporadas al final del contrato.';
       if(term)summary+=' Nuevo vencimiento: '+labelHalf(Number(term.end_half)+count)+'.';
@@ -271,6 +310,7 @@
   async function save(e){
     e.preventDefault();if(loading)return;
     const data=payload();
+    if(data.kind==='buyout'&&data.start_round<minSigningRound('buyout')){notice('El cambio de escudería debe comenzar desde la ronda '+minSigningRound('buyout')+' para respetar la asignación anterior.','error');return}
     if(['new','buyout'].includes(data.kind)&&data.start_round>=7&&data.market_half!==1){notice('La ronda 7 o posterior pertenece al mercado de mitad de temporada. Selecciona ese momento antes de guardar.','error');return}
     if(['new','buyout'].includes(data.kind)&&data.start_round<7&&data.market_half!==0){notice('Las rondas 1 a 6 pertenecen a la primera mitad. Selecciona Inicio / primera mitad antes de guardar.','error');return}
     if(!data.driver_id){notice('Selecciona un piloto o contrato válido','error');return}
@@ -390,7 +430,8 @@
   });
   $('cmSearch').addEventListener('input',renderActive);
   $('cmKind').addEventListener('change',()=>{if($('cmKind').value.startsWith('dismiss_')&&!editing&&Number($('cmRound').value)===6)$('cmRound').value=7;syncForm();});
-  ['cmContract','cmDriver','cmTeam','cmHalves','cmAmount','cmAllocation','cmRound','cmTotalRounds'].forEach(id=>$(id).addEventListener('input',updatePreview));
+  ['cmContract','cmTeam'].forEach(id=>$(id).addEventListener('change',()=>{alignSigningRound();updatePreview();}));
+  ['cmDriver','cmHalves','cmAmount','cmAllocation','cmRound','cmTotalRounds'].forEach(id=>$(id).addEventListener('input',updatePreview));
   $('cmForm').addEventListener('submit',save);
   $('cmCancel').addEventListener('click',cancelEdit);
   $('cmActiveBody').addEventListener('click',e=>{const pick=e.target.closest('[data-pick]'),dismiss=e.target.closest('[data-dismiss]');if(pick)pickContract(pick.dataset.pick);if(dismiss)pickDismiss(dismiss.dataset.dismiss);});
