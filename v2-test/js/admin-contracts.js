@@ -53,6 +53,20 @@
   const activeNow=c=>!c.is_team_principal_contract&&c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).start_half)<=currentHalf()&&Number(termMap.get(c.id).end_half)>=currentHalf());
   const nameFor=c=>(driverFor(c)?.nickname||'Piloto')+' · '+(teamFor(c)?.name||'Sin escudería');
   const sortedActive=()=>contracts.filter(activeNow).sort((a,b)=>nameFor(a).localeCompare(nameFor(b),'es'));
+  // A driver already signed for a later half of the selected season is
+  // committed to that contract, not eligible for another "new" signing.
+  // Still allow truly expired contracts to appear as available.
+  const contractedThisSeason=c=>{
+    if(c.is_team_principal_contract||c.status!=='active')return false;
+    const t=termMap.get(c.id);
+    if(!t)return activeNow(c);
+    return Number(t.start_half)<=season()*2+1&&Number(t.end_half)>=currentHalf();
+  };
+  const availableDrivers=()=>{
+    const contracted=new Set(contracts.filter(contractedThisSeason).map(c=>c.driver_id));
+    const owners=ownerDriverIds();
+    return drivers.filter(d=>!owners.has(d.id)&&!contracted.has(d.id));
+  };
   const expiry=t=>t?labelHalf(t.end_half):(t=>t||'Sin especificar')(null);
 
   // A transfer cannot overwrite a roster assignment already begun at the
@@ -171,7 +185,7 @@
   }
 
   function renderStats(){
-    const active=sortedActive(),owned=ownerDriverIds(),free=drivers.filter(d=>!owned.has(d.id)&&!active.some(c=>c.driver_id===d.id)),unmapped=active.filter(c=>!termMap.has(c.id));
+    const active=sortedActive(),free=availableDrivers(),unmapped=active.filter(c=>!termMap.has(c.id));
     $('cmStats').innerHTML=[
       ['Contratos vigentes',active.length],['Pilotos sin contrato',free.length],['Team Principals',ownerDriversByTeam().size],['Por periodizar',unmapped.length]
     ].map(([title,value])=>'<div class="contracts-stat"><strong>'+value+'</strong><span>'+escape(title)+'</span></div>').join('');
@@ -193,9 +207,7 @@
   }
 
   function renderFree(){
-    const activeIds=new Set(sortedActive().map(c=>c.driver_id));
-    const owned=ownerDriverIds();
-    const free=drivers.filter(d=>!owned.has(d.id)&&!activeIds.has(d.id)).sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
+    const free=availableDrivers().sort((a,b)=>a.nickname.localeCompare(b.nickname,'es'));
     $('cmFreeList').innerHTML=free.length?free.map(d=>{
       const expired=contracts.some(c=>c.driver_id===d.id&&termMap.get(c.id)?.end_half<currentHalf());
       const reserve=rosters.some(r=>r.driver_id===d.id&&r.season_number===season()&&r.is_active&&r.roster_status==='reserve');
