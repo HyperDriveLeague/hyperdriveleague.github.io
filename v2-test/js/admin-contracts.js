@@ -50,7 +50,7 @@
     return owners;
   };
   const ownerDriverIds=()=>new Set([...ownerDriversByTeam().values()].map(v=>v.driver_id));
-  const activeNow=c=>!c.is_team_principal_contract&&c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).end_half)>=currentHalf());
+  const activeNow=c=>!c.is_team_principal_contract&&c.status==='active'&&(!termMap.has(c.id)||Number(termMap.get(c.id).start_half)<=currentHalf()&&Number(termMap.get(c.id).end_half)>=currentHalf());
   const nameFor=c=>(driverFor(c)?.nickname||'Piloto')+' · '+(teamFor(c)?.name||'Sin escudería');
   const sortedActive=()=>contracts.filter(activeNow).sort((a,b)=>nameFor(a).localeCompare(nameFor(b),'es'));
   const expiry=t=>t?labelHalf(t.end_half):(t=>t||'Sin especificar')(null);
@@ -271,6 +271,8 @@
   async function save(e){
     e.preventDefault();if(loading)return;
     const data=payload();
+    if(['new','buyout'].includes(data.kind)&&data.start_round>=7&&data.market_half!==1){notice('La ronda 7 o posterior pertenece al mercado de mitad de temporada. Selecciona ese momento antes de guardar.','error');return}
+    if(['new','buyout'].includes(data.kind)&&data.start_round<7&&data.market_half!==0){notice('Las rondas 1 a 6 pertenecen a la primera mitad. Selecciona Inicio / primera mitad antes de guardar.','error');return}
     if(!data.driver_id){notice('Selecciona un piloto o contrato válido','error');return}
     if(ownerDriverIds().has(data.driver_id)){notice('Un Team Principal que corre en su propia escudería no necesita contrato ni cláusula.','error');return}
     const warning=data.kind==='import'?'La integración no generará cobros ni cargos adicionales.':
