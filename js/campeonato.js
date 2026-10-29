@@ -118,6 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 .trim()
                 .toLowerCase();
 
+        if (normalizeKey(driverName) === "danielcarmona") {
+            return "images/drivers/DanielCarmona.png";
+        }
         return `images/drivers/${encodeURIComponent(filename)}.png`;
 
     }
@@ -760,6 +763,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const drivers =
             new Map();
 
+        // La parrilla actual decide quién aparece, no los resultados antiguos.
+        const currentOfficials = window.HyperdriveCurrentRoster?.officialDrivers(division);
+        currentOfficials?.forEach((entry, key) => {
+            if (!officialDrivers[division].has(key)) {
+                officialDrivers[division].set(key, entry);
+            }
+        });
+
 
         /*
             Primero añadimos todos los
@@ -955,6 +966,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return Array.from(
             drivers.values()
         )
+            .filter(driver => !currentOfficials || currentOfficials.has(normalizeKey(driver.driverName)))
             .sort(
                 (a, b) => {
 
@@ -1908,10 +1920,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 - Superconstructores
             */
 
-            calculateChampionships();
-
-            // Consulta actual solo para la escudería mostrada; las puntuaciones proceden de los JSON.
+            // Consultar la alineación vigente antes de crear el Mundial de Pilotos.
             await window.HyperdriveCurrentRoster?.load().catch(() => null);
+            calculateChampionships();
 
 
             renderChampionship(
