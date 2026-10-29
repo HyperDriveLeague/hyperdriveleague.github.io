@@ -6,7 +6,7 @@
   const supabaseUrl='https://knyxattsjimsjefydcad.supabase.co';
   const publishableKey='sb_publishable_hLAzZZF6kki1xZ0Kyx6lfA_97kzSAmf';
   const normalize=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  let current=null,request=null;
+  let current=null,request=null,official=null;
   function load(){
     if(request)return request;
     request=fetch(supabaseUrl+'/rest/v1/rpc/public_driver_grid',{
@@ -19,11 +19,15 @@
       const rows=await response.json();
       if(!Array.isArray(rows))throw new Error('Formato de alineación no válido');
       current=new Map();
+      official={hyperdrive:new Map(),academy:new Map()};
       rows.forEach(row=>{
         const division=String(row.division||'').toLowerCase();
         const k=division+':'+normalize(row.driver_name);
         if(division&&row.driver_name){
           current.set(k,String(row.team_name||'').trim()||'SIN EQUIPO');
+          if (official[division] && String(row.team_name||'').trim()) {
+            official[division].set(normalize(row.driver_name), {driverName:String(row.driver_name),teamName:String(row.team_name)});
+          }
         }
       });
       return current;
@@ -37,5 +41,6 @@
     return current?.get(String(division||'').toLowerCase()+':'+normalize(name))
       ||historicalName||'SIN EQUIPO';
   }
-  window.HyperdriveCurrentRoster=Object.freeze({load,displayName});
+  function officialDrivers(division){return official?.[division] || null;}
+  window.HyperdriveCurrentRoster=Object.freeze({load,displayName,officialDrivers});
 })();
