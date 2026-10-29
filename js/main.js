@@ -127,6 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 .trim()
                 .toLowerCase();
 
+        // La foto de Daniel Carmona conserva mayúsculas en el archivo.
+        if (normalizeKey(driverName) === "danielcarmona") {
+            return "images/drivers/DanielCarmona.png";
+        }
+
         return `images/drivers/${encodeURIComponent(filename)}.png`;
 
     }
