@@ -598,6 +598,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const drivers =
             new Map();
 
+        // Add current official drivers without erasing historical race eligibility.
+        const currentOfficials = window.HyperdriveCurrentRoster?.officialDrivers(division);
+        currentOfficials?.forEach((entry, key) => {
+            if (!officialDrivers[division].has(key)) {
+                officialDrivers[division].set(key, entry);
+            }
+        });
+
 
         /*
             Primero añadimos todos
@@ -778,6 +786,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return Array.from(
             drivers.values()
         )
+            .filter(driver => !currentOfficials || currentOfficials.has(normalizeKey(driver.driverName)))
             .sort(
                 (a, b) => {
 
@@ -1724,10 +1733,10 @@ document.addEventListener("DOMContentLoaded", () => {
             ]);
 
 
-            calculateStandings();
-
-            // Roster actual: solo etiquetas, nunca puntos históricos.
+            // Load the official grid first; standings only display current official drivers.
+            // Historic session points remain sourced from the original results.
             await window.HyperdriveCurrentRoster?.load().catch(() => null);
+            calculateStandings();
 
 
             if (standingsList) {
