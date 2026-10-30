@@ -1,0 +1,1207 @@
+{
+  "metadata": {
+    "formatVersion": 1,
+    "exportType": "Session",
+    "exportedAt": "2026-10-30T10:12:17Z",
+    "sourceApplication": "Racing League Tools",
+    "leagueName": "HyperDrive"
+  },
+  "season": {
+    "seasonName": "Season 8",
+    "championshipName": "F1 2026",
+    "totalRounds": 12,
+    "completedRounds": 7,
+    "isMulticlass": false
+  },
+  "event": {
+    "round": 7,
+    "championshipPosition": 7,
+    "eventDate": "2026-10-29",
+    "eventDateTime": "2026-10-29T21:00:00Z",
+    "racesCount": 1,
+    "qualificationsCount": 1,
+    "track": {
+      "trackName": "Singapore",
+      "country": "Singapore",
+      "turnsCount": 19
+    }
+  },
+  "session": {
+    "sessionInfo": {
+      "sessionId": "76e1e88e-9b58-4247-8399-56d3aff1ef7a",
+      "sessionType": "Qualification",
+      "qualificationType": "Regular",
+      "sessionPosition": 0,
+      "sessionCaption": "Qual",
+      "completedStatus": "Completed",
+      "driversCount": 22,
+      "weatherType": "Clear",
+      "airTemperature": 25,
+      "trackTemperature": 30,
+      "safetyCarCount": 0,
+      "virtualSafetyCarCount": 0
+    },
+    "fastestLap": {
+      "lapTime": "1:28.053",
+      "lapTimeMs": 88053,
+      "driverName": "Iker",
+      "lapNumber": 1,
+      "tyreCompound": "Soft"
+    },
+    "qualificationDetails": {
+      "qualificationType": "Regular",
+      "segments": 1,
+      "poleTime": "1:28.053",
+      "poleTimeMs": 88053,
+      "duration": "30:01.216",
+      "durationMs": 1801216
+    },
+    "drivers": [
+      {
+        "driverName": "Iker",
+        "driverInfo": {
+          "nationality": "valencia",
+          "raceNumber": "39",
+          "displayName": "Iker"
+        },
+        "position": 1,
+        "classificationPosition": 1,
+        "lapsCompleted": 2,
+        "driverPoints": "1",
+        "teamPoints": "1",
+        "gap": "0",
+        "gapMs": 0,
+        "fastestLapTime": "1:28.053",
+        "fastestLapTimeMs": 88053,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Racing Bulls",
+          "uniqueId": "racing.bulls.2026",
+          "fullName": "Visa Cash App Racing Bulls F1 Team",
+          "abbreviation": "VRB",
+          "primaryColor": "#FF6692FF",
+          "secondaryColor": "#FFFFFFFF",
+          "country": "Italy"
+        },
+        "qualDetails": {
+          "maxSpeed": 310
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.053",
+            "lapTimeMs": 88053,
+            "sector1Time": "26.407",
+            "sector1TimeMs": 26407,
+            "sector2Time": "36.900",
+            "sector2TimeMs": 36900,
+            "sector3Time": "24.745",
+            "sector3TimeMs": 24745,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": true,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "SergiMarquez",
+        "driverInfo": {
+          "nationality": "catalunya",
+          "raceNumber": "89",
+          "displayName": "SergiMarquez"
+        },
+        "position": 2,
+        "classificationPosition": 2,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+0.230",
+        "gapMs": 230,
+        "interval": "+0.230",
+        "intervalMs": 230,
+        "fastestLapTime": "1:28.283",
+        "fastestLapTimeMs": 88283,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "McLaren",
+          "uniqueId": "mclaren.2026",
+          "fullName": "McLaren Formula 1 Team",
+          "abbreviation": "MCL",
+          "primaryColor": "#FFFF8000",
+          "secondaryColor": "#FF333333",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.283",
+            "lapTimeMs": 88283,
+            "sector1Time": "26.579",
+            "sector1TimeMs": 26579,
+            "sector2Time": "36.990",
+            "sector2TimeMs": 36990,
+            "sector3Time": "24.713",
+            "sector3TimeMs": 24713,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Lewton",
+        "driverInfo": {
+          "nationality": "catalunya",
+          "raceNumber": "8",
+          "displayName": "Lewton"
+        },
+        "position": 3,
+        "classificationPosition": 3,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+0.535",
+        "gapMs": 535,
+        "interval": "+0.305",
+        "intervalMs": 305,
+        "fastestLapTime": "1:28.588",
+        "fastestLapTimeMs": 88588,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Mercedes",
+          "uniqueId": "mercedes.2026",
+          "fullName": "Mercedes-AMG Petronas F1 Team",
+          "abbreviation": "MER",
+          "primaryColor": "#FF27F4D2",
+          "secondaryColor": "#FFA3A3A3",
+          "country": "Germany"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.588",
+            "lapTimeMs": 88588,
+            "sector1Time": "26.627",
+            "sector1TimeMs": 26627,
+            "sector2Time": "37.041",
+            "sector2TimeMs": 37041,
+            "sector3Time": "24.919",
+            "sector3TimeMs": 24919,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Sergi",
+        "driverInfo": {
+          "nationality": "mancha",
+          "raceNumber": "94",
+          "displayName": "Sergi"
+        },
+        "position": 4,
+        "classificationPosition": 4,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+0.724",
+        "gapMs": 724,
+        "interval": "+0.189",
+        "intervalMs": 189,
+        "fastestLapTime": "1:28.777",
+        "fastestLapTimeMs": 88777,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Alpine",
+          "uniqueId": "alpine.2026",
+          "fullName": "BWT Alpine F1 Team",
+          "abbreviation": "ALP",
+          "primaryColor": "#FF0093CC",
+          "secondaryColor": "#FFFF87BC",
+          "country": "France"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.777",
+            "lapTimeMs": 88777,
+            "sector1Time": "26.674",
+            "sector1TimeMs": 26674,
+            "sector2Time": "37.243",
+            "sector2TimeMs": 37243,
+            "sector3Time": "24.859",
+            "sector3TimeMs": 24859,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Pedro",
+        "driverInfo": {
+          "nationality": "baleares",
+          "raceNumber": "90",
+          "displayName": "Pedro"
+        },
+        "position": 5,
+        "classificationPosition": 5,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+0.822",
+        "gapMs": 822,
+        "interval": "+0.098",
+        "intervalMs": 98,
+        "fastestLapTime": "1:28.875",
+        "fastestLapTimeMs": 88875,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Aston Martin",
+          "uniqueId": "aston.martin.2026",
+          "fullName": "Aston Martin Aramco F1 Team",
+          "abbreviation": "AMR",
+          "primaryColor": "#FF229971",
+          "secondaryColor": "#FFCCF738",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.875",
+            "lapTimeMs": 88875,
+            "sector1Time": "26.826",
+            "sector1TimeMs": 26826,
+            "sector2Time": "37.276",
+            "sector2TimeMs": 37276,
+            "sector3Time": "24.772",
+            "sector3TimeMs": 24772,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Ivanition",
+        "driverInfo": {
+          "nationality": "catalunya",
+          "raceNumber": "2",
+          "displayName": "Ivanition"
+        },
+        "position": 6,
+        "classificationPosition": 6,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+0.852",
+        "gapMs": 852,
+        "interval": "+0.030",
+        "intervalMs": 30,
+        "fastestLapTime": "1:28.905",
+        "fastestLapTimeMs": 88905,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Haas",
+          "uniqueId": "haas.2026",
+          "fullName": "Haas F1 Team",
+          "abbreviation": "HAS",
+          "primaryColor": "#FFB6BABD",
+          "secondaryColor": "#FF333333",
+          "country": "United States Of America"
+        },
+        "qualDetails": {
+          "maxSpeed": 306
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:28.905",
+            "lapTimeMs": 88905,
+            "sector1Time": "26.816",
+            "sector1TimeMs": 26816,
+            "sector2Time": "37.179",
+            "sector2TimeMs": 37179,
+            "sector3Time": "24.909",
+            "sector3TimeMs": 24909,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Ironser",
+        "driverInfo": {
+          "nationality": "galicia",
+          "raceNumber": "29",
+          "displayName": "Ironser"
+        },
+        "position": 7,
+        "classificationPosition": 7,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.019",
+        "gapMs": 1019,
+        "interval": "+0.167",
+        "intervalMs": 167,
+        "fastestLapTime": "1:29.072",
+        "fastestLapTimeMs": 89072,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Cadillac",
+          "uniqueId": "cadillac.2026",
+          "fullName": "Cadillac Formula One Team",
+          "abbreviation": "CAD",
+          "primaryColor": "#FF001E5F",
+          "secondaryColor": "#FFFFFFFF",
+          "country": "United States Of America"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.072",
+            "lapTimeMs": 89072,
+            "sector1Time": "26.824",
+            "sector1TimeMs": 26824,
+            "sector2Time": "37.421",
+            "sector2TimeMs": 37421,
+            "sector3Time": "24.826",
+            "sector3TimeMs": 24826,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Yohan",
+        "driverInfo": {
+          "nationality": "",
+          "raceNumber": "69",
+          "displayName": "Yohan"
+        },
+        "position": 8,
+        "classificationPosition": 8,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.029",
+        "gapMs": 1029,
+        "interval": "+0.010",
+        "intervalMs": 10,
+        "fastestLapTime": "1:29.082",
+        "fastestLapTimeMs": 89082,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Haas",
+          "uniqueId": "haas.2026",
+          "fullName": "Haas F1 Team",
+          "abbreviation": "HAS",
+          "primaryColor": "#FFB6BABD",
+          "secondaryColor": "#FF333333",
+          "country": "United States Of America"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.082",
+            "lapTimeMs": 89082,
+            "sector1Time": "26.835",
+            "sector1TimeMs": 26835,
+            "sector2Time": "37.384",
+            "sector2TimeMs": 37384,
+            "sector3Time": "24.863",
+            "sector3TimeMs": 24863,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          },
+          {
+            "lapNumber": 2,
+            "lapTime": "0.000",
+            "sector1Time": "29.132",
+            "sector1TimeMs": 29132,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": false,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Pini",
+        "driverInfo": {
+          "nationality": "valencia",
+          "raceNumber": "37",
+          "displayName": "Pini"
+        },
+        "position": 9,
+        "classificationPosition": 9,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.137",
+        "gapMs": 1137,
+        "interval": "+0.108",
+        "intervalMs": 108,
+        "fastestLapTime": "1:29.190",
+        "fastestLapTimeMs": 89190,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "McLaren",
+          "uniqueId": "mclaren.2026",
+          "fullName": "McLaren Formula 1 Team",
+          "abbreviation": "MCL",
+          "primaryColor": "#FFFF8000",
+          "secondaryColor": "#FF333333",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.190",
+            "lapTimeMs": 89190,
+            "sector1Time": "26.717",
+            "sector1TimeMs": 26717,
+            "sector2Time": "37.607",
+            "sector2TimeMs": 37607,
+            "sector3Time": "24.865",
+            "sector3TimeMs": 24865,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          },
+          {
+            "lapNumber": 2,
+            "lapTime": "0.000",
+            "sector1Time": "33.223",
+            "sector1TimeMs": 33223,
+            "tyreCompound": "Soft",
+            "isValid": false,
+            "isPersonalBest": false,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "CarAscari",
+        "driverInfo": {
+          "nationality": "andalucia",
+          "raceNumber": "2",
+          "displayName": "CarAscari"
+        },
+        "position": 10,
+        "classificationPosition": 10,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.191",
+        "gapMs": 1191,
+        "interval": "+0.054",
+        "intervalMs": 54,
+        "fastestLapTime": "1:29.244",
+        "fastestLapTimeMs": 89244,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Audi",
+          "uniqueId": "audi.2026",
+          "fullName": "Audi Formula One Team",
+          "abbreviation": "AUD",
+          "primaryColor": "#FFB4B4B4",
+          "secondaryColor": "#FF232323",
+          "country": "Germany"
+        },
+        "qualDetails": {
+          "maxSpeed": 307
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.244",
+            "lapTimeMs": 89244,
+            "sector1Time": "26.672",
+            "sector1TimeMs": 26672,
+            "sector2Time": "37.444",
+            "sector2TimeMs": 37444,
+            "sector3Time": "25.127",
+            "sector3TimeMs": 25127,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "DanielCarmona",
+        "driverInfo": {
+          "nationality": "",
+          "raceNumber": "88",
+          "displayName": "DanielCarmona"
+        },
+        "position": 11,
+        "classificationPosition": 11,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.229",
+        "gapMs": 1229,
+        "interval": "+0.038",
+        "intervalMs": 38,
+        "fastestLapTime": "1:29.282",
+        "fastestLapTimeMs": 89282,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Red Bull",
+          "uniqueId": "red.bull.2026",
+          "fullName": "Oracle Red Bull Racing",
+          "abbreviation": "RB",
+          "primaryColor": "#FF3671C6",
+          "secondaryColor": "#FFE00008",
+          "country": "Austria"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.282",
+            "lapTimeMs": 89282,
+            "sector1Time": "26.935",
+            "sector1TimeMs": 26935,
+            "sector2Time": "37.518",
+            "sector2TimeMs": 37518,
+            "sector3Time": "24.828",
+            "sector3TimeMs": 24828,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Matahary",
+        "driverInfo": {
+          "nationality": "extremadura",
+          "raceNumber": "9",
+          "displayName": "Matahary"
+        },
+        "position": 12,
+        "classificationPosition": 12,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.231",
+        "gapMs": 1231,
+        "interval": "+0.002",
+        "intervalMs": 2,
+        "fastestLapTime": "1:29.284",
+        "fastestLapTimeMs": 89284,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Williams",
+          "uniqueId": "williams.2026",
+          "fullName": "Williams Racing",
+          "abbreviation": "WIL",
+          "primaryColor": "#FF64C4FF",
+          "secondaryColor": "#FF0D66D9",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.284",
+            "lapTimeMs": 89284,
+            "sector1Time": "26.656",
+            "sector1TimeMs": 26656,
+            "sector2Time": "37.512",
+            "sector2TimeMs": 37512,
+            "sector3Time": "25.114",
+            "sector3TimeMs": 25114,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Cachii",
+        "driverInfo": {
+          "nationality": "andalucia",
+          "raceNumber": "72",
+          "displayName": "Cachii"
+        },
+        "position": 13,
+        "classificationPosition": 13,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.328",
+        "gapMs": 1328,
+        "interval": "+0.097",
+        "intervalMs": 97,
+        "fastestLapTime": "1:29.381",
+        "fastestLapTimeMs": 89381,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Aston Martin",
+          "uniqueId": "aston.martin.2026",
+          "fullName": "Aston Martin Aramco F1 Team",
+          "abbreviation": "AMR",
+          "primaryColor": "#FF229971",
+          "secondaryColor": "#FFCCF738",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.381",
+            "lapTimeMs": 89381,
+            "sector1Time": "26.816",
+            "sector1TimeMs": 26816,
+            "sector2Time": "37.722",
+            "sector2TimeMs": 37722,
+            "sector3Time": "24.842",
+            "sector3TimeMs": 24842,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          },
+          {
+            "lapNumber": 2,
+            "lapTime": "0.000",
+            "sector1Time": "29.699",
+            "sector1TimeMs": 29699,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": false,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Imulero",
+        "driverInfo": {
+          "nationality": "rioja",
+          "raceNumber": "86",
+          "displayName": "Imulero"
+        },
+        "position": 14,
+        "classificationPosition": 14,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.841",
+        "gapMs": 1841,
+        "interval": "+0.513",
+        "intervalMs": 513,
+        "fastestLapTime": "1:29.894",
+        "fastestLapTimeMs": 89894,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Audi",
+          "uniqueId": "audi.2026",
+          "fullName": "Audi Formula One Team",
+          "abbreviation": "AUD",
+          "primaryColor": "#FFB4B4B4",
+          "secondaryColor": "#FF232323",
+          "country": "Germany"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.894",
+            "lapTimeMs": 89894,
+            "sector1Time": "27.095",
+            "sector1TimeMs": 27095,
+            "sector2Time": "37.685",
+            "sector2TimeMs": 37685,
+            "sector3Time": "25.113",
+            "sector3TimeMs": 25113,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "SincDex",
+        "driverInfo": {
+          "nationality": "andalucia",
+          "raceNumber": "54",
+          "displayName": "SincDex"
+        },
+        "position": 15,
+        "classificationPosition": 15,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+1.868",
+        "gapMs": 1868,
+        "interval": "+0.027",
+        "intervalMs": 27,
+        "fastestLapTime": "1:29.921",
+        "fastestLapTimeMs": 89921,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Ferrari",
+          "uniqueId": "ferrari.2026",
+          "fullName": "Scuderia Ferrari",
+          "abbreviation": "FER",
+          "primaryColor": "#FFE80020",
+          "secondaryColor": "#FFFFF200",
+          "country": "Italy"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:29.921",
+            "lapTimeMs": 89921,
+            "sector1Time": "27.162",
+            "sector1TimeMs": 27162,
+            "sector2Time": "37.807",
+            "sector2TimeMs": 37807,
+            "sector3Time": "24.952",
+            "sector3TimeMs": 24952,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Eriknight",
+        "driverInfo": {
+          "nationality": "valencia",
+          "raceNumber": "98",
+          "displayName": "Eriknight"
+        },
+        "position": 16,
+        "classificationPosition": 16,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+2.085",
+        "gapMs": 2085,
+        "interval": "+0.217",
+        "intervalMs": 217,
+        "fastestLapTime": "1:30.138",
+        "fastestLapTimeMs": 90138,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Mercedes",
+          "uniqueId": "mercedes.2026",
+          "fullName": "Mercedes-AMG Petronas F1 Team",
+          "abbreviation": "MER",
+          "primaryColor": "#FF27F4D2",
+          "secondaryColor": "#FFA3A3A3",
+          "country": "Germany"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:30.138",
+            "lapTimeMs": 90138,
+            "sector1Time": "27.028",
+            "sector1TimeMs": 27028,
+            "sector2Time": "37.886",
+            "sector2TimeMs": 37886,
+            "sector3Time": "25.223",
+            "sector3TimeMs": 25223,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Raul",
+        "driverInfo": {
+          "nationality": "catalunya",
+          "raceNumber": "96",
+          "displayName": "Raul"
+        },
+        "position": 17,
+        "classificationPosition": 17,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+2.110",
+        "gapMs": 2110,
+        "interval": "+0.025",
+        "intervalMs": 25,
+        "fastestLapTime": "1:30.163",
+        "fastestLapTimeMs": 90163,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Red Bull",
+          "uniqueId": "red.bull.2026",
+          "fullName": "Oracle Red Bull Racing",
+          "abbreviation": "RB",
+          "primaryColor": "#FF3671C6",
+          "secondaryColor": "#FFE00008",
+          "country": "Austria"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:30.163",
+            "lapTimeMs": 90163,
+            "sector1Time": "27.729",
+            "sector1TimeMs": 27729,
+            "sector2Time": "37.712",
+            "sector2TimeMs": 37712,
+            "sector3Time": "24.720",
+            "sector3TimeMs": 24720,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Alvarosn94",
+        "driverInfo": {
+          "nationality": "Murcia",
+          "raceNumber": "8",
+          "displayName": "Alvarosn94"
+        },
+        "position": 18,
+        "classificationPosition": 18,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+2.549",
+        "gapMs": 2549,
+        "interval": "+0.439",
+        "intervalMs": 439,
+        "fastestLapTime": "1:30.602",
+        "fastestLapTimeMs": 90602,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Williams",
+          "uniqueId": "williams.2026",
+          "fullName": "Williams Racing",
+          "abbreviation": "WIL",
+          "primaryColor": "#FF64C4FF",
+          "secondaryColor": "#FF0D66D9",
+          "country": "United Kingdom"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:30.602",
+            "lapTimeMs": 90602,
+            "sector1Time": "27.146",
+            "sector1TimeMs": 27146,
+            "sector2Time": "38.324",
+            "sector2TimeMs": 38324,
+            "sector3Time": "25.130",
+            "sector3TimeMs": 25130,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Serginho",
+        "driverInfo": {
+          "nationality": "andalucia",
+          "raceNumber": "21",
+          "displayName": "Serginho"
+        },
+        "position": 19,
+        "classificationPosition": 19,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+2.794",
+        "gapMs": 2794,
+        "interval": "+0.245",
+        "intervalMs": 245,
+        "fastestLapTime": "1:30.847",
+        "fastestLapTimeMs": 90847,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Racing Bulls",
+          "uniqueId": "racing.bulls.2026",
+          "fullName": "Visa Cash App Racing Bulls F1 Team",
+          "abbreviation": "VRB",
+          "primaryColor": "#FF6692FF",
+          "secondaryColor": "#FFFFFFFF",
+          "country": "Italy"
+        },
+        "qualDetails": {
+          "maxSpeed": 308
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:30.847",
+            "lapTimeMs": 90847,
+            "sector1Time": "27.206",
+            "sector1TimeMs": 27206,
+            "sector2Time": "38.287",
+            "sector2TimeMs": 38287,
+            "sector3Time": "25.353",
+            "sector3TimeMs": 25353,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          },
+          {
+            "lapNumber": 2,
+            "lapTime": "0.000",
+            "sector1Time": "29.952",
+            "sector1TimeMs": 29952,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": false,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Toni",
+        "driverInfo": {
+          "nationality": "canarias",
+          "raceNumber": "86",
+          "displayName": "Toni"
+        },
+        "position": 20,
+        "classificationPosition": 20,
+        "lapsCompleted": 2,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "gap": "+15.582",
+        "gapMs": 15582,
+        "interval": "+12.788",
+        "intervalMs": 12788,
+        "fastestLapTime": "1:43.635",
+        "fastestLapTimeMs": 103635,
+        "fastestLapNumber": 1,
+        "fastestLapTyreCompound": "Soft",
+        "team": {
+          "name": "Alpine",
+          "uniqueId": "alpine.2026",
+          "fullName": "BWT Alpine F1 Team",
+          "abbreviation": "ALP",
+          "primaryColor": "#FF0093CC",
+          "secondaryColor": "#FFFF87BC",
+          "country": "France"
+        },
+        "qualDetails": {
+          "maxSpeed": 309
+        },
+        "laps": [
+          {
+            "lapNumber": 1,
+            "lapTime": "1:43.635",
+            "lapTimeMs": 103635,
+            "sector1Time": "27.012",
+            "sector1TimeMs": 27012,
+            "sector2Time": "49.873",
+            "sector2TimeMs": 49873,
+            "sector3Time": "26.749",
+            "sector3TimeMs": 26749,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": true,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          },
+          {
+            "lapNumber": 2,
+            "lapTime": "0.000",
+            "sector1Time": "41.003",
+            "sector1TimeMs": 41003,
+            "tyreCompound": "Soft",
+            "isValid": true,
+            "isPersonalBest": false,
+            "isSessionFastest": false,
+            "stintNumber": 1,
+            "lapInStint": 2
+          }
+        ]
+      },
+      {
+        "driverName": "Vrister",
+        "driverInfo": {
+          "nationality": "galicia",
+          "raceNumber": "28",
+          "displayName": "Vrister"
+        },
+        "position": 21,
+        "classificationPosition": 21,
+        "lapsCompleted": 1,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "team": {
+          "name": "Ferrari",
+          "uniqueId": "ferrari.2026",
+          "fullName": "Scuderia Ferrari",
+          "abbreviation": "FER",
+          "primaryColor": "#FFE80020",
+          "secondaryColor": "#FFFFF200",
+          "country": "Italy"
+        },
+        "qualDetails": {
+          "maxSpeed": 305
+        }
+      },
+      {
+        "driverName": "DiabloRojo",
+        "driverInfo": {
+          "nationality": "Madrid",
+          "raceNumber": "69",
+          "displayName": "DiabloRojo"
+        },
+        "position": 22,
+        "classificationPosition": 22,
+        "lapsCompleted": 1,
+        "driverPoints": "0",
+        "teamPoints": "0",
+        "team": {
+          "name": "Cadillac",
+          "uniqueId": "cadillac.2026",
+          "fullName": "Cadillac Formula One Team",
+          "abbreviation": "CAD",
+          "primaryColor": "#FF001E5F",
+          "secondaryColor": "#FFFFFFFF",
+          "country": "United States Of America"
+        }
+      }
+    ]
+  }
+}
