@@ -1441,6 +1441,112 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // EVOLUCIÓN RESPECTO A LA RONDA ANTERIOR
+    // ========================================
+
+    function addPositionChanges(current, previous, keyOf) {
+        const previousPositions = new Map(
+            previous.map(entry => [keyOf(entry), entry.position])
+        );
+        return current.map(entry => ({
+            ...entry,
+            positionChange: previousPositions.has(keyOf(entry))
+                ? previousPositions.get(keyOf(entry)) - entry.position
+                : null
+        }));
+    }
+
+    function positionChangeHTML(change) {
+        if (change > 0) {
+            return `<span class="championship-movement movement-up" title="Sube ${change} posiciones" aria-label="Sube ${change} posiciones">▲${change}</span>`;
+        }
+        if (change < 0) {
+            return `<span class="championship-movement movement-down" title="Baja ${-change} posiciones" aria-label="Baja ${-change} posiciones">▼${-change}</span>`;
+        }
+        return '<span class="championship-movement movement-same" title="Sin cambios respecto a la ronda anterior" aria-label="Sin cambios">—</span>';
+    }
+
+    function attachPositionChanges() {
+        // Los sprints y la carrera principal pertenecen a la misma ronda.
+        const latestRound = division => Math.max(
+            0, ...raceFiles[division].map(session => session.round)
+        );
+
+        const previousByDivision = {};
+        const originalFiles = {
+            hyperdrive: raceFiles.hyperdrive,
+            academy: raceFiles.academy
+        };
+
+        try {
+            DIVISIONS.forEach(division => {
+                const lastRound = latestRound(division);
+                raceFiles[division] = originalFiles[division].filter(
+                    session => session.round < lastRound
+                );
+                previousByDivision[division] = {
+                    drivers: lastRound > 1 ? buildDriverStandings(division) : [],
+                    constructors: lastRound > 1 ? buildConstructorsStandings(division) : []
+                };
+                raceFiles[division] = originalFiles[division];
+
+                championshipData[division].drivers = addPositionChanges(
+                    championshipData[division].drivers,
+                    previousByDivision[division].drivers,
+                    driver => normalizeKey(driver.driverName)
+                );
+                championshipData[division].constructors = addPositionChanges(
+                    championshipData[division].constructors,
+                    previousByDivision[division].constructors,
+                    team => team.teamKey
+                );
+            });
+
+            // Superconstructores: comparar ambas divisiones al finalizar
+            // la última ronda disponible en cualquiera de ellas.
+            const lastGlobalRound = Math.max(
+                latestRound("hyperdrive"), latestRound("academy")
+            );
+            if (lastGlobalRound > 1) {
+                const currentConstructors = {
+                    hyperdrive: championshipData.hyperdrive.constructors,
+                    academy: championshipData.academy.constructors
+                };
+                try {
+                    DIVISIONS.forEach(division => {
+                        raceFiles[division] = originalFiles[division].filter(
+                            session => session.round < lastGlobalRound
+                        );
+                        championshipData[division].constructors =
+                            buildConstructorsStandings(division);
+                    });
+                    const previousSuperconstructors = buildSuperconstructors();
+                    championshipData.superconstructors = addPositionChanges(
+                        championshipData.superconstructors,
+                        previousSuperconstructors,
+                        team => {
+                            const id = team.teamInfo?.uniqueId;
+                            return id
+                                ? `id:${normalizeKey(id)}`
+                                : `name:${normalizeKey(team.teamName)}`;
+                        }
+                    );
+                } finally {
+                    DIVISIONS.forEach(division => {
+                        championshipData[division].constructors =
+                            currentConstructors[division];
+                    });
+                }
+            }
+        } finally {
+            DIVISIONS.forEach(division => {
+                raceFiles[division] = originalFiles[division];
+            });
+        }
+    }
+
+
+    // ========================================
     // MOSTRAR PILOTOS
     // ========================================
 
@@ -1513,9 +1619,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </div>
 
 
-                                    <span>
+                                    <span class="championship-name">
                                         ${escapeHTML(driver.driverName)}
                                     </span>
+                                    ${positionChangeHTML(driver.positionChange)}
 
                                 </div>
 
@@ -1616,9 +1723,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     ></span>
 
 
-                                    <span>
+                                    <span class="championship-name">
                                         ${escapeHTML(team.teamName)}
                                     </span>
+                                    ${positionChangeHTML(team.positionChange)}
 
                                 </div>
 
@@ -1717,9 +1825,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                     ></span>
 
 
-                                    <span>
+                                    <span class="championship-name">
                                         ${escapeHTML(team.teamName)}
                                     </span>
+                                    ${positionChangeHTML(team.positionChange)}
 
                                 </div>
 
@@ -1923,6 +2032,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Consultar la alineación vigente antes de crear el Mundial de Pilotos.
             await window.HyperdriveCurrentRoster?.load().catch(() => null);
             calculateChampionships();
+            attachPositionChanges();
 
 
             renderChampionship(
