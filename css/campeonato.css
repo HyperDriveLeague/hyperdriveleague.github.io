@@ -813,3 +813,33 @@
     }
 
 }
+
+
+/* Evolución de puestos desde la ronda anterior */
+.championship-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.championship-movement {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 2px;
+    gap: 2px;
+    font-size: 0.73rem;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.movement-up { color: #36c977; }
+.movement-down { color: #f05b61; }
+.movement-same { color: #83868d; }
+
+@media (max-width: 768px) {
+    .championship-driver,
+    .constructor-team-name { gap: 7px; }
+    .championship-movement { font-size: 0.66rem; }
+}
