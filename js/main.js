@@ -1733,6 +1733,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ]);
 
 
+            await window.HyperDrivePenaltyChallenge?.ready;
             // Load the official grid first; standings only display current official drivers.
             // Historic session points remain sourced from the original results.
             await window.HyperdriveCurrentRoster?.load().catch(() => null);
