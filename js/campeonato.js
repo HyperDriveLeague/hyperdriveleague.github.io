@@ -1453,6 +1453,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ========================================
+    // Separación de puntos respecto al líder; solo afecta a la presentación.
+    function leaderGapHTML(points, leaderPoints) {
+        const gap = Math.max(0, toPoints(leaderPoints) - toPoints(points));
+        const label = gap === 0 ? "0" : `−${formatPoints(gap)}`;
+        const description = gap === 0
+            ? "A 0 puntos del líder"
+            : `A ${formatPoints(gap)} puntos del líder`;
+        return `<small class="championship-gap" title="${escapeHTML(description)}" aria-label="${escapeHTML(description)}">${escapeHTML(label)}</small>`;
+    }
+
     // MOSTRAR PILOTOS
     // ========================================
 
@@ -1491,6 +1501,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
+        const leaderPoints = toPoints(drivers[0].points);
 
         championshipList.innerHTML =
             drivers
@@ -1539,7 +1551,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 <span class="championship-points">
-                                    ${escapeHTML(formatPoints(driver.points))}
+                                    ${leaderGapHTML(driver.points, leaderPoints)}
+                                    <span class="championship-points-total">${escapeHTML(formatPoints(driver.points))}</span>
                                 </span>
 
                             </div>
@@ -1592,6 +1605,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
+        const leaderPoints = toPoints(constructors[0].points);
+
         championshipList.innerHTML =
             constructors
                 .map(
@@ -1643,7 +1658,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 <span class="championship-points">
-                                    ${escapeHTML(formatPoints(team.points))}
+                                    ${leaderGapHTML(team.points, leaderPoints)}
+                                    <span class="championship-points-total">${escapeHTML(formatPoints(team.points))}</span>
                                 </span>
 
                             </div>
@@ -1692,6 +1708,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
+        const leaderPoints = toPoints(teams[0].points);
 
         championshipList.innerHTML =
             teams
@@ -1745,7 +1763,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                                 <span class="championship-points">
-                                    ${escapeHTML(formatPoints(team.points))}
+                                    ${leaderGapHTML(team.points, leaderPoints)}
+                                    <span class="championship-points-total">${escapeHTML(formatPoints(team.points))}</span>
                                 </span>
 
                             </div>
