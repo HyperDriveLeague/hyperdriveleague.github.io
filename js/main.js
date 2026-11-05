@@ -580,8 +580,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 : 0;
 
         return (
-            (basePoints + poleBonus) *
-            (window.HyperDrivePenaltyChallenge?.multiplier(sessionFile.division, sessionFile.round, sessionFile.type, driver) ?? 1)
+            basePoints +
+            poleBonus
         );
 
     }
@@ -1736,7 +1736,6 @@ document.addEventListener("DOMContentLoaded", () => {
             ]);
 
 
-            await window.HyperDrivePenaltyChallenge?.ready;
             // Load the official grid first; standings only display current official drivers.
             // Historic session points remain sourced from the original results.
             await window.HyperdriveCurrentRoster?.load().catch(() => null);
