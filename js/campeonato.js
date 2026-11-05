@@ -729,8 +729,8 @@ document.addEventListener("DOMContentLoaded", () => {
         */
 
         const total =
-            (driverPoints + poleBonus) *
-            (window.HyperDrivePenaltyChallenge?.multiplier(sessionFile.division, sessionFile.round, sessionFile.type, driver) ?? 1);
+            driverPoints +
+            poleBonus;
 
 
         return {
@@ -1998,7 +1998,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 distinguir titulares de reservas.
             */
 
-            await Promise.all([loadOfficialDrivers(), window.HyperDrivePenaltyChallenge?.ready]);
+            await loadOfficialDrivers();
 
 
             /*
