@@ -580,8 +580,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 : 0;
 
         return (
-            basePoints +
-            poleBonus
+            (basePoints + poleBonus) *
+            (window.HyperDrivePenaltyChallenge?.multiplier(sessionFile.division, sessionFile.round, sessionFile.type, driver) ?? 1)
         );
 
     }
