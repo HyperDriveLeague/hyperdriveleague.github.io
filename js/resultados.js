@@ -429,7 +429,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function buildSessionFromFile(
         data,
         type,
-        roundNumber
+        roundNumber,
+        division
     ) {
         if (!isValidSessionFile(data)) {
             return null;
@@ -540,8 +541,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             poleBonus,
 
                         points:
-                            basePoints +
-                            poleBonus,
+                            (basePoints + poleBonus) *
+                            (window.HyperDrivePenaltyChallenge?.multiplier(division, roundNumber, type, driver) ?? 1),
+
+                        penaltyChallengeBonus:
+                            window.HyperDrivePenaltyChallenge?.multiplier(division, roundNumber, type, driver) === 2,
 
                         isPole:
                             isPole,
@@ -714,7 +718,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildSessionFromFile(
                     window.HyperDriveRoundSix?.normalizeFile(sprintData,division,roundNumber,'sprint') || sprintData,
                     "sprint",
-                    roundNumber
+                    roundNumber,
+                    division
                 );
 
             if (sprint) {
@@ -734,7 +739,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildSessionFromFile(
                     window.HyperDriveRoundSix?.normalizeFile(mainData,division,roundNumber,'race') || mainData,
                     "race",
-                    roundNumber
+                    roundNumber,
+                    division
                 );
 
             if (race) {
@@ -2038,6 +2044,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
         }
+
+        await window.HyperDrivePenaltyChallenge?.ready;
 
         await Promise.all(
             DIVISIONS.map(
