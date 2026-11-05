@@ -482,24 +482,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         type === "race" &&
                         gridPosition === 1;
 
-                    /*
-                        driverPoints YA incluye
-                        el punto de vuelta rápida
-                        que haya concedido RLT.
-
-                        Solo añadimos +1 por pole
-                        en la carrera principal.
-                    */
-
-                    const basePoints =
-                        toPoints(
-                            driver.driverPoints
-                        );
-
-                    const poleBonus =
-                        isPole
-                            ? 1
-                            : 0;
+                    // El JSON de carrera ya incluye sus puntos; los de qualy
+                    // se suman por separado en los mundiales.
+                    const basePoints = toPoints(driver.driverPoints);
 
                     return {
                         driverName:
@@ -536,12 +521,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         rawPoints:
                             basePoints,
 
-                        poleBonus:
-                            poleBonus,
-
                         points:
-                            basePoints +
-                            poleBonus,
+                            basePoints,
 
                         isPole:
                             isPole,
