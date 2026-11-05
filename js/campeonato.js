@@ -597,6 +597,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 })()
             );
 
+            // Los puntos de las clasificaciones se leen del JSON de RLT.
+            [
+                { type: "sprint-qualifying", path: `data/${division}_qr${round}_sprint.json` },
+                { type: "qualifying", path: `data/${division}_qr${round}.json` }
+            ].forEach(({ type, path }) => {
+                requests.push((async () => {
+                    const data = await fetchOptionalJSON(path);
+                    if (!data || !isValidRaceFile(data)) return null;
+                    return {
+                        division, round, type, path,
+                        data: window.HyperDriveRoundSix?.normalizeFile(data, division, round, "qualy") || data
+                    };
+                })());
+            });
+
         }
 
 
@@ -609,49 +624,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 .filter(Boolean);
 
 
-        /*
-            Orden cronológico:
-
-            Sprint primero.
-            Carrera principal después.
-        */
-
-        loaded.sort(
-            (a, b) => {
-
-                if (
-                    a.round !==
-                    b.round
-                ) {
-
-                    return (
-                        a.round -
-                        b.round
-                    );
-
-                }
-
-
-                if (
-                    a.type ===
-                    b.type
-                ) {
-
-                    return 0;
-
-                }
-
-
-                return (
-                    a.type ===
-                    "sprint"
-                        ? -1
-                        : 1
-                );
-
-            }
+        // Orden cronológico dentro de cada ronda: qualy sprint, sprint, qualy, carrera.
+        const sessionOrder = {
+            "sprint-qualifying": 0,
+            sprint: 1,
+            qualifying: 2,
+            race: 3
+        };
+        loaded.sort((a, b) =>
+            a.round - b.round ||
+            (sessionOrder[a.type] ?? 4) - (sessionOrder[b.type] ?? 4)
         );
-
 
         raceFiles[
             division
@@ -664,93 +647,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // INFORMACIÓN DE UN PILOTO
     // ========================================
 
-    function getRaceDriverInfo(
-        sessionFile,
-        driver
-    ) {
-
-        const isMainRace =
-            sessionFile.type ===
-            "race";
-
-
-        /*
-            RLT ya incluye en driverPoints
-            los puntos de la carrera y,
-            cuando corresponde, el punto
-            de vuelta rápida.
-
-            NO añadimos nada extra por
-            vuelta rápida.
-        */
-
-        const driverPoints =
-            toPoints(
-                driver.driverPoints
-            );
-
-
-        /*
-            POLE:
-
-            Solo en carrera principal.
-
-            gridPosition === 1
-            suma +1 punto.
-
-            En Sprint NUNCA se aplica.
-
-            Como trabajamos directamente
-            con los archivos Session,
-            este +1 debemos añadirlo aquí.
-        */
-
-        const poleBonus =
-            (
-                isMainRace &&
-                Number(
-                    driver.gridPosition
-                ) === 1
-            )
-                ? 1
-                : 0;
-
-
-        /*
-            Para Pilotos y Constructores
-            usamos exactamente la misma
-            puntuación efectiva del piloto.
-
-            NO usamos teamPoints.
-
-            Así los puntos de reservas
-            también se asignan correctamente
-            al equipo con el que corrieron.
-        */
-
-        const total =
-            driverPoints +
-            poleBonus;
-
-
+    function getRaceDriverInfo(sessionFile, driver) {
+        // Cada export puntúa exactamente lo indicado por Racing League Tools.
+        // Constructores suma también los puntos de reservas al equipo de esa sesión.
+        const points = toPoints(driver.driverPoints);
         return {
-
-            driverPoints:
-                driverPoints,
-
-            poleBonus:
-                poleBonus,
-
-            driverTotal:
-                total,
-
-            teamTotal:
-                total
-
+            driverPoints: points,
+            driverTotal: points,
+            teamTotal: points
         };
-
     }
-
 
     // ========================================
     // CREAR MUNDIAL DE PILOTOS
