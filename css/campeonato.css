@@ -387,12 +387,28 @@
 ======================================== */
 
 .championship-points {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 8px;
     text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 
     color: #ffffff;
 
     font-size: 1.25rem;
     font-weight: 900;
+}
+
+/* Puntos por detrás del líder (no altera el total). */
+.championship-gap {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.44);
+    font-size: 0.68rem;
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: 0;
 }
 
 
@@ -842,4 +858,23 @@
     .championship-driver,
     .constructor-team-name { gap: 7px; }
     .championship-movement { font-size: 0.66rem; }
+}
+
+/* Espacio para el desfase a la izquierda de la puntuación en móviles. */
+@media (max-width: 768px) {
+    .championship-table-header,
+    .championship-row {
+        grid-template-columns: 44px minmax(0, 1fr) 96px;
+    }
+    .championship-points { gap: 5px; }
+    .championship-gap { font-size: 0.6rem; }
+}
+
+@media (max-width: 480px) {
+    .championship-table-header,
+    .championship-row {
+        grid-template-columns: 38px minmax(0, 1fr) 84px;
+    }
+    .championship-points { gap: 4px; }
+    .championship-gap { font-size: 0.56rem; }
 }
