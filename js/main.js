@@ -418,13 +418,11 @@ document.addEventListener("DOMContentLoaded", () => {
         type
     ) {
 
-        const suffix =
-            type === "sprint"
-                ? "_sprint"
-                : "";
-
-        const path =
-            `data/${division}_r${round}${suffix}.json`;
+        const path = type === "qualifying"
+            ? `data/${division}_qr${round}.json`
+            : type === "sprint-qualifying"
+                ? `data/${division}_qr${round}_sprint.json`
+                : `data/${division}_r${round}${type === "sprint" ? "_sprint" : ""}.json`;
 
         const data =
             await fetchOptionalJSON(
@@ -455,7 +453,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 path,
 
             data:
-                window.HyperDriveRoundSix?.normalizeFile(data,division,round,type) || data
+                window.HyperDriveRoundSix?.normalizeFile(data, division, round, type.includes("qualifying") ? "qualy" : type) || data
 
         };
 
@@ -490,6 +488,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 )
             );
 
+            // Los exports de clasificación aportan puntos independientes.
+            requests.push(loadRaceFile(division, round, "sprint-qualifying"));
+            requests.push(loadRaceFile(division, round, "qualifying"));
+
+
         }
 
         const loaded =
@@ -502,39 +505,16 @@ document.addEventListener("DOMContentLoaded", () => {
         ] =
             loaded
                 .filter(Boolean)
-                .sort(
-                    (a, b) => {
-
-                        if (
-                            a.round !==
-                            b.round
-                        ) {
-
-                            return (
-                                a.round -
-                                b.round
-                            );
-
-                        }
-
-                        if (
-                            a.type ===
-                            b.type
-                        ) {
-
-                            return 0;
-
-                        }
-
-                        return (
-                            a.type ===
-                            "sprint"
-                                ? -1
-                                : 1
-                        );
-
-                    }
-                );
+                .sort((a, b) => {
+                    const order = {
+                        "sprint-qualifying": 0,
+                        sprint: 1,
+                        qualifying: 2,
+                        race: 3
+                    };
+                    return a.round - b.round ||
+                        (order[a.type] ?? 4) - (order[b.type] ?? 4);
+                });
 
     }
 
@@ -543,49 +523,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // PUNTOS SESIÓN
     // ========================================
 
-    function getDriverSessionPoints(
-        sessionFile,
-        driver
-    ) {
-
-        /*
-            driverPoints YA incluye
-            el punto de vuelta rápida.
-
-            Por tanto NO se suma nada
-            manualmente por vuelta rápida.
-        */
-
-        const basePoints =
-            toPoints(
-                driver.driverPoints
-            );
-
-        /*
-            La pole suma +1 solamente
-            en la carrera principal.
-
-            En Sprint no suma.
-        */
-
-        const poleBonus =
-            (
-                sessionFile.type ===
-                    "race" &&
-                Number(
-                    driver.gridPosition
-                ) === 1
-            )
-                ? 1
-                : 0;
-
-        return (
-            basePoints +
-            poleBonus
-        );
-
+    function getDriverSessionPoints(sessionFile, driver) {
+        // RLT ya concede los puntos de qualy, carrera, sprint y vuelta rápida.
+        // No sumamos un punto manual por la pole: está en el JSON de qualy.
+        return toPoints(driver.driverPoints);
     }
-
 
     // ========================================
     // CONSTRUIR CLASIFICACIÓN
@@ -956,67 +898,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // ÚLTIMA SESIÓN
     // ========================================
 
-    function getLatestSession(
-        division
-    ) {
-
-        const sessions =
-            raceFiles[
-                division
-            ];
-
-        if (
-            !Array.isArray(
-                sessions
-            ) ||
-            sessions.length === 0
-        ) {
-
-            return null;
-
-        }
-
-        const latestRound =
-            Math.max(
-                ...sessions.map(
-                    session =>
-                        session.round
-                )
-            );
-
-        const latestRoundSessions =
-            sessions.filter(
-                session =>
-                    session.round ===
-                    latestRound
-            );
-
-
-        /*
-            Si ya existe la carrera
-            principal, mostramos esa.
-
-            Si todavía solo se ha subido
-            el Sprint de la ronda nueva,
-            mostramos el Sprint.
-        */
-
-        return (
-            latestRoundSessions.find(
-                session =>
-                    session.type ===
-                    "race"
-            ) ||
-            latestRoundSessions.find(
-                session =>
-                    session.type ===
-                    "sprint"
-            ) ||
-            null
+    function getLatestSession(division) {
+        // La portada solo enseña carreras; subir primero una qualy no debe
+        // ocultar los resultados de la última carrera completada.
+        const sessions = (raceFiles[division] || []).filter(
+            session => session.type === "race" || session.type === "sprint"
         );
-
+        if (!sessions.length) return null;
+        const latestRound = Math.max(...sessions.map(session => session.round));
+        const latestRoundSessions = sessions.filter(session => session.round === latestRound);
+        return latestRoundSessions.find(session => session.type === "race")
+            || latestRoundSessions.find(session => session.type === "sprint")
+            || null;
     }
-
 
     // ========================================
     // ÚLTIMOS RESULTADOS
