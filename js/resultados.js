@@ -429,7 +429,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function buildSessionFromFile(
         data,
         type,
-        roundNumber
+        roundNumber,
+        qualifyingData = null
     ) {
         if (!isValidSessionFile(data)) {
             return null;
@@ -448,6 +449,18 @@ document.addEventListener("DOMContentLoaded", () => {
             normalizeKey(
                 fastestLap?.driverName
             );
+
+        // Los puntos de la pole se obtienen del JSON de clasificación,
+        // nunca se suponen ni se añaden a los puntos del JSON de carrera.
+        const qualifyingPoints = new Map(
+            (Array.isArray(qualifyingData?.session?.drivers)
+                ? qualifyingData.session.drivers
+                : []
+            ).map(driver => [
+                normalizeKey(driver.driverName),
+                toPoints(driver.driverPoints)
+            ])
+        );
 
         const results =
             session.drivers
@@ -526,6 +539,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         isPole:
                             isPole,
+
+                        polePoints:
+                            isPole && qualifyingPoints.has(driverKey)
+                                ? qualifyingPoints.get(driverKey)
+                                : null,
 
                         status:
                             driver.status ||
@@ -669,18 +687,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const sprintPath =
             `data/${division}_r${roundNumber}_sprint.json`;
+        const qualifyingPath =
+            `data/${division}_qr${roundNumber}.json`;
 
         const [
             mainData,
-            sprintData
+            sprintData,
+            qualifyingData
         ] =
             await Promise.all([
-                fetchOptionalJSON(
-                    mainPath
-                ),
-                fetchOptionalJSON(
-                    sprintPath
-                )
+                fetchOptionalJSON(mainPath),
+                fetchOptionalJSON(sprintPath),
+                fetchOptionalJSON(qualifyingPath)
             ]);
 
         const sessions = [];
@@ -715,7 +733,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildSessionFromFile(
                     window.HyperDriveRoundSix?.normalizeFile(mainData,division,roundNumber,'race') || mainData,
                     "race",
-                    roundNumber
+                    roundNumber,
+                    window.HyperDriveRoundSix?.normalizeFile(qualifyingData, division, roundNumber, 'qualy') || qualifyingData
                 );
 
             if (race) {
@@ -874,11 +893,16 @@ document.addEventListener("DOMContentLoaded", () => {
                                 ? " results-fastest-driver-name"
                                 : "";
 
+                        const poleLabel = result.polePoints === null
+                            ? "POLE"
+                            : result.polePoints > 0
+                                ? `POLE +${formatPoints(result.polePoints)}`
+                                : "POLE";
                         const poleText =
                             result.isPole
                                 ? `
                                     <span class="results-podium-fastest">
-                                        POLE +1
+                                        ${escapeHTML(poleLabel)}
                                     </span>
                                 `
                                 : "";
@@ -1160,8 +1184,8 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
         const poleText =
-            result.isPole
-                ? "+1 PUNTO"
+            result.isPole && result.polePoints !== null && result.polePoints > 0
+                ? `+${formatPoints(result.polePoints)} ${result.polePoints === 1 ? "PUNTO" : "PUNTOS"}`
                 : "—";
 
         return `
