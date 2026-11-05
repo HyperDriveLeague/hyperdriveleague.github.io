@@ -767,6 +767,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 ?.trackName ||
             `Ronda ${roundNumber}`;
 
+        // Academy raced the reversed Silverstone layout via a circuit-change card.
+        // The official R8 calendar remains Canada and the RLT track metadata is preserved.
+        const displayTrackName =
+            division === "academy" && roundNumber === 8 && /silverstone/i.test(trackName)
+                ? "Silverstone (inverso)"
+                : trackName;
+
         const eventDate =
             eventSource
                 ?.event
@@ -778,10 +785,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 roundNumber,
 
             eventName:
-                trackName,
+                displayTrackName,
 
             trackName:
-                trackName,
+                displayTrackName,
 
             eventDate:
                 eventDate,
@@ -1553,6 +1560,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                             result.points
                                         )
                                     )}
+                                    ${result.penaltyChallengeBonus ? '<small title="Penalty Challenge: puntos dobles sin sanciones">×2</small>' : ''}
                                 </span>
 
 
