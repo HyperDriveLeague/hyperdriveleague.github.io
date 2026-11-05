@@ -1152,8 +1152,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? " · SPRINT"
                 : "";
 
+        const displayTrack = sessionFile.division === "academy" && sessionFile.round === 8 && /silverstone/i.test(trackName)
+            ? "SILVERSTONE (INVERSO)"
+            : formatGrandPrixName(trackName);
         resultsEvent.textContent =
-            `R${sessionFile.round} · GP ${formatGrandPrixName(trackName)}${sessionSuffix}`;
+            `R${sessionFile.round} · GP ${displayTrack}${sessionSuffix}`;
 
         if (
             podium.length === 0
