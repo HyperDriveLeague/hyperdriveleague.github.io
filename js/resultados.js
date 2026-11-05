@@ -429,8 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function buildSessionFromFile(
         data,
         type,
-        roundNumber,
-        division
+        roundNumber
     ) {
         if (!isValidSessionFile(data)) {
             return null;
@@ -541,11 +540,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             poleBonus,
 
                         points:
-                            (basePoints + poleBonus) *
-                            (window.HyperDrivePenaltyChallenge?.multiplier(division, roundNumber, type, driver) ?? 1),
-
-                        penaltyChallengeBonus:
-                            window.HyperDrivePenaltyChallenge?.multiplier(division, roundNumber, type, driver) === 2,
+                            basePoints +
+                            poleBonus,
 
                         isPole:
                             isPole,
@@ -718,8 +714,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildSessionFromFile(
                     window.HyperDriveRoundSix?.normalizeFile(sprintData,division,roundNumber,'sprint') || sprintData,
                     "sprint",
-                    roundNumber,
-                    division
+                    roundNumber
                 );
 
             if (sprint) {
@@ -739,8 +734,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 buildSessionFromFile(
                     window.HyperDriveRoundSix?.normalizeFile(mainData,division,roundNumber,'race') || mainData,
                     "race",
-                    roundNumber,
-                    division
+                    roundNumber
                 );
 
             if (race) {
@@ -1560,7 +1554,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                             result.points
                                         )
                                     )}
-                                    ${result.penaltyChallengeBonus ? '<small title="Penalty Challenge: puntos dobles sin sanciones">×2</small>' : ''}
                                 </span>
 
 
@@ -2052,8 +2045,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
         }
-
-        await window.HyperDrivePenaltyChallenge?.ready;
 
         await Promise.all(
             DIVISIONS.map(
