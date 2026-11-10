@@ -215,8 +215,58 @@
       const income = item.direction === 'income';
       const sign = income ? '+' : '−';
       const row = document.createElement('tr');
-      row.innerHTML = `<td>${date(item.transaction_date)}</td><td>${item.description || 'Movimiento'}</td><td>${item.category || '—'}</td><td class="${income ? 'money-positive' : 'money-negative'}">${sign}${money(item.amount_m)} M</td>`;
+      for (const value of [date(item.transaction_date), item.description || 'Movimiento', item.category || '—']) {
+        row.insertCell().textContent = value;
+      }
+      const amount = row.insertCell();
+      amount.className = income ? 'money-positive' : 'money-negative';
+      amount.textContent = sign + money(item.amount_m) + ' M';
       body.appendChild(row);
+    });
+  }
+
+  const recentCount = 12;
+
+  function bankTransactions(accountId) {
+    return client.from('economic_transactions')
+      .select('id, transaction_date, description, category, direction, amount_m, round_number, created_at')
+      .eq('account_id', accountId)
+      .order('transaction_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false });
+  }
+
+  function showBankHistory(accountId, preview) {
+    renderTransactions(preview.slice(0, recentCount));
+    if (preview.length <= recentCount) return;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'secondary-button';
+    button.textContent = 'Ver todos los movimientos';
+    button.setAttribute('aria-controls', 'transactionsBody');
+    const table = document.getElementById('transactionsBody').closest('.table-wrap');
+    table.after(button);
+
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.textContent = 'Cargando movimientos…';
+      try {
+        const rows = [];
+        const pageSize = 200;
+        for (;;) {
+          const { data, error } = await bankTransactions(accountId).range(rows.length, rows.length + pageSize - 1);
+          if (error) throw error;
+          if (!data.length) break;
+          rows.push(...data);
+        }
+        renderTransactions(rows);
+        button.remove();
+      } catch (error) {
+        console.error('Error al cargar el historial de la escudería:', error);
+        button.textContent = 'Reintentar cargar todos los movimientos';
+        button.disabled = false;
+      }
     });
   }
 
@@ -275,7 +325,7 @@
       client.from('driver_contracts').select('id, driver_value_m, buyout_clause_m, half_seasons_remaining, contract_start_label, contract_end_label, status, is_team_principal_contract, drivers:driver_id(id, nickname, race_number)').in('team_account_id', accountIds).eq('status', 'active'),
       client.from('contract_terms').select('contract_id, start_half, end_half, periods, paid_total_m'),
       client.from('team_sponsor_rewards').select('id, division, sponsor_number, name, objective, difficulty, effective_reward_m, is_completed, completed_at, is_active, review_status, review_requested_at').eq('team_account_id', account.id).eq('is_active', true).order('division').order('sponsor_number'),
-      client.from('economic_transactions').select('transaction_date, description, category, direction, amount_m, round_number, created_at').eq('account_id', account.id).order('transaction_date', { ascending: false }).order('created_at', { ascending: false }).limit(12)
+      bankTransactions(account.id).limit(recentCount + 1)
     ]);
 
     const responses = [financeResponse, rosterResponse, contractsResponse, termsResponse, sponsorsResponse, transactionsResponse];
@@ -319,7 +369,7 @@
     renderContracts((contractsResponse.data || []).filter(c=>!c.is_team_principal_contract), termsResponse.data || []);
     renderSponsors(sponsors, 'hyperdrive', 'hyperdriveSponsors');
     renderSponsors(sponsors, 'academy', 'academySponsors');
-    renderTransactions(transactionsResponse.data || []);
+    showBankHistory(account.id, transactionsResponse.data || []);
 
     loadingPanel.classList.add('is-hidden');
     errorPanel.classList.add('is-hidden');
