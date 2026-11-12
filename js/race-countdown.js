@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             round: 9,
             gp: "JAPÓN",
-            format: "PARRILLA ALEATORIA",
+            format: "PARRILLA ALEATORIA · SIN CLASIFICACIÓN",
             academy: "2026-11-11T22:00:00+01:00",
             hyperdrive: "2026-11-12T22:00:00+01:00"
         },
