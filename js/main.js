@@ -6,6 +6,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const TOTAL_ROUNDS = 12;
+    // La R9 se disputa con parrilla aleatoria y no tiene clasificación.
+    const ROUNDS_WITHOUT_QUALY = new Set([9]);
 
     const DIVISIONS = [
         "hyperdrive",
@@ -488,9 +490,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 )
             );
 
-            // Los exports de clasificación aportan puntos independientes.
-            requests.push(loadRaceFile(division, round, "sprint-qualifying"));
-            requests.push(loadRaceFile(division, round, "qualifying"));
+            // Los exports de clasificación aportan puntos independientes,
+            // excepto en la R9: parrilla aleatoria, sin qualy ni puntos de pole.
+            if (!ROUNDS_WITHOUT_QUALY.has(round)) {
+                requests.push(loadRaceFile(division, round, "sprint-qualifying"));
+                requests.push(loadRaceFile(division, round, "qualifying"));
+            }
 
 
         }
