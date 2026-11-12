@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 date: "12 NOVIEMBRE"
             },
 
-            special: "PARRILLA ALEATORIA",
+            special: "PARRILLA ALEATORIA · SIN CLASIFICACIÓN",
             sprint: false
         },
 
