@@ -5,6 +5,8 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const TOTAL_ROUNDS = 12;
+    // R9: parrilla aleatoria, sin sesión de clasificación.
+    const ROUNDS_WITHOUT_QUALY = new Set([9]);
     const DIVISIONS = ["hyperdrive", "academy"];
 
     const resultsList = document.getElementById("results-page-list");
@@ -493,6 +495,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const isPole =
                         type === "race" &&
+                        !ROUNDS_WITHOUT_QUALY.has(roundNumber) &&
                         gridPosition === 1;
 
                     // El JSON de carrera ya incluye sus puntos; los de qualy
@@ -698,7 +701,9 @@ document.addEventListener("DOMContentLoaded", () => {
             await Promise.all([
                 fetchOptionalJSON(mainPath),
                 fetchOptionalJSON(sprintPath),
-                fetchOptionalJSON(qualifyingPath)
+                ROUNDS_WITHOUT_QUALY.has(roundNumber)
+                    ? Promise.resolve(null)
+                    : fetchOptionalJSON(qualifyingPath)
             ]);
 
         const sessions = [];
