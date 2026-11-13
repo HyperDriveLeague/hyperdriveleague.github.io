@@ -37,6 +37,8 @@
 
   const manualForm = document.getElementById('manualMovementForm');
   const manualPreset = document.getElementById('manualPreset');
+  const manualQuantityField = document.getElementById('manualQuantityField');
+  const manualQuantity = document.getElementById('manualQuantity');
   const manualTeam = document.getElementById('manualTeam');
   const manualDirection = document.getElementById('manualDirection');
   const manualAmount = document.getElementById('manualAmount');
@@ -386,29 +388,57 @@
     window.setTimeout(() => window.location.reload(), 650);
   });
 
-  // Accesos rápidos para movimientos habituales del banco.
+  // Predefinidos de ruleta: cantidad variable, con 1 tirada por defecto.
   const manualMovementPresets = {
-    'roulette-15': { amount: 15, description: 'Tirada ruleta' },
-    'roulette-10': { amount: 10, description: 'Tirada ruleta' }
+    'roulette-15': { amount: 15 },
+    'roulette-10': { amount: 10 }
   };
+
+  function syncManualPreset() {
+    const preset = manualMovementPresets[manualPreset?.value];
+    manualQuantityField?.classList.toggle('is-hidden', !preset);
+    if (!preset) return;
+
+    manualDirection.value = 'expense';
+    const quantity = Number(manualQuantity.value);
+    if (!Number.isSafeInteger(quantity) || quantity < 1) {
+      manualAmount.value = '';
+      manualDescription.value = '';
+      return;
+    }
+
+    manualAmount.value = String(preset.amount * quantity);
+    manualDescription.value = `Tirada ruleta (${quantity} ${quantity === 1 ? 'tirada' : 'tiradas'} de ${preset.amount} M)`;
+  }
+
   if (manualPreset) {
     manualPreset.addEventListener('change', () => {
-      const preset = manualMovementPresets[manualPreset.value];
-      if (!preset) return;
-      manualDirection.value = 'expense';
-      manualAmount.value = String(preset.amount);
-      manualDescription.value = preset.description;
+      if (manualMovementPresets[manualPreset.value]) manualQuantity.value = '1';
+      syncManualPreset();
     });
-    // Si se modifica un dato precargado, el movimiento pasa a ser personalizado.
-    manualDirection.addEventListener('change', () => { manualPreset.value = ''; });
-    manualAmount.addEventListener('input', () => { manualPreset.value = ''; });
-    manualDescription.addEventListener('input', () => { manualPreset.value = ''; });
+    manualQuantity.addEventListener('input', syncManualPreset);
+    // Si se edita manualmente un dato, deja de aplicarse el predefinido.
+    const switchToCustom = () => {
+      if (manualPreset.value) {
+        manualPreset.value = '';
+        syncManualPreset();
+      }
+    };
+    manualDirection.addEventListener('change', switchToCustom);
+    manualAmount.addEventListener('input', switchToCustom);
+    manualDescription.addEventListener('input', switchToCustom);
+    syncManualPreset();
   }
 
   manualForm.addEventListener('submit', async event => {
     event.preventDefault();
     setStatus(manualStatus);
     if (!manualTeam.value) return setStatus(manualStatus, 'Selecciona una escudería.', 'error');
+    if (manualMovementPresets[manualPreset?.value]) {
+      const quantity = Number(manualQuantity.value);
+      if (!Number.isSafeInteger(quantity) || quantity < 1) return setStatus(manualStatus, 'Indica un número entero de tiradas mayor que 0.', 'error');
+      syncManualPreset();
+    }
     if (!manualDescription.value.trim()) return setStatus(manualStatus, 'Escribe una descripción.', 'error');
     const amount = Number(manualAmount.value || 0);
     if (!(amount > 0)) return setStatus(manualStatus, 'Indica una cantidad mayor que 0.', 'error');
@@ -431,6 +461,7 @@
     if (error) return setStatus(manualStatus, error.message || 'No se pudo añadir el movimiento.', 'error');
     setStatus(manualStatus, 'Movimiento añadido correctamente.', 'success');
     manualForm.reset();
+    syncManualPreset();
     manualDate.value = localToday();
   });
 
