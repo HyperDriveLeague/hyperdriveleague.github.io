@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/admin-onboarding.css?v=2">
   <link rel="stylesheet" href="css/admin-role-editor.css?v=1">
   <link rel="stylesheet" href="css/admin-roster.css?v=1">
-  <link rel="stylesheet" href="css/admin-bank.css?v=1">
+  <link rel="stylesheet" href="css/admin-bank.css?v=2">
   <link rel="stylesheet" href="css/admin-wagering.css?v=3">
   <link rel="stylesheet" href="css/admin-store.css?v=1">
   <link rel="stylesheet" href="css/admin-navigation.css?v=1">
@@ -53,6 +53,12 @@
         <div class="admin-mark">A</div>
         <div><span class="panel-label">CONTROL DE ACCESO</span><h2>Administración</h2><p>Estado de cuentas, perfiles, permisos y Team Principals.</p></div>
         <span class="system-indicator ok">GESTIÓN ACTIVA</span>
+      </section>
+
+      <section class="module-section-heading" data-admin-part="resumen"><div><span class="eyebrow">ALTAS</span><h2>Cuentas pendientes de configurar</h2></div><span class="season-badge">SOLO ADMIN</span></section>
+      <section class="admin-panel">
+        <p class="admin-note">Cuando alguien cree una cuenta nueva, aparecerá aquí. Puedes vincularla a un piloto y asignar sus permisos o descartar la solicitud si no quieres aprobarla. Los pilotos y escuderías ya asignados se excluyen para evitar duplicados.</p>
+        <div id="pendingAccounts" class="pending-list"></div>
       </section>
 
       <section class="module-section-heading" data-admin-part="resumen"><div><span class="eyebrow">RESUMEN</span><h2>Estado del sistema</h2></div></section>
@@ -117,9 +123,14 @@
           </div>
         </div>
       </section>
+      <div id="adminTeamPreviewMount"></div>
+      <section class="module-section-heading" data-admin-part="bancos"><div><span class="eyebrow">ECONOMÍA · T8</span><h2>Ranking de bancos de escuderías</h2></div><button id="adminTeamRankingRefresh" class="secondary-button" type="button">ACTUALIZAR RANKING</button></section>
+      <section class="admin-team-ranking" aria-label="Ranking económico de escuderías">
+        <p id="adminTeamRankingStatus" class="admin-team-ranking-status" aria-live="polite">Cargando clasificación económica…</p>
+        <div id="adminTeamRankingList" class="admin-team-ranking-list"></div>
+      </section>
 
       <div id="adminUserManagement" data-admin-part="usuarios">
-        <div id="adminRoleEditorMount"></div>
         <div id="adminRosterMount"></div>
       </div>
       <section class="module-section-heading" data-admin-part="usuarios"><div><span class="eyebrow">CUENTAS</span><h2>Usuarios configurados</h2></div><input id="accountSearch" class="admin-search" type="search" placeholder="Buscar usuario, piloto, equipo o rol…"></section>
@@ -127,12 +138,7 @@
         <div class="table-wrap"><table class="admin-table"><thead><tr><th>Perfil</th><th>Piloto</th><th>Roles</th><th>Team Principal</th><th>Estado</th></tr></thead><tbody id="accountsBody"></tbody></table></div>
       </section>
 
-      <section class="module-section-heading" data-admin-part="pendientes"><div><span class="eyebrow">ALTAS</span><h2>Cuentas pendientes de configurar</h2></div><span class="season-badge">SOLO ADMIN</span></section>
-      <section class="admin-panel">
-        <p class="admin-note">Cuando alguien cree una cuenta nueva, aparecerá aquí. Puedes vincularla a un piloto y asignar sus permisos o descartar la solicitud si no quieres aprobarla. Los pilotos y escuderías ya asignados se excluyen para evitar duplicados.</p>
-        <div id="pendingAccounts" class="pending-list"></div>
-      </section>
-
+      <div id="adminRoleEditorMount" data-admin-part="permisos"></div>
       <section class="module-section-heading" data-admin-part="permisos"><div><span class="eyebrow">PERMISOS</span><h2>Distribución de roles</h2></div></section>
       <section id="roleDistribution" class="role-distribution"></section>
 
@@ -146,7 +152,7 @@
           <button id="cmReload" type="button" class="secondary-button">Actualizar datos</button>
           <button id="cmProcessExpiries" type="button" class="primary-button">APLICAR VENCIMIENTOS</button>
         </div>
-        <p class="admin-note" data-admin-part="contratos">Seleccionar una fecha únicamente cambia la vista. Para dar por terminados los contratos y liberar la vinculación actual del equipo, pulsa <strong>APLICAR VENCIMIENTOS</strong>. Se conservarán los equipos y resultados de las rondas anteriores.</p>
+        <p class="admin-note">Seleccionar una fecha únicamente cambia la vista. Para dar por terminados los contratos y liberar la vinculación actual del equipo, pulsa <strong>APLICAR VENCIMIENTOS</strong>. Se conservarán los equipos y resultados de las rondas anteriores.</p>
         <div id="cmMessage" class="contracts-notice" aria-live="polite"></div>
         <div class="contracts-stats" id="cmStats"></div>
         <div class="contracts-layout">
@@ -295,9 +301,9 @@
   <script src="js/admin.js?v=3"></script>
   <script src="js/admin-onboarding.js?v=5"></script>
   <script src="js/admin-role-editor.js?v=3"></script>
-  <script src="js/admin-team-preview.js?v=1"></script>
+  <script src="js/admin-team-preview.js?v=2"></script>
   <script src="js/admin-roster.js?v=4"></script>
-  <script src="js/admin-bank.js?v=2"></script>
+  <script src="js/admin-bank.js?v=3"></script>
   <script src="js/admin-wagering.js?v=4"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
