@@ -3,7 +3,8 @@
   const client = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey, { auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true} });
   const adminContent = document.getElementById('adminContent');
   const roleDistribution = document.getElementById('roleDistribution');
-  if (!adminContent || !roleDistribution) return;
+  const roleEditorMount = document.getElementById('adminRoleEditorMount');
+  if (!adminContent || !roleDistribution || !roleEditorMount) return;
 
   const esc = value => String(value ?? '').replace(/[&<>'\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch]));
   const roleNames = {pilot:'Piloto',team_principal:'Team Principal',staff:'Staff',admin:'Admin'};
@@ -37,9 +38,8 @@
     panel.className = 'admin-panel role-editor-panel';
     panel.innerHTML = `<div class="role-editor-grid"><div class="role-editor-box"><h3>Selecciona una cuenta</h3><label class="role-editor-field"><span>Usuario</span><select id="roleEditorUser"><option value="">Selecciona usuario</option>${configured.map(p=>{const d=p.drivers;const name=p.discord_username||p.display_name||d?.nickname||p.id.slice(0,8);const suffix=d?` · #${esc(d.race_number??'--')} ${esc(d.nickname)}`:'';return `<option value="${esc(p.id)}">${esc(name)}${suffix}</option>`}).join('')}</select></label><p id="roleEditorUserInfo" class="role-editor-user">Selecciona una cuenta para editar sus permisos.</p><form id="roleEditorForm"><fieldset class="role-editor-roles"><legend>Roles</legend>${Object.entries(roleNames).map(([value,label])=>`<label><input type="checkbox" name="roles" value="${value}"><span>${label}</span></label>`).join('')}</fieldset><label class="role-editor-field"><span>Piloto vinculado</span><select id="roleEditorDriver"><option value="">Sin piloto</option></select></label><label class="role-editor-field"><span>Escudería Team Principal</span><select id="roleEditorTeam"><option value="">Sin escudería</option></select></label><button id="roleEditorSave" class="primary-button role-editor-save" type="submit" disabled><span>GUARDAR CAMBIOS</span></button><p id="roleEditorStatus" class="role-editor-status" aria-live="polite"></p></form></div><div class="role-editor-box"><h3>Cómo funciona</h3><p class="role-editor-note">Desmarca un rol y pulsa <strong>Guardar cambios</strong> para retirarlo. Si quitas <strong>Piloto</strong>, la cuenta queda desvinculada del piloto. Si quitas <strong>Team Principal</strong>, se cierra su asignación activa de escudería. Puedes dejar una cuenta sin ningún rol; volverá a aparecer como pendiente. El sistema impide quitar el último rol <strong>Admin</strong> existente.</p></div></div>`;
 
-    const permissionsHeading = roleDistribution.previousElementSibling;
-    permissionsHeading.parentNode.insertBefore(heading, permissionsHeading);
-    permissionsHeading.parentNode.insertBefore(panel, permissionsHeading);
+    // Secciones gestionadas desde Usuarios: no se muestran en otros apartados.
+    roleEditorMount.replaceChildren(heading, panel);
 
     const userSelect = panel.querySelector('#roleEditorUser');
     const form = panel.querySelector('#roleEditorForm');
