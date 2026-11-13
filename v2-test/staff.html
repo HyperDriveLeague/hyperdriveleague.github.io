@@ -97,6 +97,7 @@
           <span class="panel-label">BANCO</span><h3>Movimiento manual</h3>
           <p class="operation-help">Añade directamente un ingreso o un gasto a una escudería para cualquier ajuste económico que no dependa de una sanción o multa.</p>
           <form id="manualMovementForm" class="operation-form">
+            <label class="op-field full"><span>Movimiento predefinido</span><select id="manualPreset" class="op-select"><option value="">Personalizado (rellenar manualmente)</option><option value="roulette-15">Tirada ruleta · 15 millones (gasto)</option><option value="roulette-10">Tirada ruleta · 10 millones (gasto)</option></select></label>
             <label class="op-field"><span>Escudería</span><select id="manualTeam" class="op-select" required></select></label>
             <label class="op-field"><span>Movimiento</span><select id="manualDirection" class="op-select"><option value="income">Sumar dinero</option><option value="expense">Restar dinero</option></select></label>
             <label class="op-field"><span>Importe en millones</span><input id="manualAmount" class="op-input" type="number" min="0.01" step="0.01" placeholder="Ej.: 0.50" required></label>
@@ -169,7 +170,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
   <script src="js/staff.js?v=3"></script>
-  <script src="js/staff-operations.js?v=5"></script>
+  <script src="js/staff-operations.js?v=6"></script>
   <script src="js/staff-custom-sanctions.js?v=4"></script>
   <script src="js/staff-sanction-history.js?v=1"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
