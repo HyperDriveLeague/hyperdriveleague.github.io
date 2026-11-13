@@ -36,6 +36,7 @@
   const fineSubmit = document.getElementById('fineSubmit');
 
   const manualForm = document.getElementById('manualMovementForm');
+  const manualPreset = document.getElementById('manualPreset');
   const manualTeam = document.getElementById('manualTeam');
   const manualDirection = document.getElementById('manualDirection');
   const manualAmount = document.getElementById('manualAmount');
@@ -384,6 +385,25 @@
     setStatus(fineStatus, 'Multa registrada y descontada de la escudería.', 'success');
     window.setTimeout(() => window.location.reload(), 650);
   });
+
+  // Accesos rápidos para movimientos habituales del banco.
+  const manualMovementPresets = {
+    'roulette-15': { amount: 15, description: 'Tirada ruleta' },
+    'roulette-10': { amount: 10, description: 'Tirada ruleta' }
+  };
+  if (manualPreset) {
+    manualPreset.addEventListener('change', () => {
+      const preset = manualMovementPresets[manualPreset.value];
+      if (!preset) return;
+      manualDirection.value = 'expense';
+      manualAmount.value = String(preset.amount);
+      manualDescription.value = preset.description;
+    });
+    // Si se modifica un dato precargado, el movimiento pasa a ser personalizado.
+    manualDirection.addEventListener('change', () => { manualPreset.value = ''; });
+    manualAmount.addEventListener('input', () => { manualPreset.value = ''; });
+    manualDescription.addEventListener('input', () => { manualPreset.value = ''; });
+  }
 
   manualForm.addEventListener('submit', async event => {
     event.preventDefault();
