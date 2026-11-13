@@ -1,1 +1,27 @@
 .admin-bank-panel{padding:22px}.admin-bank-layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}.admin-bank-picker,.admin-bank-view{border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.02);padding:18px}.admin-bank-picker h3,.admin-bank-view h3{margin:0 0 14px;font-size:18px}.admin-bank-picker label{display:grid;gap:7px}.admin-bank-picker label span{font-size:9px;font-weight:900;letter-spacing:.08em;color:#858990}.admin-bank-picker select{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:#0b0d10;color:#fff}.admin-bank-pilot-meta{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.admin-bank-pilot-meta strong{display:block;font-size:15px}.admin-bank-pilot-meta span{display:block;margin-top:5px;color:#7e8289;font-size:10px}.admin-bank-empty{padding:18px 0;color:#777b82;font-size:11px}.admin-bank-balances{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.admin-bank-stat{padding:15px;border:1px solid rgba(255,255,255,.07);border-radius:10px;background:rgba(255,255,255,.018)}.admin-bank-stat span{display:block;color:#797d84;font-size:9px;font-weight:900;letter-spacing:.07em}.admin-bank-stat strong{display:block;margin-top:7px;font-size:25px;letter-spacing:-.04em}.admin-bank-stat.featured strong{color:var(--yellow)}.admin-bank-history{margin-top:16px}.admin-bank-history h4{margin:0 0 10px;font-size:13px}.admin-bank-table-wrap{overflow:auto;border:1px solid rgba(255,255,255,.07);border-radius:10px}.admin-bank-table{width:100%;border-collapse:collapse;min-width:650px}.admin-bank-table th,.admin-bank-table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:10px}.admin-bank-table th{color:#74787f;font-size:8px;letter-spacing:.08em}.admin-bank-table tr:last-child td{border-bottom:0}.admin-bank-table td:last-child{text-align:right;font-weight:900}.admin-bank-positive{color:var(--green)}.admin-bank-negative{color:var(--red)}@media(max-width:850px){.admin-bank-layout{grid-template-columns:1fr}.admin-bank-balances{grid-template-columns:1fr 1fr 1fr}}@media(max-width:560px){.admin-bank-balances{grid-template-columns:1fr}}
+/* Ranking económico de escuderías, debajo de la vista de Team Principal. */
+.admin-team-ranking{margin-bottom:24px}
+.admin-team-ranking-status{font-size:11px;color:#92969e;line-height:1.6;margin:0 0 13px}
+.admin-team-ranking-list{display:grid;gap:11px}
+.admin-team-ranking-entry{display:grid;grid-template-columns:minmax(210px,.95fr) minmax(0,3.2fr);gap:16px;align-items:stretch;padding:15px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#121419}
+.admin-team-ranking-lead{display:flex;align-items:flex-start;gap:14px;padding:6px 15px 6px 3px;border-right:1px solid rgba(255,255,255,.08)}
+.admin-team-ranking-position{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:9px;background:rgba(255,213,0,.11);color:var(--yellow);font-size:13px;font-weight:900}
+.admin-team-ranking-entry:nth-child(1) .admin-team-ranking-position{background:var(--yellow);color:#08090b}
+.admin-team-ranking-identity{min-width:0}
+.admin-team-ranking-identity>strong{display:block;font-size:17px;letter-spacing:-.025em;overflow-wrap:anywhere}
+.admin-team-ranking-identity>small{display:block;font-size:9px;font-weight:900;letter-spacing:.06em;color:#858991;margin-top:10px}
+.admin-team-ranking-balance{display:block;font-size:23px;font-weight:950;letter-spacing:-.035em;margin-top:3px}
+.admin-team-ranking-details{display:grid;grid-template-columns:minmax(130px,1.2fr) minmax(130px,1fr) repeat(3,minmax(105px,1fr));gap:9px;min-width:0}
+.admin-team-ranking-stat{min-width:0;padding:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:9px}
+.admin-team-ranking-label{display:block;color:#82868f;font-size:9px;line-height:1.35;font-weight:900;letter-spacing:.055em;min-height:25px}
+.admin-team-ranking-stat>strong{display:block;font-size:15px;line-height:1.35;letter-spacing:-.02em;overflow-wrap:anywhere;margin-top:5px}
+.admin-team-ranking-objective{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:6px;font-size:11px;color:#adb1b8}
+.admin-team-ranking-objective strong{font-size:13px;color:#fff}
+.admin-team-ranking-captrack{height:5px;overflow:hidden;border-radius:10px;background:#2a2d33;margin-top:8px}
+.admin-team-ranking-captrack span{display:block;height:100%;background:var(--yellow);border-radius:10px}
+.admin-team-ranking-stat.cap small{display:block;font-size:10px;color:#858991;margin-top:5px}
+.admin-team-ranking-entry .positive{color:var(--green)}
+.admin-team-ranking-entry .negative{color:var(--red)}
+@media(max-width:1350px){.admin-team-ranking-entry{grid-template-columns:1fr}.admin-team-ranking-lead{border-right:0;border-bottom:1px solid rgba(255,255,255,.08);padding:0 0 13px;align-items:center}.admin-team-ranking-identity>small{margin-top:4px}.admin-team-ranking-details{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:800px){.admin-team-ranking-details{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-team-ranking-stat.objectives{grid-column:1/-1}.admin-team-ranking-objective{max-width:240px}}
+@media(max-width:480px){.admin-team-ranking-entry{padding:11px}.admin-team-ranking-stat{padding:10px}.admin-team-ranking-details{gap:7px}.admin-team-ranking-identity>strong{font-size:15px}.admin-team-ranking-balance{font-size:20px}.admin-team-ranking-stat>strong{font-size:14px}}
