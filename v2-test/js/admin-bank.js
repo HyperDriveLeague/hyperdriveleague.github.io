@@ -80,3 +80,173 @@
     observer.observe(adminContent,{attributes:true,attributeFilter:['class']});
   }
 })();
+
+// Ranking de bancos de escuderías. Usa las mismas vistas y criterios que el panel de Team Principal.
+(() => {
+  const config = window.HYPERDRIVE_CONFIG;
+  const root = document.getElementById('adminTeamRankingList');
+  const status = document.getElementById('adminTeamRankingStatus');
+  const refresh = document.getElementById('adminTeamRankingRefresh');
+  const adminContent = document.getElementById('adminContent');
+  if (!config || !root || !status || !adminContent || !window.supabase) return;
+
+  const client = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  const fmt = value => Number(value || 0).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtPercent = value => value.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+  const number = value => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  function renderRanking(accounts, summaries, sponsors) {
+    const financeById = new Map(summaries.map(row => [row.team_account_id, row]));
+    const objectivesById = new Map();
+    sponsors.forEach(item => {
+      const key = item.team_account_id;
+      if (!objectivesById.has(key)) objectivesById.set(key, {
+        academy: { done: 0, total: 0 },
+        hyperdrive: { done: 0, total: 0 }
+      });
+      const division = objectivesById.get(key)[item.division];
+      if (!division || !item.is_active) return;
+      division.total += 1;
+      if (item.is_completed) division.done += 1;
+    });
+
+    const ranking = accounts
+      .filter(account => account.teams?.is_active !== false)
+      .map(account => ({
+        account,
+        finance: financeById.get(account.id),
+        objectives: objectivesById.get(account.id) || {
+          academy: { done: 0, total: 0 },
+          hyperdrive: { done: 0, total: 0 }
+        }
+      }))
+      .filter(item => item.finance)
+      .sort((a, b) => number(b.finance.net_balance_m) - number(a.finance.net_balance_m));
+
+    root.innerHTML = '';
+    if (!ranking.length) {
+      status.textContent = 'No hay bancos de escuderías con datos económicos para esta temporada.';
+      return;
+    }
+
+    root.innerHTML = ranking.map(({account, finance, objectives}, index) => {
+      const balance = number(finance.net_balance_m);
+      const income = number(finance.total_income_m);
+      const expense = number(finance.total_expense_m);
+      const profit = number(finance.season_profit_m);
+      const cap = number(finance.salary_cap_m);
+      const capUsed = number(finance.active_contract_value_m);
+      const capPercent = cap > 0 ? (capUsed / cap) * 100 : null;
+      const percentWidth = capPercent === null ? 0 : Math.min(100, Math.max(0, capPercent));
+      const positive = value => value >= 0 ? 'positive' : 'negative';
+      const signed = value => (value > 0 ? '+' : value < 0 ? '−' : '') + fmt(Math.abs(value)) + ' M';
+      return `
+        <article class="admin-team-ranking-entry">
+          <div class="admin-team-ranking-lead">
+            <span class="admin-team-ranking-position">${index + 1}º</span>
+            <div class="admin-team-ranking-identity">
+              <strong>${esc(finance.team_name || account.teams?.name || 'Escudería')}</strong>
+              <small>SALDO ACTUAL NETO</small>
+              <span class="admin-team-ranking-balance ${positive(balance)}">${fmt(balance)} M</span>
+            </div>
+          </div>
+          <div class="admin-team-ranking-details">
+            <div class="admin-team-ranking-stat objectives">
+              <span class="admin-team-ranking-label">OBJETIVOS CUMPLIDOS</span>
+              <div class="admin-team-ranking-objective"><span>Academy</span><strong>${objectives.academy.done}/${objectives.academy.total}</strong></div>
+              <div class="admin-team-ranking-objective"><span>HyperDrive</span><strong>${objectives.hyperdrive.done}/${objectives.hyperdrive.total}</strong></div>
+            </div>
+            <div class="admin-team-ranking-stat cap">
+              <span class="admin-team-ranking-label">SALARY CAP UTILIZADO</span>
+              <strong class="${capPercent !== null && capPercent > 100 ? 'negative' : ''}">${capPercent === null ? '—' : fmtPercent(capPercent) + '%'}</strong>
+              <div class="admin-team-ranking-captrack"><span style="width:${percentWidth}%"></span></div>
+              <small>${fmt(capUsed)} / ${fmt(cap)} M</small>
+            </div>
+            <div class="admin-team-ranking-stat">
+              <span class="admin-team-ranking-label">INGRESOS</span>
+              <strong class="positive">+${fmt(income)} M</strong>
+            </div>
+            <div class="admin-team-ranking-stat">
+              <span class="admin-team-ranking-label">GASTOS</span>
+              <strong class="negative">−${fmt(expense)} M</strong>
+            </div>
+            <div class="admin-team-ranking-stat">
+              <span class="admin-team-ranking-label">BALANCE INGRESOS − GASTOS</span>
+              <strong class="${positive(profit)}">${signed(profit)}</strong>
+            </div>
+          </div>
+        </article>`;
+    }).join('');
+    status.textContent = `Temporada ${config.currentSeason} · ${ranking.length} escuderías · Ordenadas por saldo neto actual, de mayor a menor.`;
+  }
+
+  let loading = false;
+  async function loadRanking() {
+    if (loading) return;
+    loading = true;
+    if (refresh) refresh.disabled = true;
+    status.textContent = 'Actualizando saldos y objetivos…';
+    try {
+      const [accountsResponse, summariesResponse] = await Promise.all([
+        client.from('team_accounts')
+          .select('id,team_id,teams:team_id(name,is_active)')
+          .eq('season_number', config.currentSeason)
+          .eq('is_active', true),
+        client.from('team_financial_summary')
+          .select('team_account_id,team_name,season_number,net_balance_m,total_income_m,total_expense_m,season_profit_m,salary_cap_m,active_contract_value_m')
+          .eq('season_number', config.currentSeason)
+      ]);
+      if (accountsResponse.error || summariesResponse.error) throw (accountsResponse.error || summariesResponse.error);
+      const accounts = accountsResponse.data || [];
+      if (!accounts.length) {
+        root.textContent = '';
+        status.textContent = 'No hay bancos activos para esta temporada.';
+        return;
+      }
+      const {data: sponsors, error: sponsorsError} = await client.from('team_sponsor_rewards')
+        .select('team_account_id,division,is_completed,is_active')
+        .in('team_account_id', accounts.map(item => item.id))
+        .eq('is_active', true);
+      if (sponsorsError) throw sponsorsError;
+      renderRanking(accounts, summariesResponse.data || [], sponsors || []);
+    } catch (error) {
+      console.error('No se pudo cargar el ranking económico de escuderías:', error);
+      root.textContent = '';
+      status.textContent = 'No se pudieron cargar los saldos, contratos y objetivos. Vuelve a intentarlo.';
+    } finally {
+      loading = false;
+      if (refresh) refresh.disabled = false;
+    }
+  }
+
+  async function init() {
+    const { data: { session }, error } = await client.auth.getSession();
+    if (error || !session) return;
+    const { data: role, error: roleError } = await client.from('user_roles')
+      .select('role').eq('user_id', session.user.id).eq('role', 'admin').maybeSingle();
+    if (roleError || !role) {
+      status.textContent = 'Solo los administradores pueden consultar este ranking.';
+      return;
+    }
+    if (refresh) refresh.addEventListener('click', loadRanking);
+    await loadRanking();
+  }
+  if (!adminContent.classList.contains('is-hidden')) init();
+  else {
+    const observer = new MutationObserver(() => {
+      if (!adminContent.classList.contains('is-hidden')) {
+        observer.disconnect();
+        init();
+      }
+    });
+    observer.observe(adminContent, { attributes: true, attributeFilter: ['class'] });
+  }
+})();
