@@ -34,9 +34,8 @@
   function mount() {
     if (document.getElementById('adminTeamPreview')) return document.getElementById('adminTeamPreview');
 
-    const roleDistribution = document.getElementById('roleDistribution');
-    const roleHeading = roleDistribution?.previousElementSibling || null;
-    if (!roleDistribution) return null;
+    const target = document.getElementById('adminTeamPreviewMount');
+    if (!target) return null;
 
     const heading = document.createElement('section');
     heading.className = 'module-section-heading';
@@ -54,9 +53,8 @@
     grid.appendChild(make('div', 'admin-team-preview-empty', 'Cargando escuderías…'));
     panel.appendChild(grid);
 
-    if (roleHeading) roleHeading.insertAdjacentElement('beforebegin', heading);
-    else roleDistribution.insertAdjacentElement('beforebegin', heading);
-    heading.insertAdjacentElement('afterend', panel);
+    // La vista de Team Principal pertenece únicamente al apartado Bancos.
+    target.append(heading, panel);
     return panel;
   }
 
