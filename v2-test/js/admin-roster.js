@@ -4,7 +4,8 @@
     auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
   });
   const adminContent=document.getElementById('adminContent');
-  if(!adminContent) return;
+  const rosterMount=document.getElementById('adminRosterMount');
+  if(!adminContent || !rosterMount) return;
 
   const esc=v=>String(v??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   let teams=[],drivers=[],roster=[];
@@ -46,9 +47,8 @@
       panel=document.createElement('section');
       panel.id='rosterAdminPanel';
       panel.className='admin-panel roster-admin-panel';
-      const permissionsHeading=document.querySelector('#roleDistribution')?.previousElementSibling;
-      (permissionsHeading?.parentNode||adminContent).insertBefore(heading,permissionsHeading||null);
-      (permissionsHeading?.parentNode||adminContent).insertBefore(panel,permissionsHeading||null);
+      // Agrupar gestión de pilotos e historial dentro del apartado Usuarios.
+      rosterMount.append(heading, panel);
     }
 
     panel.innerHTML=`
