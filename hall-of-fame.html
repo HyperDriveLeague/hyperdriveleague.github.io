@@ -11,7 +11,7 @@
     >
 
     <title>
-        Hall of Fame | HyperDrive League
+        Palmarés de pilotos · Hall of Fame | HyperDrive League
     </title>
 
 
@@ -73,7 +73,7 @@
 
     <link
         rel="stylesheet"
-        href="css/hall-of-fame.css"
+        href="css/hall-of-fame.css?v=2"
     >
 
 </head>
@@ -111,113 +111,27 @@
 
 
 
-        <!-- ========================================
-             PRÓXIMAMENTE
-        ======================================== -->
-
-        <section class="hall-coming-soon">
-
-            <div class="hall-coming-card">
-
-                <div class="hall-icon">
-                    H
+        <section class="records" aria-labelledby="records-title">
+            <header class="records-heading">
+                <div><p class="season-label">TEMPORADA 8</p><h2 id="records-title">Palmarés de pilotos</h2></div>
+                <div class="division-switch" role="group" aria-label="División">
+                    <button type="button" data-division="hyperdrive" aria-pressed="true">HyperDrive · Primera</button>
+                    <button type="button" data-division="academy" aria-pressed="false">Academy · Segunda</button>
                 </div>
-
-
-                <span class="hall-status">
-                    ARCHIVO HISTÓRICO
-                </span>
-
-
-                <h2>
-                    PRÓXIMAMENTE
-                </h2>
-
-
-                <p>
-                    Estamos recopilando y reconstruyendo
-                    el archivo histórico de HyperDrive League
-                    para reunir en un mismo lugar a los campeones
-                    y protagonistas de todas nuestras temporadas.
-                </p>
-
-
-                <div class="hall-seasons">
-
-                    <div class="hall-season">
-
-                        <strong>
-                            8
-                        </strong>
-
-                        <span>
-                            TEMPORADAS
-                            <br>
-                            HYPERDRIVE
-                        </span>
-
-                    </div>
-
-
-                    <div class="hall-season-divider"></div>
-
-
-                    <div class="hall-season">
-
-                        <strong>
-                            6
-                        </strong>
-
-                        <span>
-                            TEMPORADAS
-                            <br>
-                            ACADEMY
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="hall-future">
-
-                    <span>
-                        EL ARCHIVO INCLUIRÁ
-                    </span>
-
-                    <div class="hall-future-items">
-
-                        <div>
-                            CAMPEONES DE PILOTOS
-                        </div>
-
-                        <div>
-                            CLASIFICACIONES HISTÓRICAS
-                        </div>
-
-                        <div>
-                            CAMPEONES DE CONSTRUCTORES
-                        </div>
-
-                        <div>
-                            SUPERCONSTRUCTORES
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <p class="hall-note">
-                    Los datos históricos se publicarán
-                    únicamente cuando hayan podido ser
-                    comprobados y documentados.
-                </p>
-
+            </header>
+            <div class="records-tools">
+                <label>Vista <select id="records-view">
+                    <option value="summary">Resumen</option><option value="race">Carrera principal</option>
+                    <option value="sprint">Sprint</option><option value="titles">Campeonatos</option>
+                </select></label>
+                <label>Buscar piloto <input id="records-search" type="search" placeholder="Nombre del piloto"></label>
             </div>
-
+            <p id="records-status" role="status">Cargando resultados…</p>
+            <div class="records-scroll" role="region" aria-label="Palmarés por piloto" tabindex="0">
+                <table id="records-table" hidden><caption></caption><thead></thead><tbody></tbody></table>
+            </div>
+            <p id="records-note"></p>
         </section>
-
 
     </main>
 
@@ -233,6 +147,8 @@
 
     <script src="js/layout.js"></script>
     <script src="js/public-account.js?v=2"></script>
+    <script src="js/f2-r6-adapter.js"></script>
+    <script src="js/hall-of-fame.js"></script>
     <script src="js/main.js"></script>
 
 
