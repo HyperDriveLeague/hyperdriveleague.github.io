@@ -51,13 +51,13 @@
     $('eventTitle').textContent = 'R' + currentEvent.round_number + ' · GP ' + currentEvent.grand_prix;
     if (currentEvent.status === 'open') {
       $('marketState').textContent = 'APUESTAS ABIERTAS';
-      $('eventTiming').textContent = 'Cierre: ' + formatDateTime(currentEvent.closes_at) + ' · Liquidación: ' + formatDateTime(currentEvent.settles_at);
+      $('eventTiming').textContent = 'Cierre: ' + formatDateTime(currentEvent.closes_at) + ' · Liquidación manual';
     } else if (currentEvent.status === 'upcoming') {
       $('marketState').textContent = 'PRÓXIMAMENTE';
       $('eventTiming').textContent = 'Apertura: ' + formatDateTime(currentEvent.opens_at);
     } else {
       $('marketState').textContent = 'APUESTAS CERRADAS';
-      $('eventTiming').textContent = 'Liquidación: ' + formatDateTime(currentEvent.settles_at);
+      $('eventTiming').textContent = currentEvent.status==='settled'?'Liquidado':'Liquidación manual tras la carrera';
     }
   }
 

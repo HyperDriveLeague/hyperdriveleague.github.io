@@ -79,6 +79,7 @@
         </div>
         <div class="admin-wagering-views" role="group" aria-label="Tipo de historial">
           <button id="adminWageringCurrentView" class="admin-wagering-view active" type="button" aria-pressed="true">APUESTAS DE ESTA SEMANA</button>
+          <button id="adminWageringPreviousView" class="admin-wagering-view" type="button" aria-pressed="false">PENDIENTES DE LA RONDA ANTERIOR</button>
           <button id="adminWageringSettledView" class="admin-wagering-view" type="button" aria-pressed="false">VER APUESTAS LIQUIDADAS ↗</button>
         </div>
         <p id="adminWageringViewInfo" class="admin-wagering-view-info">Mostrando únicamente apuestas y boletos pendientes de la ronda en curso.</p>
@@ -87,7 +88,7 @@
           <label><span>DIVISIÓN</span><select id="adminWageringDivision"><option value="all">Todas</option><option value="academy">Academy</option><option value="hyperdrive">HyperDrive</option></select></label>
           <label><span>RONDA</span><input id="adminWageringRound" type="number" min="1" placeholder="Todas"></label>
           <button id="adminWageringRefresh" class="admin-wagering-refresh" type="button">ACTUALIZAR</button>
-          <button id="adminWageringSettleNow" class="admin-wagering-refresh" type="button">PROCESAR PREMIOS PENDIENTES</button>
+          <button id="adminWageringSettleNow" hidden disabled class="admin-wagering-refresh" type="button">PROCESAR PREMIOS DE LA RONDA</button>
         </div>
         <p id="adminWageringCycleStatus" class="admin-wagering-status" role="status" aria-live="polite"></p>
         <p id="adminWageringHistoryNotice" class="admin-wagering-history-notice" role="status" aria-live="polite"></p>
@@ -303,7 +304,7 @@
   <script src="js/admin-team-preview.js?v=2"></script>
   <script src="js/admin-roster.js?v=4"></script>
   <script src="js/admin-bank.js?v=3"></script>
-  <script src="js/admin-wagering.js?v=4"></script>
+  <script src="js/admin-wagering.js?v=5"></script>
   <script src="js/admin-store.js?v=1"></script>
   <script src="js/admin-navigation.js?v=1"></script>
   <script src="js/admin-contracts.js?v=11"></script>

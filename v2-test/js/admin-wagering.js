@@ -9,6 +9,8 @@
   const $=id=>document.getElementById(id);
   const PAGE_SIZE=150;
   let view='current';
+  let targetEvents=[];
+  let processing=false;
   let activity=[];
   let loading=false;
   let nextOffset=0;
@@ -92,6 +94,7 @@
       const row=el('tr');
       td(row,view==='current'
         ?'No hay apuestas pendientes de la ronda actual.'
+        :view==='previous'?'No hay apuestas ni boletos pendientes para esta selección.'
         :'No se han encontrado apuestas liquidadas para estos filtros.','admin-wagering-empty').colSpan=10;
       body.appendChild(row);
       return;
@@ -118,17 +121,23 @@
     body.appendChild(frag);
   }
   function showView(){
-    const current=view==='current';
-    $('adminWageringCurrentView').classList.toggle('active',current);
-    $('adminWageringSettledView').classList.toggle('active',!current);
-    $('adminWageringCurrentView').setAttribute('aria-pressed',String(current));
-    $('adminWageringSettledView').setAttribute('aria-pressed',String(!current));
-    $('adminWageringRound').disabled=current;
-    if(current)$('adminWageringRound').value='';
-    $('adminWageringViewInfo').textContent=current
-      ?'Solo apuestas y boletos pendientes de la ronda en curso. Las liquidadas se consultan con el botón de la derecha.'
-      :'Historial de apuestas liquidadas, ganadas o perdidas, incluidas las de premio 0 M. Filtra por sistema, división o ronda.';
+    for(const [id,mode] of [['Current','current'],['Previous','previous'],['Settled','settled']]){
+      const button=$('adminWagering'+id+'View');
+      button.classList.toggle('active',view===mode);
+      button.setAttribute('aria-pressed',String(view===mode));
+    }
+    $('adminWageringRound').disabled=view!=='settled';
+    if(view!=='settled')$('adminWageringRound').value='';
+    $('adminWageringSettleNow').hidden=view!=='previous';
+    $('adminWageringSettleNow').style.display=view==='previous'?'':'none';
+    $('adminWageringSettleNow').disabled=true;
+    $('adminWageringViewInfo').textContent={
+      current:'Apuestas y boletos de la ronda en curso.',
+      previous:'Ronda disputada pendiente de liquidación. El botón procesa HyperBet y HyperLoto juntos para la división seleccionada.',
+      settled:'Historial de apuestas y boletos liquidados.'
+    }[view];
   }
+
   async function load(more=false){
     if(more&&loading)return;
     loading=true;
@@ -142,11 +151,26 @@
     const div=$('adminWageringDivision').value||'all';
     const roundRaw=$('adminWageringRound').value;
     try{
+      let targets=[];
+      let round=view==='settled'&&roundRaw?Number(roundRaw):null;
+      if(view==='previous'){
+        $('adminWageringSettleNow').disabled=true;
+        const previous=await client.rpc('admin_previous_wagering_events');
+        if(previous.error)throw previous.error;
+        if(thisRequest!==requestVersion)return;
+        const events=previous.data||[];
+        const selected=events.filter(e=>div==='all'||e.division===div);
+        targets=selected.filter(e=>!e.is_suspended);
+        round=events[0]?.round_number??null;
+        $('adminWageringViewInfo').textContent=round===null?'No quedan rondas disputadas pendientes.':
+          'T'+events[0].season_number+' · R'+round+' · '+events[0].grand_prix+
+          '. El pago incluye ambos juegos. Divisiones: '+(targets.map(e=>division(e.division)).join(' y ')||'ninguna disponible')+'.';
+      }
       const [history,summary]=await Promise.all([
         client.rpc('admin_wagering_history_v2',{
           p_view:view,p_limit:PAGE_SIZE,p_offset:offset,
           p_product:product,p_division:div,
-          p_round_number:view==='settled'&&roundRaw?Number(roundRaw):null
+          p_round_number:round
         }),
         !more?client.rpc('admin_wagering_summary'):Promise.resolve(null)
       ]);
@@ -157,6 +181,8 @@
         renderSummary(s);
       }
       if(thisRequest!==requestVersion)return;
+      targetEvents=targets;
+      $('adminWageringSettleNow').disabled=processing||!targets.length;
       const chunk=history.data||[];
       activity.push(...chunk);
       nextOffset=offset+chunk.length;
@@ -164,7 +190,7 @@
       renderRows();
       notice.textContent=activity.length+' '+(activity.length===1?'boleto mostrado':'boletos mostrados')+
         (hasMore?' · Quedan más registros disponibles':'')+
-        (view==='current'?' · Solo pendientes':' · Incluye premiados y no premiados');
+        (view!=='settled'?' · Solo pendientes':' · Incluye premiados y no premiados');
       $('adminWageringLoadMore').hidden=!hasMore;
     }catch(error){
       if(thisRequest!==requestVersion)return;
@@ -177,6 +203,7 @@
   }
   function switchView(next){
     if(view===next)return;
+    targetEvents=[];
     view=next;
     showView();
     load();
@@ -185,6 +212,7 @@
     $(id).addEventListener('change',()=>load());
   });
   $('adminWageringRefresh').addEventListener('click',()=>load());
+  $('adminWageringPreviousView').addEventListener('click',()=>switchView('previous'));
   $('adminWageringCurrentView').addEventListener('click',()=>switchView('current'));
   $('adminWageringSettledView').addEventListener('click',()=>switchView('settled'));
   $('adminWageringLoadMore').addEventListener('click',()=>load(true));
@@ -193,36 +221,29 @@
   async function processPendingPayouts(){
     const button=$('adminWageringSettleNow');
     const note=$('adminWageringCycleStatus');
-    if(button.disabled)return;
-    if(!window.confirm('¿Ejecutar ahora el ciclo de HyperBet y HyperLoto? Solo liquidará eventos cuyo plazo ya haya vencido. Los eventos ya liquidados no se abonarán de nuevo.'))return;
+    if(view!=='previous'||processing||loading||button.disabled||!targetEvents.length)return;
+    const events=targetEvents.slice();
+    const label='R'+events[0].round_number+' · '+events[0].grand_prix+' · '+events.map(e=>division(e.division)).join(' y ');
+    if(!window.confirm('¿Procesar las apuestas y boletos de '+label+' y abonar sus premios?'))return;
+    processing=true;
     button.disabled=true;
-    note.textContent='Solicitando la liquidación de premios pendientes…';
+    note.textContent='Procesando '+label+'…';
     try{
-      const result=await client.rpc('admin_refresh_wagering_cycle');
-      if(result.error)throw result.error;
-      note.textContent='Ciclo solicitado. Comprobando que los eventos hayan quedado liquidados…';
-      const started=Date.now();
-      let complete=false;
-      while(Date.now()-started<70000){
-        await new Promise(resolve=>setTimeout(resolve,5000));
-        const events=await client.from('wagering_events')
-          .select('id,round_number,division,status,settles_at,is_suspended')
-          .lte('settles_at',new Date().toISOString())
-          .eq('is_suspended',false);
-        if(events.error)throw events.error;
-        const pending=(events.data||[]).filter(event=>event.status!=='settled');
-        if(pending.length===0){
-          complete=true;
-          note.textContent='Liquidación completada. Premios y movimientos bancarios actualizados.';
-          break;
-        }
-        note.textContent='Esperando confirmación: '+pending.length+' evento(s) pendientes de liquidar.';
-      }
-      await load();
-      if(!complete)note.textContent='El ciclo fue solicitado, pero la liquidación sigue pendiente. Revisa los registros del proceso antes de repetirlo.';
+      const {data,error}=await client.functions.invoke('hyperdrive-wagering-cycle',{
+        body:{action:'settle_previous',event_ids:events.map(e=>e.id)}
+      });
+      if(error)throw error;
+      if(!Array.isArray(data?.report)||!data.report.length)throw new Error('Respuesta incompleta.');
+      const messages={settled:'liquidada',already_settled:'ya liquidada',suspended:'suspendida',error:'error al procesar',
+        waiting_lineup:'falta la alineación',waiting_top10:'falta el top 10 oficial',waiting_loto_pole:'falta la pole oficial',
+        waiting_loto_fastest:'falta la vuelta rápida oficial'};
+      note.textContent=label+' — '+data.report.map(row=>division(row.division)+': '+(messages[row.result]||'pendiente de resultados oficiales')).join(' · ');
     }catch(error){
-      note.textContent='No se pudo ejecutar el ciclo: '+(error?.message||String(error));
-    }finally{button.disabled=false;}
+      note.textContent='No se pudo confirmar la liquidación de '+label+'. '+(error?.message||String(error));
+    }finally{
+      processing=false;
+      await load();
+    }
   }
 
   async function init(){

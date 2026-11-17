@@ -107,7 +107,7 @@
 
     if (currentEvent.status === 'open') {
       $('lotoStatus').textContent = 'ABIERTO';
-      $('drawTiming').textContent = 'Cierre: ' + formatDateTime(currentEvent.closes_at) + ' · Liquidación: ' + formatDateTime(currentEvent.settles_at);
+      $('drawTiming').textContent = 'Cierre: ' + formatDateTime(currentEvent.closes_at) + ' · Liquidación manual';
       $('buyTicketButton').disabled = false;
     } else if (currentEvent.status === 'upcoming') {
       $('lotoStatus').textContent = 'PRÓXIMAMENTE';
@@ -115,7 +115,7 @@
       $('buyTicketButton').disabled = true;
     } else {
       $('lotoStatus').textContent = 'CERRADO';
-      $('drawTiming').textContent = 'Liquidación: ' + formatDateTime(currentEvent.settles_at);
+      $('drawTiming').textContent = currentEvent.status==='settled'?'Liquidado':'Liquidación manual tras la carrera';
       $('buyTicketButton').disabled = true;
     }
   }
