@@ -6,7 +6,14 @@
     // Official awards are credited once, in the division in which the driver earned them.
     // Team award entries list the credited drivers, including for the shared superconstructors title.
     const awards = [
-        { division: 'hyperdrive', category: 'world', drivers: ['Iker'] }
+        { division: 'hyperdrive', category: 'world', driver: 'Kiko', seasons: [1] },
+        { division: 'hyperdrive', category: 'world', driver: 'Pedro', seasons: [2, 3, 4] },
+        { division: 'hyperdrive', category: 'world', driver: 'Iker', seasons: [5, 6, 8] },
+        { division: 'hyperdrive', category: 'world', driver: 'SergiMarquez', seasons: [7] },
+        { division: 'academy', category: 'world', driver: 'Juan Antonio', seasons: [1, 2] },
+        { division: 'academy', category: 'world', driver: 'Ironser', seasons: [3] },
+        { division: 'academy', category: 'world', driver: 'Eriknight', seasons: [4] },
+        { division: 'academy', category: 'world', driver: 'Kongol', seasons: [5] }
     ];
     const normalize = name => String(name ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -15,7 +22,7 @@
     function getDriver(records, name) {
         const key = normalize(name);
         if (!records.has(key)) {
-            records.set(key, { name, race: counters(), sprint: counters(), world: 0, constructors: 0, superconstructors: 0 });
+            records.set(key, { name, race: counters(), sprint: counters(), world: [], constructors: [], superconstructors: [] });
         }
         return records.get(key);
     }
@@ -70,10 +77,11 @@
             }
             await Promise.all(files.map(([type, suffix]) => loadSession(round, type, suffix)));
         }
+        const participants = new Set(records.keys());
         for (const award of awards.filter(entry => entry.division === division)) {
-            for (const name of award.drivers) getDriver(records, name)[award.category]++;
+            getDriver(records, award.driver)[award.category].push(...award.seasons);
         }
-        return { drivers: [...records.values()], races, sprints };
+        return { drivers: [...records.values()], participants, races, sprints };
     }
 
     const sessionColumns = [
@@ -86,7 +94,8 @@
         ['Puntos', points], ['Victorias GP', d => d.race.wins], ['Podios GP', d => d.race.podiums],
         ['Victorias sprint', d => d.sprint.wins], ['Podios sprint', d => d.sprint.podiums],
         ['Vueltas rápidas', d => d.race.fastest + d.sprint.fastest], ['Poles', d => d.race.poles + d.sprint.poles],
-        ['Vueltas completadas', d => d.race.laps + d.sprint.laps], ['DNF', d => d.race.dnf + d.sprint.dnf]
+        ['Vueltas completadas', d => d.race.laps + d.sprint.laps], ['DNF', d => d.race.dnf + d.sprint.dnf],
+        ...titleColumns.map(([label, key]) => [label, d => d[key].length || '—'])
     ];
 
     const table = document.querySelector('#records-table');
@@ -109,15 +118,15 @@
         if (!current) return;
         const mode = view.value;
         let columns = summaryColumns;
-        if (mode === 'titles') columns = titleColumns.map(([label, key]) => [label, d => d[key]]);
+        if (mode === 'titles') columns = titleColumns.map(([label, key]) => [label, d => d[key].length ? d[key].length + ' · ' + d[key].map(n => 'T' + n).join(', ') : '—']);
         if (mode === 'race' || mode === 'sprint') columns = sessionColumns.map(([label, key]) => [label, d => d[mode][key]]);
         const query = normalize(search.value);
-        const score = d => mode === 'titles' ? d.world + d.constructors + d.superconstructors :
+        const score = d => mode === 'titles' ? d.world.length + d.constructors.length + d.superconstructors.length :
             mode === 'summary' ? points(d) : d[mode].points;
-        const drivers = current.drivers.filter(d => normalize(d.name).includes(query))
+        const drivers = current.drivers.filter(d => (mode === 'titles' || current.participants.has(normalize(d.name))) && normalize(d.name).includes(query))
             .sort((a, b) => score(b) - score(a) || points(b) - points(a) || a.name.localeCompare(b.name, 'es'));
         status.textContent = current.races + ' carreras · ' + current.sprints + ' sprints · ' + drivers.length + ' pilotos';
-        table.caption.textContent = divisions[division] + ' · ' + view.selectedOptions[0].textContent;
+        table.caption.textContent = divisions[division] + ' · ' + (mode === 'titles' ? 'Campeonatos históricos' : view.selectedOptions[0].textContent);
         table.tHead.replaceChildren();
         const header = table.tHead.insertRow();
         cell(header, 'th', 'Piloto', 'col');
@@ -131,8 +140,8 @@
         }
         if (!drivers.length) status.textContent += ' · Sin coincidencias';
         note.textContent = mode === 'titles' ?
-            'Títulos confirmados de la T8. Los campeonatos de equipos se acreditan a los pilotos reconocidos por la liga.' :
-            'Los podios incluyen victorias. Los puntos son los obtenidos en las sesiones, incluida la clasificación correspondiente, también para reservas. Las vueltas y los abandonos corresponden a carreras y sprints.';
+            'Títulos confirmados de todas las temporadas documentadas de esta división. El guion indica que no hay un título registrado en esa categoría.' :
+            'Las estadísticas de carrera corresponden a la T8. Los títulos son históricos confirmados. Los podios incluyen victorias. Los puntos son los obtenidos en las sesiones, incluida la clasificación correspondiente, también para reservas. Las vueltas y los abandonos corresponden a carreras y sprints.';
         table.hidden = false;
     }
 
