@@ -43,6 +43,12 @@
     add.hidden = manual(first.value);
     add.disabled = busy || !catalog.size;
     if (manual(first.value)) extras.replaceChildren();
+    const noPov = selectors().some(select => select.value === 'NO_POV');
+    $('beneficiaryTeam').disabled = noPov;
+    if (noPov) $('beneficiaryTeam').value = '';
+    $('sanctionMultiNote').textContent = noPov
+      ? 'No aportar POV: 1 punto y multa única de 2 M, sin escudería beneficiada.'
+      : 'Se suman los segundos y puntos. Traspaso total por reclamación con escudería beneficiada: 0,50 M.';
     if (!multi()) return;
     const rows = selectedArticles().map(item => {
       const row = catalog.get(item.code);
@@ -135,7 +141,7 @@
     const message = (isEdit ? '¿Guardar cambios?' : '¿Registrar sanción?') + '\n' +
       articles.map(item => item.code).join(' + ') + '\nSegundos: ' + $('articleSeconds').textContent +
       '\nPuntos: ' + $('articlePoints').textContent +
-      (beneficiary ? '\nTraspaso total: 0,50 M.' : '');
+      (articles.some(item => item.code === 'NO_POV') ? '\nMulta a la escudería: 2 M, sin beneficiario.' : beneficiary ? '\nTraspaso total: 0,50 M.' : '');
     if (!window.confirm(message)) return;
     busy = true;
     $('sanctionSubmit').disabled = true;
@@ -152,7 +158,7 @@
         p_sanction_id: isEdit ? editing.id : null
       });
       if (error) throw error;
-      status.textContent = 'Sanción registrada con el total de puntos y un único traspaso.';
+      status.textContent = 'Sanción registrada con sus puntos y movimiento económico.';
       status.className = 'operation-status success';
       window.setTimeout(() => window.location.reload(), 650);
     } catch (error) {

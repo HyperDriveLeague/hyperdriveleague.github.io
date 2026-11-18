@@ -328,6 +328,7 @@
     let message = `${isEdit ? '¿Guardar cambios en la sanción?' : '¿Registrar sanción?'}\n\n${driver?.nickname || 'Piloto'} · ${team?.name || ''}\n${article.article_code}\n${article.description}\nSegundos: ${article.seconds_text}\nPuntos: ${article.points_text}`;
     if (manualBan) message += `\n\nSanción manual con 0 puntos de superlicencia.\nMotivo: ${banReason}\nQuedará PENDIENTE de cumplir.`;
     else if (special) message += '\n\nEl valor de puntos es especial y NO se descontará automáticamente.';
+    if (sanctionArticle.value === 'NO_POV') message += '\n\nMulta de 2 M a la escudería, sin beneficiario.';
     if (!manualBan && beneficiary) message += `\n\nSe transferirán 0,50 M de ${team?.name} a ${beneficiary.name}.`;
     if (manualBan && sanctionArticle.value === 'MANUAL_RACE_BAN')message += '\n\nATENCIÓN: la acumulación de dos Race Ban puede ocasionar la expulsión.';
     if (isEdit) message += '\n\nLa sanción anterior se revertirá primero: puntos y movimientos económicos volverán a su estado previo antes de aplicar estos nuevos datos.';
