@@ -27,6 +27,7 @@
     return data;
   }
   async function load() {
+    loadHistory();
     const request = ++version;
     const round = Number(roundSelect.value);
     $('prizeCards').replaceChildren();
@@ -68,7 +69,7 @@
           const card = element('section',undefined,'prize-card');
           card.append(element('h4',title));
           $('prizeCards').append(card);
-          const existing = paid.find(item => item.division===division && item.prize_type===type);
+          const existing = paid.find(item => item.division===division && item.prize_type===type && !item.voided_at);
           if (existing) {
             card.append(element('p',existing.driver_name+' · '+(teamNames.get(existing.team_id)||'Escudería')));
             card.append(element('p','Abonado · '+money(existing.amount_m),'operation-status success'));
@@ -137,6 +138,72 @@
       if(request===version) $('prizeStatus').textContent='No se pudieron cargar los premios. '+(error.message||'Reintenta.');
     }
   }
+
+  let historyVersion = 0;
+  async function loadHistory() {
+    const request=++historyVersion;
+    const body=$('prizeHistoryBody');
+    const message=$('prizeHistoryStatus');
+    message.textContent='Cargando histórico de premios…';
+    try {
+      const teamsResponse=await db.from('teams').select('id,name');
+      if(teamsResponse.error) throw teamsResponse.error;
+      const names=new Map(teamsResponse.data.map(team=>[team.id,team.name]));
+      const records=[];
+      for(let offset=0;;offset+=200){
+        const response=await db.from('staff_gp_prizes').select('*')
+          .eq('season_number',config.currentSeason).order('created_at',{ascending:false})
+          .order('id',{ascending:false}).range(offset,offset+199);
+        if(response.error) throw response.error;
+        records.push(...response.data);
+        if(response.data.length<200) break;
+      }
+      if(request!==historyVersion)return;
+      body.replaceChildren();
+      for(const prize of records){
+        const row=element('tr');
+        const date=new Intl.DateTimeFormat('es-ES',{dateStyle:'short',timeStyle:'short',timeZone:'Europe/Madrid'});
+        for(const value of [
+          date.format(new Date(prize.created_at)),
+          'R'+prize.round_number,divisions[prize.division],
+          prize.prize_type==='winner'?'Ganador GP':'Pole',
+          prize.driver_name,names.get(prize.team_id)||'Escudería',
+          money(prize.amount_m),
+          prize.voided_at?'Deshecho · '+date.format(new Date(prize.voided_at)):'Abonado'
+        ])row.append(element('td',value));
+        const action=element('td');
+        if(!prize.voided_at){
+          const button=element('button','DESHACER','secondary-button');
+          button.type='button';
+          button.setAttribute('aria-label','Deshacer premio de '+prize.driver_name+' en R'+prize.round_number);
+          button.addEventListener('click',async()=>{
+            if(button.disabled)return;
+            if(!window.confirm('¿Deshacer el premio de '+prize.driver_name+' en R'+prize.round_number+' ('+divisions[prize.division]+')?\nSe descontarán '+money(prize.amount_m)+' de '+(names.get(prize.team_id)||'la escudería')+' y podrás volver a abonarlo.'))return;
+            button.disabled=true;
+            message.textContent='Deshaciendo premio…';
+            try{
+              const {error}=await db.rpc('staff_undo_gp_prize',{p_prize_id:prize.id});
+              if(error)throw error;
+              await load();
+            }catch(error){
+              message.textContent='No se pudo confirmar la anulación. '+(error.message||'Actualiza el histórico.');
+              button.disabled=false;
+            }
+          });
+          action.append(button);
+        }else action.textContent='—';
+        row.append(action);
+        body.append(row);
+      }
+      message.textContent=records.length+' registros · Temporada '+config.currentSeason+
+        (records.length?'':' · Todavía no se han abonado premios desde este apartado.');
+    }catch(error){
+      if(request===historyVersion)message.textContent='No se pudo cargar el histórico. '+(error.message||'Reintenta.');
+    }
+  }
+  document.querySelector('[data-operation-tab="prizes"]').addEventListener('click',loadHistory);
+  $('prizeHistoryRefresh').addEventListener('click',loadHistory);
+
   roundSelect.addEventListener('change',load);
   $('prizeRefresh').addEventListener('click',load);
 })();

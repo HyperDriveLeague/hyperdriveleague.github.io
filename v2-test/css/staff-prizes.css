@@ -6,3 +6,11 @@
 #prizePrevious:empty {display:none;}
 #prizePrevious ul {padding-left:20px;}
 #prizePrevious li {margin-top:8px;}
+
+.prize-history {margin-top:32px;border-top:1px solid #444;padding-top:24px;}
+.prize-history > p {margin:12px 0;line-height:1.5;}
+.prize-history-scroll {overflow-x:auto;margin-top:12px;}
+.prize-history-table {border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;}
+.prize-history-table th,.prize-history-table td {text-align:left;padding:12px;border-bottom:1px solid #444;min-width:90px;}
+.prize-history-table th {color:#ffd600;}
+.prize-history-table button {white-space:nowrap;}

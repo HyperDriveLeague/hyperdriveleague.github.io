@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/staff-operations.css?v=2">
   <link rel="stylesheet" href="css/staff-sanction-history.css?v=1">
   <link rel="stylesheet" href="css/staff-economy-history.css?v=2">
-  <link rel="stylesheet" href="css/staff-prizes.css?v=1">
+  <link rel="stylesheet" href="css/staff-prizes.css?v=2">
 </head>
 <body>
   <div class="background-grid" aria-hidden="true"></div>
@@ -126,6 +126,15 @@
           <p id="prizeStatus" class="operation-status" role="status">Selecciona una ronda.</p>
           <div id="prizePrevious" class="operation-note"></div>
           <div id="prizeCards" class="prize-grid"></div>
+          <section class="prize-history" aria-labelledby="prizeHistoryTitle">
+            <h4 id="prizeHistoryTitle">Histórico de premios</h4>
+            <p>Cada premio abonado queda bloqueado para su ronda, división y categoría. Al deshacerlo se descuenta el ingreso y vuelve a estar disponible.</p>
+            <button type="button" id="prizeHistoryRefresh" class="secondary-button">ACTUALIZAR HISTÓRICO</button>
+            <p id="prizeHistoryStatus" class="operation-status" role="status"></p>
+            <div class="prize-history-scroll" role="region" aria-label="Movimientos de premios" tabindex="0">
+              <table class="prize-history-table"><thead><tr><th>Fecha</th><th>Ronda</th><th>División</th><th>Premio</th><th>Piloto</th><th>Escudería</th><th>Importe</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="prizeHistoryBody"></tbody></table>
+            </div>
+          </section>
         </article>
         <article class="operation-panel is-hidden" data-operation-panel="economy-history">
           <span class="panel-label">BANCO · RACE CONTROL</span><h3>Histórico económico editable</h3>
@@ -193,7 +202,7 @@
   <script src="js/staff-multi-sanctions.js?v=2"></script>
   <script src="js/staff-custom-sanctions.js?v=4"></script>
   <script src="js/staff-sanction-history.js?v=2"></script>
-  <script src="js/staff-prizes.js?v=1"></script>
+  <script src="js/staff-prizes.js?v=2"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
 </body>
 </html>
