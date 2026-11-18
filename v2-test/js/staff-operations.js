@@ -359,6 +359,21 @@
     window.setTimeout(() => window.location.reload(), 650);
   });
 
+  const finePreset = document.getElementById('finePreset');
+  const finePresets = {
+    claim: { amount: '0.50', description: 'Reclamación que no prospera' },
+    appeal: { amount: '1.00', description: 'Apelación que no prospera' }
+  };
+  finePreset.addEventListener('change', () => {
+    const preset = finePresets[finePreset.value];
+    if (!preset) return;
+    fineAmount.value = preset.amount;
+    fineDescription.value = preset.description;
+  });
+  [fineAmount, fineDescription].forEach(input => input.addEventListener('input', () => {
+    finePreset.value = '';
+  }));
+
   fineForm.addEventListener('submit', async event => {
     event.preventDefault();
     setStatus(fineStatus);

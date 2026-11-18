@@ -343,7 +343,7 @@
     const [licensesResponse, rosterResponse, sanctionsResponse] = await Promise.all([
       client.from('superlicenses').select('id, driver_id, season_number, starting_points, current_points, warning_count, attendance_incident_count, nq_earned_count, nq_served_count, rb_earned_count, rb_served_count, is_active, drivers:driver_id(id, nickname, race_number)').eq('season_number', config.currentSeason),
       client.from('season_roster').select('driver_id, division, roster_status, start_round, end_round, teams:team_id(name)').eq('season_number', config.currentSeason).eq('is_active', true),
-      client.from('staff_sporting_sanctions').select('id,season_number,round_number,sanction_date,article_code,driver_id,team_id,beneficiary_team_id,seconds_text,points_text,description,superlicense_event_id,team_expense_transaction_id,beneficiary_income_transaction_id,created_at').eq('season_number', config.currentSeason)
+      client.from('staff_sporting_sanctions').select('id,season_number,round_number,sanction_date,article_code,article_details,driver_id,team_id,beneficiary_team_id,seconds_text,points_text,description,superlicense_event_id,team_expense_transaction_id,beneficiary_income_transaction_id,created_at').eq('season_number', config.currentSeason)
     ]);
     if (licensesResponse.error || rosterResponse.error || sanctionsResponse.error) return showError('La sesión está activa, pero no se pudieron cargar los datos de competición.');
 

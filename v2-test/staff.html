@@ -56,6 +56,11 @@
           <p class="operation-help">Selecciona un artículo del reglamento, una sanción personalizada o impón directamente un NO QUALY / RACE BAN manual con 0 puntos. Estas dos sanciones no descuentan puntos de superlicencia.</p>
           <form id="sportSanctionForm" class="operation-form">
             <label class="op-field full"><span>Artículo</span><select id="sanctionArticle" class="op-select" required><option value="">Selecciona un artículo</option><option value="PERSONALIZADO">PERSONALIZADO · Puntos y descripción manual</option></select></label>
+            <div id="sanctionExtraArticles" class="op-field full"></div>
+            <div class="op-field full">
+              <button id="addSanctionArticle" class="secondary-button" type="button" aria-label="Añadir otro artículo">+ Añadir artículo</button>
+              <small id="sanctionMultiNote">Se suman los segundos y puntos. Traspaso total por reclamación con escudería beneficiada: 0,50 M.</small>
+            </div>
             <div class="article-preview">
               <div class="article-preview-top"><span class="rule-pill">SEGUNDOS: <strong id="articleSeconds">—</strong></span><span class="rule-pill">PUNTOS: <strong id="articlePoints">—</strong></span></div>
               <p id="articleDescription">Selecciona un artículo para cargar la sanción del reglamento.</p>
@@ -83,6 +88,7 @@
           <span class="panel-label">ECONOMÍA</span><h3>Registrar multa</h3>
           <p class="operation-help">La descripción y el importe son manuales. El dinero se descuenta de la cuenta de la escudería seleccionada.</p>
           <form id="fineForm" class="operation-form">
+            <label class="op-field full"><span>Multa predefinida</span><select id="finePreset" class="op-select"><option value="">Personalizada</option><option value="claim">Reclamación que no prospera · −500k</option><option value="appeal">Apelación que no prospera · −1 M</option></select></label>
             <label class="op-field"><span>Piloto</span><select id="fineDriver" class="op-select" required></select></label>
             <label class="op-field"><span>Escudería</span><select id="fineTeam" class="op-select" required></select><small id="fineTeamMode" class="team-mode">Se rellenará al elegir piloto.</small></label>
             <label class="op-field"><span>Importe en millones</span><input id="fineAmount" class="op-input" type="number" min="0.01" step="0.01" placeholder="Ej.: 0.50" required></label>
@@ -170,10 +176,11 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
   <script src="js/config.js?v=5"></script>
-  <script src="js/staff.js?v=3"></script>
-  <script src="js/staff-operations.js?v=7"></script>
+  <script src="js/staff.js?v=4"></script>
+  <script src="js/staff-operations.js?v=8"></script>
+  <script src="js/staff-multi-sanctions.js?v=1"></script>
   <script src="js/staff-custom-sanctions.js?v=4"></script>
-  <script src="js/staff-sanction-history.js?v=1"></script>
+  <script src="js/staff-sanction-history.js?v=2"></script>
   <script src="js/staff-economy-history.js?v=3"></script>
 </body>
 </html>

@@ -96,7 +96,7 @@
       const article=makeCell(row,'');
       const tag=document.createElement('span');
       tag.className='sanction-article';
-      tag.textContent=record.article_code||'—';
+      tag.textContent=record.article_details?.map(item=>item.code).join(' + ')||record.article_code||'—';
       article.appendChild(tag);
       makeCell(row,record.description||'—','sanction-description');
       makeCell(row,record.points_text||'—','sanction-points');
@@ -135,7 +135,7 @@
       let offset=0;
       for(;;){
         const result=await db.from('staff_sporting_sanctions')
-          .select('id,season_number,round_number,sanction_date,article_code,driver_id,team_id,beneficiary_team_id,seconds_text,points_text,description,created_at')
+          .select('id,season_number,round_number,sanction_date,article_code,article_details,driver_id,team_id,beneficiary_team_id,seconds_text,points_text,description,created_at')
           .eq('season_number',config.currentSeason)
           .order('sanction_date',{ascending:false})
           .order('created_at',{ascending:false})
