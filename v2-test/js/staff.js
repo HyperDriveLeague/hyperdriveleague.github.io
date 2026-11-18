@@ -221,7 +221,7 @@
     };
     if (section === 'economy') return {
       title: 'Economía y movimientos',
-      desc: 'Multas, ingresos/gastos manuales e histórico económico editable.'
+      desc: 'Multas, premios de GP, ingresos/gastos manuales e histórico económico editable.'
     };
     return { title: 'Race Control', desc: '' };
   }
@@ -260,7 +260,7 @@
         activateOperationTab('sanctions', ['sanctions']);
       } else if (section === 'economy') {
         setVisible(regions.operationTabs, true);
-        activateOperationTab('fines', ['fines', 'manual', 'economy-history']);
+        activateOperationTab('fines', ['fines', 'manual', 'prizes', 'economy-history']);
       }
     }
 
@@ -310,7 +310,7 @@
           <span class="staff-hub-icon">€</span>
           <span class="hub-kicker">ECONOMÍA</span>
           <h3>Movimientos y multas</h3>
-          <p>Gestiona multas, ingresos/gastos manuales y el histórico económico creado desde Race Control.</p>
+          <p>Gestiona multas, premios de GP, ingresos/gastos manuales y el histórico económico creado desde Race Control.</p>
           <span class="staff-hub-footer"><span>ABRIR SECCIÓN →</span><span class="staff-hub-badge">BANCO</span></span>
         </button>
       </div>`;
