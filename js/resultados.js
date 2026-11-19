@@ -478,12 +478,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             driverName
                         );
 
-                    const classificationPosition =
-                        validPosition(
-                            driver.classificationPosition
-                        );
-
-                    const normalPosition =
+                    // En carrera y sprint la posicion oficial es siempre
+                    // driver.position (no classificationPosition).
+                    const finalPosition =
                         validPosition(
                             driver.position
                         );
@@ -516,9 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             "Sin equipo",
 
                         position:
-                            classificationPosition ??
-                            normalPosition ??
-                            null,
+                            finalPosition,
 
                         gridPosition:
                             gridPosition,
