@@ -2588,7 +2588,7 @@
           "raceNumber": "96",
           "displayName": "Raul"
         },
-        "position": 5,
+        "position": 4,
         "classificationPosition": 4,
         "gridPosition": 8,
         "positionChange": 4,
@@ -3431,7 +3431,7 @@
           "raceNumber": "45",
           "displayName": "DanielCarmona"
         },
-        "position": 7,
+        "position": 5,
         "classificationPosition": 5,
         "gridPosition": 18,
         "positionChange": 13,
@@ -4267,7 +4267,7 @@
           "raceNumber": "98",
           "displayName": "Eriknight"
         },
-        "position": 8,
+        "position": 6,
         "classificationPosition": 6,
         "gridPosition": 14,
         "positionChange": 8,
@@ -5110,7 +5110,7 @@
           "raceNumber": "50",
           "displayName": "Lewton"
         },
-        "position": 9,
+        "position": 7,
         "classificationPosition": 7,
         "gridPosition": 20,
         "positionChange": 13,
@@ -5960,7 +5960,7 @@
           "raceNumber": "28",
           "displayName": "Vrister"
         },
-        "position": 10,
+        "position": 8,
         "classificationPosition": 8,
         "gridPosition": 9,
         "positionChange": 1,
@@ -6803,7 +6803,7 @@
           "raceNumber": "11",
           "displayName": "Zanfer"
         },
-        "position": 11,
+        "position": 9,
         "classificationPosition": 9,
         "gridPosition": 12,
         "positionChange": 3,
@@ -7653,7 +7653,7 @@
           "raceNumber": "98",
           "displayName": "PolAnillo"
         },
-        "position": 13,
+        "position": 10,
         "classificationPosition": 10,
         "gridPosition": 21,
         "positionChange": 11,
@@ -8494,7 +8494,7 @@
           "raceNumber": "9",
           "displayName": "Matahary"
         },
-        "position": 15,
+        "position": 11,
         "classificationPosition": 11,
         "gridPosition": 4,
         "positionChange": -7,
@@ -9337,7 +9337,7 @@
           "raceNumber": "2",
           "displayName": "Ivanition"
         },
-        "position": 16,
+        "position": 12,
         "classificationPosition": 12,
         "gridPosition": 3,
         "positionChange": -9,
@@ -10187,7 +10187,7 @@
           "raceNumber": "21",
           "displayName": "Serginho"
         },
-        "position": 17,
+        "position": 13,
         "classificationPosition": 13,
         "gridPosition": 13,
         "positionChange": 0,
@@ -11030,7 +11030,7 @@
           "raceNumber": "86",
           "displayName": "Toni"
         },
-        "position": 18,
+        "position": 14,
         "classificationPosition": 14,
         "gridPosition": 17,
         "positionChange": 3,
@@ -11852,7 +11852,7 @@
           "raceNumber": "54",
           "displayName": "SincDex"
         },
-        "position": 20,
+        "position": 15,
         "classificationPosition": 15,
         "gridPosition": 11,
         "positionChange": -4,
@@ -12674,7 +12674,7 @@
           "raceNumber": "9",
           "displayName": "Venegas"
         },
-        "position": 21,
+        "position": 16,
         "classificationPosition": -1,
         "gridPosition": 15,
         "status": "DNF",
@@ -13402,7 +13402,7 @@
           "raceNumber": "2",
           "displayName": "AlexLamas"
         },
-        "position": 4,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 1,
         "status": "DSQ",
@@ -14249,7 +14249,7 @@
           "raceNumber": "69",
           "displayName": "DiabloRojo"
         },
-        "position": 6,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 6,
         "status": "DSQ",
@@ -15089,7 +15089,7 @@
           "raceNumber": "37",
           "displayName": "Pini"
         },
-        "position": 12,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 5,
         "status": "DSQ",
@@ -15929,7 +15929,7 @@
           "raceNumber": "29",
           "displayName": "Ironser"
         },
-        "position": 14,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 19,
         "status": "DSQ",
@@ -16769,7 +16769,7 @@
           "raceNumber": "93",
           "displayName": "Kolakao"
         },
-        "position": 19,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 22,
         "status": "DSQ",
@@ -17595,7 +17595,7 @@
           "raceNumber": "72",
           "displayName": "Cachii"
         },
-        "position": 22,
+        "position": -1,
         "classificationPosition": -1,
         "gridPosition": 16,
         "status": "DSQ",
