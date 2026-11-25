@@ -7,7 +7,7 @@
   if (!adminContent || !roleDistribution || !roleEditorMount) return;
 
   const esc = value => String(value ?? '').replace(/[&<>'\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[ch]));
-  const roleNames = {pilot:'Piloto',team_principal:'Team Principal',staff:'Staff',admin:'Admin'};
+  const roleNames = {pilot:'Piloto',team_principal:'Team Principal',staff:'Staff',caster:'Caster',admin:'Admin'};
 
   async function init() {
     const { data:{session} } = await client.auth.getSession();
