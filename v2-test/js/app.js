@@ -31,7 +31,7 @@
 
   seasonBadge.textContent = `TEMPORADA ${config.currentSeason}`;
 
-  const roleNames = { pilot: 'Piloto', team_principal: 'Team Principal', staff: 'Staff', admin: 'Admin' };
+  const roleNames = { pilot: 'Piloto', team_principal: 'Team Principal', staff: 'Staff', caster: 'Caster', admin: 'Admin' };
   const eventNames = {
     points_penalty: 'Pérdida de puntos', warning: 'Aviso', attendance_incident: 'Incidencia de asistencia',
     nq_earned: 'NQ obtenido', nq_served: 'NQ cumplido', rb_earned: 'RB obtenido', rb_served: 'RB cumplido', points_restore: 'Recuperación de puntos'
